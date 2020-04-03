@@ -1,0 +1,224 @@
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccexQ6u8.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 2
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"jog.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.jog_execute,"ax",%progbits
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.global	jog_execute
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	jog_execute:
+  25              	.LFB703:
+  26              		.file 1 "grbl/jog.c"
+   1:grbl/jog.c    **** /*
+   2:grbl/jog.c    ****   jog.h - Jogging methods
+   3:grbl/jog.c    ****   Part of Grbl
+   4:grbl/jog.c    **** 
+   5:grbl/jog.c    ****   Copyright (c) 2016 Sungeun K. Jeon for Gnea Research LLC
+   6:grbl/jog.c    **** 
+   7:grbl/jog.c    ****   Grbl is free software: you can redistribute it and/or modify
+   8:grbl/jog.c    ****   it under the terms of the GNU General Public License as published by
+   9:grbl/jog.c    ****   the Free Software Foundation, either version 3 of the License, or
+  10:grbl/jog.c    ****   (at your option) any later version.
+  11:grbl/jog.c    **** 
+  12:grbl/jog.c    ****   Grbl is distributed in the hope that it will be useful,
+  13:grbl/jog.c    ****   but WITHOUT ANY WARRANTY; without even the implied warranty of
+  14:grbl/jog.c    ****   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  15:grbl/jog.c    ****   GNU General Public License for more details.
+  16:grbl/jog.c    **** 
+  17:grbl/jog.c    ****   You should have received a copy of the GNU General Public License
+  18:grbl/jog.c    ****   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
+  19:grbl/jog.c    **** */
+  20:grbl/jog.c    **** 
+  21:grbl/jog.c    **** #include "grbl.h"
+  22:grbl/jog.c    **** 
+  23:grbl/jog.c    **** 
+  24:grbl/jog.c    **** // Sets up valid jog motion received from g-code parser, checks for soft-limits, and executes the j
+  25:grbl/jog.c    **** uint8_t jog_execute(plan_line_data_t *pl_data, parser_block_t *gc_block)
+  26:grbl/jog.c    **** {
+  27              		.loc 1 26 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              	.LVL0:
+  32 0000 70B5     		push	{r4, r5, r6, lr}
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccexQ6u8.s 			page 2
+
+
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 16
+  35              		.cfi_offset 4, -16
+  36              		.cfi_offset 5, -12
+  37              		.cfi_offset 6, -8
+  38              		.cfi_offset 14, -4
+  39              		.loc 1 26 0
+  40 0002 0546     		mov	r5, r0
+  27:grbl/jog.c    ****   // Initialize planner data struct for jogging motions.
+  28:grbl/jog.c    ****   // NOTE: Spindle and coolant are allowed to fully function with overrides during a jog.
+  29:grbl/jog.c    ****   pl_data->feed_rate = gc_block->values.f;
+  30:grbl/jog.c    ****   pl_data->condition |= PL_COND_FLAG_NO_FEED_OVERRIDE;
+  41              		.loc 1 30 0
+  42 0004 037A     		ldrb	r3, [r0, #8]	@ zero_extendqisi2
+  29:grbl/jog.c    ****   pl_data->condition |= PL_COND_FLAG_NO_FEED_OVERRIDE;
+  43              		.loc 1 29 0
+  44 0006 0869     		ldr	r0, [r1, #16]	@ float
+  45              	.LVL1:
+  46              		.loc 1 30 0
+  47 0008 43F00403 		orr	r3, r3, #4
+  31:grbl/jog.c    ****   #ifdef USE_LINE_NUMBERS
+  32:grbl/jog.c    ****     pl_data->line_number = gc_block->values.n;
+  33:grbl/jog.c    ****   #endif
+  34:grbl/jog.c    **** 
+  35:grbl/jog.c    ****   if (bit_istrue(settings.flags,BITFLAG_SOFT_LIMIT_ENABLE)) {
+  48              		.loc 1 35 0
+  49 000c 124A     		ldr	r2, .L15
+  29:grbl/jog.c    ****   pl_data->condition |= PL_COND_FLAG_NO_FEED_OVERRIDE;
+  50              		.loc 1 29 0
+  51 000e 2860     		str	r0, [r5]	@ float
+  30:grbl/jog.c    ****   #ifdef USE_LINE_NUMBERS
+  52              		.loc 1 30 0
+  53 0010 2B72     		strb	r3, [r5, #8]
+  54              		.loc 1 35 0
+  55 0012 92F84830 		ldrb	r3, [r2, #72]	@ zero_extendqisi2
+  56 0016 01F13804 		add	r4, r1, #56
+  57 001a 9B06     		lsls	r3, r3, #26
+  58 001c 03D5     		bpl	.L6
+  36:grbl/jog.c    ****     if (system_check_travel_limits(gc_block->values.xyz)) { return(STATUS_TRAVEL_EXCEEDED); }
+  59              		.loc 1 36 0
+  60 001e 2046     		mov	r0, r4
+  61 0020 FFF7FEFF 		bl	system_check_travel_limits
+  62              	.LVL2:
+  63 0024 A8B9     		cbnz	r0, .L13
+  64              	.L6:
+  37:grbl/jog.c    ****   }
+  38:grbl/jog.c    **** 
+  39:grbl/jog.c    ****   // Valid jog command. Plan, set state, and execute.
+  40:grbl/jog.c    ****   mc_line(gc_block->values.xyz,pl_data);
+  41:grbl/jog.c    ****   if (sys.state == STATE_IDLE) {
+  65              		.loc 1 41 0
+  66 0026 0D4E     		ldr	r6, .L15+4
+  40:grbl/jog.c    ****   if (sys.state == STATE_IDLE) {
+  67              		.loc 1 40 0
+  68 0028 2046     		mov	r0, r4
+  69 002a 2946     		mov	r1, r5
+  70 002c FFF7FEFF 		bl	mc_line
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccexQ6u8.s 			page 3
+
+
+  71              	.LVL3:
+  72              		.loc 1 41 0
+  73 0030 3478     		ldrb	r4, [r6]	@ zero_extendqisi2
+  74              	.LVL4:
+  75 0032 14B1     		cbz	r4, .L14
+  76              	.L4:
+  42:grbl/jog.c    ****     if (plan_get_current_block() != NULL) { // Check if there is a block to execute.
+  43:grbl/jog.c    ****       sys.state = STATE_JOG;
+  44:grbl/jog.c    ****       st_prep_buffer();
+  45:grbl/jog.c    ****       st_wake_up();  // NOTE: Manual start. No state machine required.
+  46:grbl/jog.c    ****     }
+  47:grbl/jog.c    ****   }
+  48:grbl/jog.c    **** 
+  49:grbl/jog.c    ****   return(STATUS_OK);
+  77              		.loc 1 49 0
+  78 0034 0024     		movs	r4, #0
+  50:grbl/jog.c    **** }
+  79              		.loc 1 50 0
+  80 0036 2046     		mov	r0, r4
+  81 0038 70BD     		pop	{r4, r5, r6, pc}
+  82              	.LVL5:
+  83              	.L14:
+  42:grbl/jog.c    ****     if (plan_get_current_block() != NULL) { // Check if there is a block to execute.
+  84              		.loc 1 42 0
+  85 003a FFF7FEFF 		bl	plan_get_current_block
+  86              	.LVL6:
+  87 003e 0028     		cmp	r0, #0
+  88 0040 F8D0     		beq	.L4
+  43:grbl/jog.c    ****       st_prep_buffer();
+  89              		.loc 1 43 0
+  90 0042 2023     		movs	r3, #32
+  91 0044 3370     		strb	r3, [r6]
+  44:grbl/jog.c    ****       st_wake_up();  // NOTE: Manual start. No state machine required.
+  92              		.loc 1 44 0
+  93 0046 FFF7FEFF 		bl	st_prep_buffer
+  94              	.LVL7:
+  45:grbl/jog.c    ****     }
+  95              		.loc 1 45 0
+  96 004a FFF7FEFF 		bl	st_wake_up
+  97              	.LVL8:
+  98              		.loc 1 50 0
+  99 004e 2046     		mov	r0, r4
+ 100 0050 70BD     		pop	{r4, r5, r6, pc}
+ 101              	.LVL9:
+ 102              	.L13:
+  36:grbl/jog.c    ****   }
+ 103              		.loc 1 36 0
+ 104 0052 0F24     		movs	r4, #15
+ 105              		.loc 1 50 0
+ 106 0054 2046     		mov	r0, r4
+ 107 0056 70BD     		pop	{r4, r5, r6, pc}
+ 108              	.LVL10:
+ 109              	.L16:
+ 110              		.align	2
+ 111              	.L15:
+ 112 0058 00000000 		.word	settings
+ 113 005c 00000000 		.word	sys
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccexQ6u8.s 			page 4
+
+
+ 114              		.cfi_endproc
+ 115              	.LFE703:
+ 117              		.text
+ 118              	.Letext0:
+ 119              		.file 2 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/machine/_default_types
+ 120              		.file 3 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/sys/lock.h"
+ 121              		.file 4 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/sys/_types.h"
+ 122              		.file 5 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/lib/gcc/arm-none-eabi/7.3.1/include/stddef.h
+ 123              		.file 6 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/sys/reent.h"
+ 124              		.file 7 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/math.h"
+ 125              		.file 8 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/sys/_stdint.h"
+ 126              		.file 9 "Drivers/CMSIS/Include/core_cm3.h"
+ 127              		.file 10 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h"
+ 128              		.file 11 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
+ 129              		.file 12 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_tim.h"
+ 130              		.file 13 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h"
+ 131              		.file 14 "stm32/stm32utilities.h"
+ 132              		.file 15 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/stdlib.h"
+ 133              		.file 16 "grbl/settings.h"
+ 134              		.file 17 "grbl/system.h"
+ 135              		.file 18 "grbl/planner.h"
+ 136              		.file 19 "grbl/gcode.h"
+ 137              		.file 20 "grbl/motion_control.h"
+ 138              		.file 21 "grbl/stepper.h"
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccexQ6u8.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 jog.c
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccexQ6u8.s:16     .text.jog_execute:0000000000000000 $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccexQ6u8.s:24     .text.jog_execute:0000000000000000 jog_execute
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccexQ6u8.s:112    .text.jog_execute:0000000000000058 $d
+
+UNDEFINED SYMBOLS
+system_check_travel_limits
+mc_line
+plan_get_current_block
+st_prep_buffer
+st_wake_up
+settings
+sys

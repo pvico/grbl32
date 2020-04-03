@@ -1,0 +1,2450 @@
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 2
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"settings.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.settings_store_startup_line,"ax",%progbits
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.global	settings_store_startup_line
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	settings_store_startup_line:
+  25              	.LFB703:
+  26              		.file 1 "grbl/settings.c"
+   1:grbl/settings.c **** /*
+   2:grbl/settings.c ****   settings.c - eeprom configuration handling
+   3:grbl/settings.c ****   Part of Grbl
+   4:grbl/settings.c **** 
+   5:grbl/settings.c ****   Copyright (c) 2011-2016 Sungeun K. Jeon for Gnea Research LLC
+   6:grbl/settings.c ****   Copyright (c) 2009-2011 Simen Svale Skogsrud
+   7:grbl/settings.c ****   Copyright (c) 2018-2019 Thomas Truong
+   8:grbl/settings.c **** 
+   9:grbl/settings.c ****   Grbl is free software: you can redistribute it and/or modify
+  10:grbl/settings.c ****   it under the terms of the GNU General Public License as published by
+  11:grbl/settings.c ****   the Free Software Foundation, either version 3 of the License, or
+  12:grbl/settings.c ****   (at your option) any later version.
+  13:grbl/settings.c **** 
+  14:grbl/settings.c ****   Grbl is distributed in the hope that it will be useful,
+  15:grbl/settings.c ****   but WITHOUT ANY WARRANTY; without even the implied warranty of
+  16:grbl/settings.c ****   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  17:grbl/settings.c ****   GNU General Public License for more details.
+  18:grbl/settings.c **** 
+  19:grbl/settings.c ****   You should have received a copy of the GNU General Public License
+  20:grbl/settings.c ****   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
+  21:grbl/settings.c **** */
+  22:grbl/settings.c **** 
+  23:grbl/settings.c **** #include "grbl.h"
+  24:grbl/settings.c **** 
+  25:grbl/settings.c **** settings_t settings;
+  26:grbl/settings.c **** #ifdef ENABLE_ACCEL_SCALING
+  27:grbl/settings.c **** adjustments_t adjustments;
+  28:grbl/settings.c **** #endif
+  29:grbl/settings.c **** 
+  30:grbl/settings.c **** 
+  31:grbl/settings.c **** 
+  32:grbl/settings.c **** // Method to store startup lines into EEPROM
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 2
+
+
+  33:grbl/settings.c **** void settings_store_startup_line(uint8_t n, char *line)
+  34:grbl/settings.c **** {
+  27              		.loc 1 34 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              	.LVL0:
+  32 0000 38B5     		push	{r3, r4, r5, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 16
+  35              		.cfi_offset 3, -16
+  36              		.cfi_offset 4, -12
+  37              		.cfi_offset 5, -8
+  38              		.cfi_offset 14, -4
+  39              		.loc 1 34 0
+  40 0002 0446     		mov	r4, r0
+  41 0004 0D46     		mov	r5, r1
+  35:grbl/settings.c ****   #ifdef FORCE_BUFFER_SYNC_DURING_EEPROM_WRITE
+  36:grbl/settings.c ****     protocol_buffer_synchronize(); // A startup line may contain a motion and be executing. 
+  37:grbl/settings.c ****   #endif
+  38:grbl/settings.c ****   uint32_t addr = n*(LINE_BUFFER_SIZE+1)+EEPROM_ADDR_STARTUP_BLOCK;
+  42              		.loc 1 38 0
+  43 0006 04EBC404 		add	r4, r4, r4, lsl #3
+  44 000a 04EBC404 		add	r4, r4, r4, lsl #3
+  36:grbl/settings.c ****   #endif
+  45              		.loc 1 36 0
+  46 000e FFF7FEFF 		bl	protocol_buffer_synchronize
+  47              	.LVL1:
+  39:grbl/settings.c ****   memcpy_to_eeprom_with_checksum(addr,(char*)line, LINE_BUFFER_SIZE);
+  48              		.loc 1 39 0
+  49 0012 04F54070 		add	r0, r4, #768
+  50 0016 2946     		mov	r1, r5
+  40:grbl/settings.c **** }
+  51              		.loc 1 40 0
+  52 0018 BDE83840 		pop	{r3, r4, r5, lr}
+  53              	.LCFI1:
+  54              		.cfi_restore 14
+  55              		.cfi_restore 5
+  56              		.cfi_restore 4
+  57              		.cfi_restore 3
+  58              		.cfi_def_cfa_offset 0
+  59              	.LVL2:
+  39:grbl/settings.c ****   memcpy_to_eeprom_with_checksum(addr,(char*)line, LINE_BUFFER_SIZE);
+  60              		.loc 1 39 0
+  61 001c 5022     		movs	r2, #80
+  62 001e FFF7FEBF 		b	memcpy_to_eeprom_with_checksum
+  63              	.LVL3:
+  64              		.cfi_endproc
+  65              	.LFE703:
+  67 0022 00BF     		.section	.text.settings_store_build_info,"ax",%progbits
+  68              		.align	1
+  69              		.p2align 2,,3
+  70              		.global	settings_store_build_info
+  71              		.syntax unified
+  72              		.thumb
+  73              		.thumb_func
+  74              		.fpu softvfp
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 3
+
+
+  76              	settings_store_build_info:
+  77              	.LFB704:
+  41:grbl/settings.c **** 
+  42:grbl/settings.c **** 
+  43:grbl/settings.c **** // Method to store build info into EEPROM
+  44:grbl/settings.c **** // NOTE: This function can only be called in IDLE state.
+  45:grbl/settings.c **** void settings_store_build_info(char *line)
+  46:grbl/settings.c **** {
+  78              		.loc 1 46 0
+  79              		.cfi_startproc
+  80              		@ args = 0, pretend = 0, frame = 0
+  81              		@ frame_needed = 0, uses_anonymous_args = 0
+  82              		@ link register save eliminated.
+  83              	.LVL4:
+  47:grbl/settings.c ****   // Build info can only be stored when state is IDLE.
+  48:grbl/settings.c ****   memcpy_to_eeprom_with_checksum(EEPROM_ADDR_BUILD_INFO,(char*)line, LINE_BUFFER_SIZE);
+  84              		.loc 1 48 0
+  85 0000 0146     		mov	r1, r0
+  86 0002 5022     		movs	r2, #80
+  87 0004 40F2AE30 		movw	r0, #942
+  88              	.LVL5:
+  89 0008 FFF7FEBF 		b	memcpy_to_eeprom_with_checksum
+  90              	.LVL6:
+  91              		.cfi_endproc
+  92              	.LFE704:
+  94              		.section	.text.settings_write_coord_data,"ax",%progbits
+  95              		.align	1
+  96              		.p2align 2,,3
+  97              		.global	settings_write_coord_data
+  98              		.syntax unified
+  99              		.thumb
+ 100              		.thumb_func
+ 101              		.fpu softvfp
+ 103              	settings_write_coord_data:
+ 104              	.LFB705:
+  49:grbl/settings.c **** }
+  50:grbl/settings.c **** 
+  51:grbl/settings.c **** 
+  52:grbl/settings.c **** // Method to store coord data parameters into EEPROM
+  53:grbl/settings.c **** void settings_write_coord_data(uint8_t coord_select, float *coord_data)
+  54:grbl/settings.c **** {
+ 105              		.loc 1 54 0
+ 106              		.cfi_startproc
+ 107              		@ args = 0, pretend = 0, frame = 0
+ 108              		@ frame_needed = 0, uses_anonymous_args = 0
+ 109              	.LVL7:
+ 110 0000 38B5     		push	{r3, r4, r5, lr}
+ 111              	.LCFI2:
+ 112              		.cfi_def_cfa_offset 16
+ 113              		.cfi_offset 3, -16
+ 114              		.cfi_offset 4, -12
+ 115              		.cfi_offset 5, -8
+ 116              		.cfi_offset 14, -4
+ 117              		.loc 1 54 0
+ 118 0002 0446     		mov	r4, r0
+ 119 0004 0D46     		mov	r5, r1
+  55:grbl/settings.c ****   #ifdef FORCE_BUFFER_SYNC_DURING_EEPROM_WRITE
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 4
+
+
+  56:grbl/settings.c ****     protocol_buffer_synchronize();
+ 120              		.loc 1 56 0
+ 121 0006 FFF7FEFF 		bl	protocol_buffer_synchronize
+ 122              	.LVL8:
+  57:grbl/settings.c ****   #endif
+  58:grbl/settings.c ****   uint32_t addr = coord_select*(sizeof(float)*N_AXIS+1) + EEPROM_ADDR_PARAMETERS;
+ 123              		.loc 1 58 0
+ 124 000a 04EB4400 		add	r0, r4, r4, lsl #1
+ 125 000e 04EB8000 		add	r0, r4, r0, lsl #2
+  59:grbl/settings.c ****   memcpy_to_eeprom_with_checksum(addr,(char*)coord_data, sizeof(float)*N_AXIS);
+ 126              		.loc 1 59 0
+ 127 0012 2946     		mov	r1, r5
+  60:grbl/settings.c **** }
+ 128              		.loc 1 60 0
+ 129 0014 BDE83840 		pop	{r3, r4, r5, lr}
+ 130              	.LCFI3:
+ 131              		.cfi_restore 14
+ 132              		.cfi_restore 5
+ 133              		.cfi_restore 4
+ 134              		.cfi_restore 3
+ 135              		.cfi_def_cfa_offset 0
+ 136              	.LVL9:
+  59:grbl/settings.c ****   memcpy_to_eeprom_with_checksum(addr,(char*)coord_data, sizeof(float)*N_AXIS);
+ 137              		.loc 1 59 0
+ 138 0018 00F50070 		add	r0, r0, #512
+ 139 001c 0C22     		movs	r2, #12
+ 140 001e FFF7FEBF 		b	memcpy_to_eeprom_with_checksum
+ 141              	.LVL10:
+ 142              		.cfi_endproc
+ 143              	.LFE705:
+ 145 0022 00BF     		.section	.text.write_global_settings,"ax",%progbits
+ 146              		.align	1
+ 147              		.p2align 2,,3
+ 148              		.global	write_global_settings
+ 149              		.syntax unified
+ 150              		.thumb
+ 151              		.thumb_func
+ 152              		.fpu softvfp
+ 154              	write_global_settings:
+ 155              	.LFB706:
+  61:grbl/settings.c **** 
+  62:grbl/settings.c **** 
+  63:grbl/settings.c **** // Method to store Grbl global settings struct and version number into EEPROM
+  64:grbl/settings.c **** // NOTE: This function can only be called in IDLE state.
+  65:grbl/settings.c **** void write_global_settings()
+  66:grbl/settings.c **** {
+ 156              		.loc 1 66 0
+ 157              		.cfi_startproc
+ 158              		@ args = 0, pretend = 0, frame = 0
+ 159              		@ frame_needed = 0, uses_anonymous_args = 0
+ 160 0000 08B5     		push	{r3, lr}
+ 161              	.LCFI4:
+ 162              		.cfi_def_cfa_offset 8
+ 163              		.cfi_offset 3, -8
+ 164              		.cfi_offset 14, -4
+  67:grbl/settings.c ****   eeprom_put_char(0, SETTINGS_VERSION);
+ 165              		.loc 1 67 0
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 5
+
+
+ 166 0002 0D21     		movs	r1, #13
+ 167 0004 0020     		movs	r0, #0
+ 168 0006 FFF7FEFF 		bl	eeprom_put_char
+ 169              	.LVL11:
+  68:grbl/settings.c ****   memcpy_to_eeprom_with_checksum(EEPROM_ADDR_GLOBAL, (char*)&settings, sizeof(settings_t));
+  69:grbl/settings.c **** }
+ 170              		.loc 1 69 0
+ 171 000a BDE80840 		pop	{r3, lr}
+ 172              	.LCFI5:
+ 173              		.cfi_restore 14
+ 174              		.cfi_restore 3
+ 175              		.cfi_def_cfa_offset 0
+  68:grbl/settings.c ****   memcpy_to_eeprom_with_checksum(EEPROM_ADDR_GLOBAL, (char*)&settings, sizeof(settings_t));
+ 176              		.loc 1 68 0
+ 177 000e 6422     		movs	r2, #100
+ 178 0010 0149     		ldr	r1, .L9
+ 179 0012 0120     		movs	r0, #1
+ 180 0014 FFF7FEBF 		b	memcpy_to_eeprom_with_checksum
+ 181              	.LVL12:
+ 182              	.L10:
+ 183              		.align	2
+ 184              	.L9:
+ 185 0018 00000000 		.word	settings
+ 186              		.cfi_endproc
+ 187              	.LFE706:
+ 189              		.section	.text.settings_restore,"ax",%progbits
+ 190              		.align	1
+ 191              		.p2align 2,,3
+ 192              		.global	settings_restore
+ 193              		.syntax unified
+ 194              		.thumb
+ 195              		.thumb_func
+ 196              		.fpu softvfp
+ 198              	settings_restore:
+ 199              	.LFB707:
+  70:grbl/settings.c **** 
+  71:grbl/settings.c **** 
+  72:grbl/settings.c **** // Method to restore EEPROM-saved Grbl global settings back to defaults.
+  73:grbl/settings.c **** void settings_restore(uint8_t restore_flag) {
+ 200              		.loc 1 73 0
+ 201              		.cfi_startproc
+ 202              		@ args = 0, pretend = 0, frame = 16
+ 203              		@ frame_needed = 0, uses_anonymous_args = 0
+ 204              	.LVL13:
+ 205 0000 70B5     		push	{r4, r5, r6, lr}
+ 206              	.LCFI6:
+ 207              		.cfi_def_cfa_offset 16
+ 208              		.cfi_offset 4, -16
+ 209              		.cfi_offset 5, -12
+ 210              		.cfi_offset 6, -8
+ 211              		.cfi_offset 14, -4
+ 212 0002 0546     		mov	r5, r0
+  74:grbl/settings.c ****   if (restore_flag & SETTINGS_RESTORE_DEFAULTS) {
+ 213              		.loc 1 74 0
+ 214 0004 C007     		lsls	r0, r0, #31
+ 215              	.LVL14:
+  73:grbl/settings.c ****   if (restore_flag & SETTINGS_RESTORE_DEFAULTS) {
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 6
+
+
+ 216              		.loc 1 73 0
+ 217 0006 84B0     		sub	sp, sp, #16
+ 218              	.LCFI7:
+ 219              		.cfi_def_cfa_offset 32
+ 220              		.loc 1 74 0
+ 221 0008 38D4     		bmi	.L31
+ 222              	.L12:
+  75:grbl/settings.c **** //    settings.pulse_microseconds = DEFAULT_STEP_PULSE_MICROSECONDS;
+  76:grbl/settings.c ****     settings.fpulse_microseconds = DEFAULT_STEP_PULSE_MICROSECONDS;
+  77:grbl/settings.c ****     settings.stepper_idle_lock_time = DEFAULT_STEPPER_IDLE_LOCK_TIME;
+  78:grbl/settings.c ****     settings.step_invert_mask = DEFAULT_STEPPING_INVERT_MASK;
+  79:grbl/settings.c ****     settings.dir_invert_mask = DEFAULT_DIRECTION_INVERT_MASK;
+  80:grbl/settings.c ****     settings.status_report_mask = DEFAULT_STATUS_REPORT_MASK;
+  81:grbl/settings.c ****     settings.junction_deviation = DEFAULT_JUNCTION_DEVIATION;
+  82:grbl/settings.c ****     settings.arc_tolerance = DEFAULT_ARC_TOLERANCE;
+  83:grbl/settings.c **** 
+  84:grbl/settings.c ****     settings.rpm_max = DEFAULT_SPINDLE_RPM_MAX;
+  85:grbl/settings.c ****     settings.rpm_min = DEFAULT_SPINDLE_RPM_MIN;
+  86:grbl/settings.c **** 
+  87:grbl/settings.c ****     settings.homing_dir_mask = DEFAULT_HOMING_DIR_MASK;
+  88:grbl/settings.c ****     settings.homing_feed_rate = DEFAULT_HOMING_FEED_RATE;
+  89:grbl/settings.c ****     settings.homing_seek_rate = DEFAULT_HOMING_SEEK_RATE;
+  90:grbl/settings.c ****     settings.homing_debounce_delay = DEFAULT_HOMING_DEBOUNCE_DELAY;
+  91:grbl/settings.c ****     settings.homing_pulloff = DEFAULT_HOMING_PULLOFF;
+  92:grbl/settings.c **** 
+  93:grbl/settings.c ****     settings.analog_max = DEFAULT_ANALOG_MAX;
+  94:grbl/settings.c ****     settings.spindle_enable_pin_mode = DEFAULT_VARIABLE_SPINDLE_ENABLE_PIN;
+  95:grbl/settings.c **** 
+  96:grbl/settings.c ****     settings.flags = 0;
+  97:grbl/settings.c ****     if (DEFAULT_REPORT_INCHES) { settings.flags |= BITFLAG_REPORT_INCHES; }
+  98:grbl/settings.c ****     if (DEFAULT_LASER_MODE) { settings.flags |= BITFLAG_LASER_MODE; }
+  99:grbl/settings.c ****     if (DEFAULT_INVERT_ST_ENABLE) { settings.flags |= BITFLAG_INVERT_ST_ENABLE; }
+ 100:grbl/settings.c ****     if (DEFAULT_HARD_LIMIT_ENABLE) { settings.flags |= BITFLAG_HARD_LIMIT_ENABLE; }
+ 101:grbl/settings.c ****     if (DEFAULT_HOMING_ENABLE) { settings.flags |= BITFLAG_HOMING_ENABLE; }
+ 102:grbl/settings.c ****     if (DEFAULT_SOFT_LIMIT_ENABLE) { settings.flags |= BITFLAG_SOFT_LIMIT_ENABLE; }
+ 103:grbl/settings.c ****     if (DEFAULT_INVERT_LIMIT_PINS) { settings.flags |= BITFLAG_INVERT_LIMIT_PINS; }
+ 104:grbl/settings.c ****     if (DEFAULT_INVERT_PROBE_PIN) { settings.flags |= BITFLAG_INVERT_PROBE_PIN; }
+ 105:grbl/settings.c **** 
+ 106:grbl/settings.c ****     settings.steps_per_mm[X_AXIS] = DEFAULT_X_STEPS_PER_MM;
+ 107:grbl/settings.c ****     settings.steps_per_mm[Y_AXIS] = DEFAULT_Y_STEPS_PER_MM;
+ 108:grbl/settings.c ****     settings.steps_per_mm[Z_AXIS] = DEFAULT_Z_STEPS_PER_MM;
+ 109:grbl/settings.c ****     settings.max_rate[X_AXIS] = DEFAULT_X_MAX_RATE;
+ 110:grbl/settings.c ****     settings.max_rate[Y_AXIS] = DEFAULT_Y_MAX_RATE;
+ 111:grbl/settings.c ****     settings.max_rate[Z_AXIS] = DEFAULT_Z_MAX_RATE;
+ 112:grbl/settings.c ****     settings.eeacceleration[X_AXIS] = DEFAULT_X_ACCELERATION;
+ 113:grbl/settings.c ****     settings.eeacceleration[Y_AXIS] = DEFAULT_Y_ACCELERATION;
+ 114:grbl/settings.c ****     settings.eeacceleration[Z_AXIS] = DEFAULT_Z_ACCELERATION;
+ 115:grbl/settings.c ****     settings.max_travel[X_AXIS] = (-DEFAULT_X_MAX_TRAVEL);
+ 116:grbl/settings.c ****     settings.max_travel[Y_AXIS] = (-DEFAULT_Y_MAX_TRAVEL);
+ 117:grbl/settings.c ****     settings.max_travel[Z_AXIS] = (-DEFAULT_Z_MAX_TRAVEL);
+ 118:grbl/settings.c **** 
+ 119:grbl/settings.c **** 
+ 120:grbl/settings.c ****     #if ( defined(STM32F1_4) || defined(STM32F4_4) )
+ 121:grbl/settings.c ****       settings.steps_per_mm[A_AXIS] = DEFAULT_A_STEPS_PER_MM;
+ 122:grbl/settings.c ****       settings.max_rate[A_AXIS] = DEFAULT_A_MAX_RATE;
+ 123:grbl/settings.c ****       settings.eeacceleration[A_AXIS] = DEFAULT_A_ACCELERATION;
+ 124:grbl/settings.c ****       settings.max_travel[A_AXIS] = (-DEFAULT_A_MAX_TRAVEL);
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 7
+
+
+ 125:grbl/settings.c ****     #endif
+ 126:grbl/settings.c ****     #if ( defined(STM32F1_5) || defined(STM32F4_5) )
+ 127:grbl/settings.c ****       settings.steps_per_mm[A_AXIS] = DEFAULT_A_STEPS_PER_MM;
+ 128:grbl/settings.c ****       settings.steps_per_mm[B_AXIS] = DEFAULT_B_STEPS_PER_MM;
+ 129:grbl/settings.c ****       settings.max_rate[A_AXIS] = DEFAULT_A_MAX_RATE;
+ 130:grbl/settings.c ****       settings.max_rate[B_AXIS] = DEFAULT_B_MAX_RATE;
+ 131:grbl/settings.c ****       settings.eeacceleration[A_AXIS] = DEFAULT_A_ACCELERATION;
+ 132:grbl/settings.c ****       settings.eeacceleration[B_AXIS] = DEFAULT_B_ACCELERATION;
+ 133:grbl/settings.c ****       settings.max_travel[A_AXIS] = (-DEFAULT_A_MAX_TRAVEL);
+ 134:grbl/settings.c ****       settings.max_travel[B_AXIS] = (-DEFAULT_B_MAX_TRAVEL);
+ 135:grbl/settings.c ****     #endif
+ 136:grbl/settings.c ****     #if ( defined(STM32F1_6) || defined(STM32F4_6) )
+ 137:grbl/settings.c ****       settings.steps_per_mm[A_AXIS] = DEFAULT_A_STEPS_PER_MM;
+ 138:grbl/settings.c ****       settings.steps_per_mm[B_AXIS] = DEFAULT_B_STEPS_PER_MM;
+ 139:grbl/settings.c ****       settings.steps_per_mm[C_AXIS] = DEFAULT_C_STEPS_PER_MM;
+ 140:grbl/settings.c ****       settings.max_rate[A_AXIS] = DEFAULT_A_MAX_RATE;
+ 141:grbl/settings.c ****       settings.max_rate[B_AXIS] = DEFAULT_B_MAX_RATE;
+ 142:grbl/settings.c ****       settings.max_rate[C_AXIS] = DEFAULT_C_MAX_RATE;
+ 143:grbl/settings.c ****       settings.eeacceleration[A_AXIS] = DEFAULT_A_ACCELERATION;
+ 144:grbl/settings.c ****       settings.eeacceleration[B_AXIS] = DEFAULT_B_ACCELERATION;
+ 145:grbl/settings.c ****       settings.eeacceleration[C_AXIS] = DEFAULT_C_ACCELERATION;
+ 146:grbl/settings.c ****       settings.max_travel[A_AXIS] = (-DEFAULT_A_MAX_TRAVEL);
+ 147:grbl/settings.c ****       settings.max_travel[B_AXIS] = (-DEFAULT_B_MAX_TRAVEL);
+ 148:grbl/settings.c ****       settings.max_travel[C_AXIS] = (-DEFAULT_C_MAX_TRAVEL);
+ 149:grbl/settings.c ****     #endif
+ 150:grbl/settings.c **** 
+ 151:grbl/settings.c ****     write_global_settings();
+ 152:grbl/settings.c ****   }
+ 153:grbl/settings.c **** 
+ 154:grbl/settings.c ****   if (restore_flag & SETTINGS_RESTORE_PARAMETERS) {
+ 223              		.loc 1 154 0
+ 224 000a A907     		lsls	r1, r5, #30
+ 225 000c 24D4     		bmi	.L32
+ 226              	.L13:
+ 155:grbl/settings.c ****     uint8_t idx;
+ 156:grbl/settings.c ****     float coord_data[N_AXIS];
+ 157:grbl/settings.c ****     memset(&coord_data, 0, sizeof(coord_data));
+ 158:grbl/settings.c ****     for (idx=0; idx <= SETTING_INDEX_NCOORD; idx++) { settings_write_coord_data(idx, coord_data); }
+ 159:grbl/settings.c ****   }
+ 160:grbl/settings.c **** 
+ 161:grbl/settings.c ****   if (restore_flag & SETTINGS_RESTORE_STARTUP_LINES) {
+ 227              		.loc 1 161 0
+ 228 000e 6A07     		lsls	r2, r5, #29
+ 229 0010 0DD4     		bmi	.L33
+ 230              	.L15:
+ 162:grbl/settings.c ****     #if N_STARTUP_LINE > 0
+ 163:grbl/settings.c ****       eeprom_put_char(EEPROM_ADDR_STARTUP_BLOCK, 0);
+ 164:grbl/settings.c ****       eeprom_put_char(EEPROM_ADDR_STARTUP_BLOCK+1, 0); // Checksum
+ 165:grbl/settings.c ****     #endif
+ 166:grbl/settings.c ****     #if N_STARTUP_LINE > 1
+ 167:grbl/settings.c ****       eeprom_put_char(EEPROM_ADDR_STARTUP_BLOCK+(LINE_BUFFER_SIZE+1), 0);
+ 168:grbl/settings.c ****       eeprom_put_char(EEPROM_ADDR_STARTUP_BLOCK+(LINE_BUFFER_SIZE+2), 0); // Checksum
+ 169:grbl/settings.c ****     #endif
+ 170:grbl/settings.c ****   }
+ 171:grbl/settings.c **** 
+ 172:grbl/settings.c ****   if (restore_flag & SETTINGS_RESTORE_BUILD_INFO) {
+ 231              		.loc 1 172 0
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 8
+
+
+ 232 0012 2B07     		lsls	r3, r5, #28
+ 233 0014 09D5     		bpl	.L11
+ 173:grbl/settings.c ****     eeprom_put_char(EEPROM_ADDR_BUILD_INFO , 0);
+ 234              		.loc 1 173 0
+ 235 0016 0021     		movs	r1, #0
+ 236 0018 40F2AE30 		movw	r0, #942
+ 237 001c FFF7FEFF 		bl	eeprom_put_char
+ 238              	.LVL15:
+ 174:grbl/settings.c ****     eeprom_put_char(EEPROM_ADDR_BUILD_INFO+1 , 0); // Checksum
+ 239              		.loc 1 174 0
+ 240 0020 0021     		movs	r1, #0
+ 241 0022 40F2AF30 		movw	r0, #943
+ 242 0026 FFF7FEFF 		bl	eeprom_put_char
+ 243              	.LVL16:
+ 244              	.L11:
+ 175:grbl/settings.c ****   }
+ 176:grbl/settings.c **** }
+ 245              		.loc 1 176 0
+ 246 002a 04B0     		add	sp, sp, #16
+ 247              	.LCFI8:
+ 248              		.cfi_remember_state
+ 249              		.cfi_def_cfa_offset 16
+ 250              		@ sp needed
+ 251 002c 70BD     		pop	{r4, r5, r6, pc}
+ 252              	.L33:
+ 253              	.LCFI9:
+ 254              		.cfi_restore_state
+ 163:grbl/settings.c ****       eeprom_put_char(EEPROM_ADDR_STARTUP_BLOCK+1, 0); // Checksum
+ 255              		.loc 1 163 0
+ 256 002e 0021     		movs	r1, #0
+ 257 0030 4FF44070 		mov	r0, #768
+ 258 0034 FFF7FEFF 		bl	eeprom_put_char
+ 259              	.LVL17:
+ 164:grbl/settings.c ****     #endif
+ 260              		.loc 1 164 0
+ 261 0038 0021     		movs	r1, #0
+ 262 003a 40F20130 		movw	r0, #769
+ 263 003e FFF7FEFF 		bl	eeprom_put_char
+ 264              	.LVL18:
+ 167:grbl/settings.c ****       eeprom_put_char(EEPROM_ADDR_STARTUP_BLOCK+(LINE_BUFFER_SIZE+2), 0); // Checksum
+ 265              		.loc 1 167 0
+ 266 0042 0021     		movs	r1, #0
+ 267 0044 40F25130 		movw	r0, #849
+ 268 0048 FFF7FEFF 		bl	eeprom_put_char
+ 269              	.LVL19:
+ 168:grbl/settings.c ****     #endif
+ 270              		.loc 1 168 0
+ 271 004c 0021     		movs	r1, #0
+ 272 004e 40F25230 		movw	r0, #850
+ 273 0052 FFF7FEFF 		bl	eeprom_put_char
+ 274              	.LVL20:
+ 275 0056 DCE7     		b	.L15
+ 276              	.L32:
+ 277              	.LBB19:
+ 157:grbl/settings.c ****     for (idx=0; idx <= SETTING_INDEX_NCOORD; idx++) { settings_write_coord_data(idx, coord_data); }
+ 278              		.loc 1 157 0
+ 279 0058 0023     		movs	r3, #0
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 9
+
+
+ 280 005a 4FF40074 		mov	r4, #512
+ 281 005e CDE90133 		strd	r3, r3, [sp, #4]
+ 282 0062 0393     		str	r3, [sp, #12]
+ 283              	.LVL21:
+ 284              	.L14:
+ 285              	.LBB20:
+ 286              	.LBB21:
+  56:grbl/settings.c ****   #endif
+ 287              		.loc 1 56 0
+ 288 0064 FFF7FEFF 		bl	protocol_buffer_synchronize
+ 289              	.LVL22:
+  59:grbl/settings.c **** }
+ 290              		.loc 1 59 0
+ 291 0068 2046     		mov	r0, r4
+ 292 006a 0C22     		movs	r2, #12
+ 293 006c 01A9     		add	r1, sp, #4
+ 294              	.LVL23:
+ 295 006e 0D34     		adds	r4, r4, #13
+ 296              	.LVL24:
+ 297 0070 FFF7FEFF 		bl	memcpy_to_eeprom_with_checksum
+ 298              	.LVL25:
+ 299              	.LBE21:
+ 300              	.LBE20:
+ 158:grbl/settings.c ****   }
+ 301              		.loc 1 158 0
+ 302 0074 B4F51A7F 		cmp	r4, #616
+ 303 0078 F4D1     		bne	.L14
+ 304 007a C8E7     		b	.L13
+ 305              	.L31:
+ 306              	.LBE19:
+ 117:grbl/settings.c **** 
+ 307              		.loc 1 117 0
+ 308 007c 4FF07C52 		mov	r2, #1056964608
+  94:grbl/settings.c **** 
+ 309              		.loc 1 94 0
+ 310 0080 0023     		movs	r3, #0
+  88:grbl/settings.c ****     settings.homing_seek_rate = DEFAULT_HOMING_SEEK_RATE;
+ 311              		.loc 1 88 0
+ 312 0082 1D4C     		ldr	r4, .L34
+  90:grbl/settings.c ****     settings.homing_pulloff = DEFAULT_HOMING_PULLOFF;
+ 313              		.loc 1 90 0
+ 314 0084 FA21     		movs	r1, #250
+ 117:grbl/settings.c **** 
+ 315              		.loc 1 117 0
+ 316 0086 2263     		str	r2, [r4, #48]
+  91:grbl/settings.c **** 
+ 317              		.loc 1 91 0
+ 318 0088 4FF07E52 		mov	r2, #1065353216
+  85:grbl/settings.c **** 
+ 319              		.loc 1 85 0
+ 320 008c 4FF49876 		mov	r6, #304
+ 321              	.LBB22:
+ 322              	.LBB23:
+  67:grbl/settings.c ****   memcpy_to_eeprom_with_checksum(EEPROM_ADDR_GLOBAL, (char*)&settings, sizeof(settings_t));
+ 323              		.loc 1 67 0
+ 324 0090 1846     		mov	r0, r3
+ 325              	.LBE23:
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 10
+
+
+ 326              	.LBE22:
+  94:grbl/settings.c **** 
+ 327              		.loc 1 94 0
+ 328 0092 84F86030 		strb	r3, [r4, #96]
+  84:grbl/settings.c ****     settings.rpm_min = DEFAULT_SPINDLE_RPM_MIN;
+ 329              		.loc 1 84 0
+ 330 0096 6364     		str	r3, [r4, #68]
+  88:grbl/settings.c ****     settings.homing_seek_rate = DEFAULT_HOMING_SEEK_RATE;
+ 331              		.loc 1 88 0
+ 332 0098 184B     		ldr	r3, .L34+4
+  91:grbl/settings.c **** 
+ 333              		.loc 1 91 0
+ 334 009a A265     		str	r2, [r4, #88]	@ float
+  88:grbl/settings.c ****     settings.homing_seek_rate = DEFAULT_HOMING_SEEK_RATE;
+ 335              		.loc 1 88 0
+ 336 009c E364     		str	r3, [r4, #76]	@ float
+  89:grbl/settings.c ****     settings.homing_debounce_delay = DEFAULT_HOMING_DEBOUNCE_DELAY;
+ 337              		.loc 1 89 0
+ 338 009e 184B     		ldr	r3, .L34+8
+ 107:grbl/settings.c ****     settings.steps_per_mm[Z_AXIS] = DEFAULT_Z_STEPS_PER_MM;
+ 339              		.loc 1 107 0
+ 340 00a0 184A     		ldr	r2, .L34+12
+  89:grbl/settings.c ****     settings.homing_debounce_delay = DEFAULT_HOMING_DEBOUNCE_DELAY;
+ 341              		.loc 1 89 0
+ 342 00a2 2365     		str	r3, [r4, #80]	@ float
+  93:grbl/settings.c ****     settings.spindle_enable_pin_mode = DEFAULT_VARIABLE_SPINDLE_ENABLE_PIN;
+ 343              		.loc 1 93 0
+ 344 00a4 184B     		ldr	r3, .L34+16
+ 107:grbl/settings.c ****     settings.steps_per_mm[Z_AXIS] = DEFAULT_Z_STEPS_PER_MM;
+ 345              		.loc 1 107 0
+ 346 00a6 A260     		str	r2, [r4, #8]
+  93:grbl/settings.c ****     settings.spindle_enable_pin_mode = DEFAULT_VARIABLE_SPINDLE_ENABLE_PIN;
+ 347              		.loc 1 93 0
+ 348 00a8 E365     		str	r3, [r4, #92]	@ float
+ 114:grbl/settings.c ****     settings.max_travel[X_AXIS] = (-DEFAULT_X_MAX_TRAVEL);
+ 349              		.loc 1 114 0
+ 350 00aa 184B     		ldr	r3, .L34+20
+ 115:grbl/settings.c ****     settings.max_travel[Y_AXIS] = (-DEFAULT_Y_MAX_TRAVEL);
+ 351              		.loc 1 115 0
+ 352 00ac 184A     		ldr	r2, .L34+24
+ 114:grbl/settings.c ****     settings.max_travel[X_AXIS] = (-DEFAULT_X_MAX_TRAVEL);
+ 353              		.loc 1 114 0
+ 354 00ae 6362     		str	r3, [r4, #36]
+ 116:grbl/settings.c ****     settings.max_travel[Z_AXIS] = (-DEFAULT_Z_MAX_TRAVEL);
+ 355              		.loc 1 116 0
+ 356 00b0 A3F19C73 		sub	r3, r3, #20447232
+ 115:grbl/settings.c ****     settings.max_travel[Y_AXIS] = (-DEFAULT_Y_MAX_TRAVEL);
+ 357              		.loc 1 115 0
+ 358 00b4 A262     		str	r2, [r4, #40]
+ 116:grbl/settings.c ****     settings.max_travel[Z_AXIS] = (-DEFAULT_Z_MAX_TRAVEL);
+ 359              		.loc 1 116 0
+ 360 00b6 E362     		str	r3, [r4, #44]
+  76:grbl/settings.c ****     settings.stepper_idle_lock_time = DEFAULT_STEPPER_IDLE_LOCK_TIME;
+ 361              		.loc 1 76 0
+ 362 00b8 164A     		ldr	r2, .L34+28
+  78:grbl/settings.c ****     settings.dir_invert_mask = DEFAULT_DIRECTION_INVERT_MASK;
+ 363              		.loc 1 78 0
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 11
+
+
+ 364 00ba 174B     		ldr	r3, .L34+32
+  76:grbl/settings.c ****     settings.stepper_idle_lock_time = DEFAULT_STEPPER_IDLE_LOCK_TIME;
+ 365              		.loc 1 76 0
+ 366 00bc 6263     		str	r2, [r4, #52]
+  78:grbl/settings.c ****     settings.dir_invert_mask = DEFAULT_DIRECTION_INVERT_MASK;
+ 367              		.loc 1 78 0
+ 368 00be A363     		str	r3, [r4, #56]
+  81:grbl/settings.c ****     settings.arc_tolerance = DEFAULT_ARC_TOLERANCE;
+ 369              		.loc 1 81 0
+ 370 00c0 164A     		ldr	r2, .L34+36
+  82:grbl/settings.c **** 
+ 371              		.loc 1 82 0
+ 372 00c2 174B     		ldr	r3, .L34+40
+  90:grbl/settings.c ****     settings.homing_pulloff = DEFAULT_HOMING_PULLOFF;
+ 373              		.loc 1 90 0
+ 374 00c4 A4F85410 		strh	r1, [r4, #84]	@ movhi
+  81:grbl/settings.c ****     settings.arc_tolerance = DEFAULT_ARC_TOLERANCE;
+ 375              		.loc 1 81 0
+ 376 00c8 E263     		str	r2, [r4, #60]
+  82:grbl/settings.c **** 
+ 377              		.loc 1 82 0
+ 378 00ca 2364     		str	r3, [r4, #64]
+ 108:grbl/settings.c ****     settings.max_rate[X_AXIS] = DEFAULT_X_MAX_RATE;
+ 379              		.loc 1 108 0
+ 380 00cc 0C4A     		ldr	r2, .L34+8
+ 111:grbl/settings.c ****     settings.eeacceleration[X_AXIS] = DEFAULT_X_ACCELERATION;
+ 381              		.loc 1 111 0
+ 382 00ce 154B     		ldr	r3, .L34+44
+ 106:grbl/settings.c ****     settings.steps_per_mm[Y_AXIS] = DEFAULT_Y_STEPS_PER_MM;
+ 383              		.loc 1 106 0
+ 384 00d0 1549     		ldr	r1, .L34+48
+ 109:grbl/settings.c ****     settings.max_rate[Y_AXIS] = DEFAULT_Y_MAX_RATE;
+ 385              		.loc 1 109 0
+ 386 00d2 C4E90322 		strd	r2, r2, [r4, #12]
+ 106:grbl/settings.c ****     settings.steps_per_mm[Y_AXIS] = DEFAULT_Y_STEPS_PER_MM;
+ 387              		.loc 1 106 0
+ 388 00d6 C4E90011 		strd	r1, r1, [r4]
+ 111:grbl/settings.c ****     settings.eeacceleration[X_AXIS] = DEFAULT_X_ACCELERATION;
+ 389              		.loc 1 111 0
+ 390 00da C4E90523 		strd	r2, r3, [r4, #20]
+  85:grbl/settings.c **** 
+ 391              		.loc 1 85 0
+ 392 00de A4F84860 		strh	r6, [r4, #72]	@ movhi
+ 393              	.LBB26:
+ 394              	.LBB24:
+  67:grbl/settings.c ****   memcpy_to_eeprom_with_checksum(EEPROM_ADDR_GLOBAL, (char*)&settings, sizeof(settings_t));
+ 395              		.loc 1 67 0
+ 396 00e2 0D21     		movs	r1, #13
+ 397              	.LBE24:
+ 398              	.LBE26:
+ 113:grbl/settings.c ****     settings.eeacceleration[Z_AXIS] = DEFAULT_Z_ACCELERATION;
+ 399              		.loc 1 113 0
+ 400 00e4 C4E90733 		strd	r3, r3, [r4, #28]
+ 401              	.LBB27:
+ 402              	.LBB25:
+  67:grbl/settings.c ****   memcpy_to_eeprom_with_checksum(EEPROM_ADDR_GLOBAL, (char*)&settings, sizeof(settings_t));
+ 403              		.loc 1 67 0
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 12
+
+
+ 404 00e8 FFF7FEFF 		bl	eeprom_put_char
+ 405              	.LVL26:
+  68:grbl/settings.c **** }
+ 406              		.loc 1 68 0
+ 407 00ec 2146     		mov	r1, r4
+ 408 00ee 6422     		movs	r2, #100
+ 409 00f0 0120     		movs	r0, #1
+ 410 00f2 FFF7FEFF 		bl	memcpy_to_eeprom_with_checksum
+ 411              	.LVL27:
+ 412 00f6 88E7     		b	.L12
+ 413              	.L35:
+ 414              		.align	2
+ 415              	.L34:
+ 416 00f8 00000000 		.word	settings
+ 417 00fc 0000C841 		.word	1103626240
+ 418 0100 0000FA43 		.word	1140457472
+ 419 0104 0000C843 		.word	1137180672
+ 420 0108 00401C46 		.word	1176256512
+ 421 010c 00008CC3 		.word	-1014235136
+ 422 0110 0080BCC3 		.word	-1011056640
+ 423 0114 00041903 		.word	51971072
+ 424 0118 0AD7233C 		.word	1008981770
+ 425 011c 6F12033B 		.word	990057071
+ 426 0120 00409C45 		.word	1167867904
+ 427 0124 00A00C47 		.word	1192009728
+ 428 0128 00004844 		.word	1145569280
+ 429              	.LBE25:
+ 430              	.LBE27:
+ 431              		.cfi_endproc
+ 432              	.LFE707:
+ 434              		.section	.text.settings_read_startup_line,"ax",%progbits
+ 435              		.align	1
+ 436              		.p2align 2,,3
+ 437              		.global	settings_read_startup_line
+ 438              		.syntax unified
+ 439              		.thumb
+ 440              		.thumb_func
+ 441              		.fpu softvfp
+ 443              	settings_read_startup_line:
+ 444              	.LFB708:
+ 177:grbl/settings.c **** 
+ 178:grbl/settings.c **** 
+ 179:grbl/settings.c **** // Reads startup line from EEPROM. Updated pointed line string data.
+ 180:grbl/settings.c **** uint8_t settings_read_startup_line(uint8_t n, char *line)
+ 181:grbl/settings.c **** {
+ 445              		.loc 1 181 0
+ 446              		.cfi_startproc
+ 447              		@ args = 0, pretend = 0, frame = 0
+ 448              		@ frame_needed = 0, uses_anonymous_args = 0
+ 449              	.LVL28:
+ 450 0000 70B5     		push	{r4, r5, r6, lr}
+ 451              	.LCFI10:
+ 452              		.cfi_def_cfa_offset 16
+ 453              		.cfi_offset 4, -16
+ 454              		.cfi_offset 5, -12
+ 455              		.cfi_offset 6, -8
+ 456              		.cfi_offset 14, -4
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 13
+
+
+ 457              		.loc 1 181 0
+ 458 0002 0E46     		mov	r6, r1
+ 182:grbl/settings.c ****   uint32_t addr = n*(LINE_BUFFER_SIZE+1)+EEPROM_ADDR_STARTUP_BLOCK;
+ 459              		.loc 1 182 0
+ 460 0004 00EBC000 		add	r0, r0, r0, lsl #3
+ 461              	.LVL29:
+ 462 0008 00EBC000 		add	r0, r0, r0, lsl #3
+ 463 000c 00F54074 		add	r4, r0, #768
+ 464              	.LVL30:
+ 183:grbl/settings.c ****   if (!(memcpy_from_eeprom_with_checksum((char*)line, addr, LINE_BUFFER_SIZE))) {
+ 465              		.loc 1 183 0
+ 466 0010 2146     		mov	r1, r4
+ 467              	.LVL31:
+ 468 0012 3046     		mov	r0, r6
+ 469 0014 5022     		movs	r2, #80
+ 470 0016 FFF7FEFF 		bl	memcpy_from_eeprom_with_checksum
+ 471              	.LVL32:
+ 472 001a 08B1     		cbz	r0, .L40
+ 184:grbl/settings.c ****     // Reset line with default value
+ 185:grbl/settings.c ****     line[0] = 0; // Empty line
+ 186:grbl/settings.c ****     settings_store_startup_line(n, line);
+ 187:grbl/settings.c ****     return(false);
+ 188:grbl/settings.c ****   }
+ 189:grbl/settings.c ****   return(true);
+ 473              		.loc 1 189 0
+ 474 001c 0120     		movs	r0, #1
+ 190:grbl/settings.c **** }
+ 475              		.loc 1 190 0
+ 476 001e 70BD     		pop	{r4, r5, r6, pc}
+ 477              	.LVL33:
+ 478              	.L40:
+ 479 0020 0546     		mov	r5, r0
+ 185:grbl/settings.c ****     settings_store_startup_line(n, line);
+ 480              		.loc 1 185 0
+ 481 0022 3070     		strb	r0, [r6]
+ 482              	.LVL34:
+ 483              	.LBB28:
+ 484              	.LBB29:
+  36:grbl/settings.c ****   #endif
+ 485              		.loc 1 36 0
+ 486 0024 FFF7FEFF 		bl	protocol_buffer_synchronize
+ 487              	.LVL35:
+  39:grbl/settings.c **** }
+ 488              		.loc 1 39 0
+ 489 0028 2046     		mov	r0, r4
+ 490 002a 3146     		mov	r1, r6
+ 491 002c 5022     		movs	r2, #80
+ 492 002e FFF7FEFF 		bl	memcpy_to_eeprom_with_checksum
+ 493              	.LVL36:
+ 494              	.LBE29:
+ 495              	.LBE28:
+ 187:grbl/settings.c ****   }
+ 496              		.loc 1 187 0
+ 497 0032 2846     		mov	r0, r5
+ 498              		.loc 1 190 0
+ 499 0034 70BD     		pop	{r4, r5, r6, pc}
+ 500              		.cfi_endproc
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 14
+
+
+ 501              	.LFE708:
+ 503 0036 00BF     		.section	.text.settings_read_build_info,"ax",%progbits
+ 504              		.align	1
+ 505              		.p2align 2,,3
+ 506              		.global	settings_read_build_info
+ 507              		.syntax unified
+ 508              		.thumb
+ 509              		.thumb_func
+ 510              		.fpu softvfp
+ 512              	settings_read_build_info:
+ 513              	.LFB709:
+ 191:grbl/settings.c **** 
+ 192:grbl/settings.c **** 
+ 193:grbl/settings.c **** // Reads startup line from EEPROM. Updated pointed line string data.
+ 194:grbl/settings.c **** uint8_t settings_read_build_info(char *line)
+ 195:grbl/settings.c **** {
+ 514              		.loc 1 195 0
+ 515              		.cfi_startproc
+ 516              		@ args = 0, pretend = 0, frame = 0
+ 517              		@ frame_needed = 0, uses_anonymous_args = 0
+ 518              	.LVL37:
+ 519 0000 38B5     		push	{r3, r4, r5, lr}
+ 520              	.LCFI11:
+ 521              		.cfi_def_cfa_offset 16
+ 522              		.cfi_offset 3, -16
+ 523              		.cfi_offset 4, -12
+ 524              		.cfi_offset 5, -8
+ 525              		.cfi_offset 14, -4
+ 196:grbl/settings.c ****   if (!(memcpy_from_eeprom_with_checksum((char*)line, EEPROM_ADDR_BUILD_INFO, LINE_BUFFER_SIZE))) {
+ 526              		.loc 1 196 0
+ 527 0002 5022     		movs	r2, #80
+ 528 0004 40F2AE31 		movw	r1, #942
+ 195:grbl/settings.c ****   if (!(memcpy_from_eeprom_with_checksum((char*)line, EEPROM_ADDR_BUILD_INFO, LINE_BUFFER_SIZE))) {
+ 529              		.loc 1 195 0
+ 530 0008 0546     		mov	r5, r0
+ 531              		.loc 1 196 0
+ 532 000a FFF7FEFF 		bl	memcpy_from_eeprom_with_checksum
+ 533              	.LVL38:
+ 534 000e 08B1     		cbz	r0, .L45
+ 197:grbl/settings.c ****     // Reset line with default value
+ 198:grbl/settings.c ****     line[0] = 0; // Empty line
+ 199:grbl/settings.c ****     settings_store_build_info(line);
+ 200:grbl/settings.c ****     return(false);
+ 201:grbl/settings.c ****   }
+ 202:grbl/settings.c ****   return(true);
+ 535              		.loc 1 202 0
+ 536 0010 0120     		movs	r0, #1
+ 203:grbl/settings.c **** }
+ 537              		.loc 1 203 0
+ 538 0012 38BD     		pop	{r3, r4, r5, pc}
+ 539              	.LVL39:
+ 540              	.L45:
+ 541 0014 0446     		mov	r4, r0
+ 198:grbl/settings.c ****     settings_store_build_info(line);
+ 542              		.loc 1 198 0
+ 543 0016 2870     		strb	r0, [r5]
+ 544              	.LVL40:
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 15
+
+
+ 545              	.LBB30:
+ 546              	.LBB31:
+  48:grbl/settings.c **** }
+ 547              		.loc 1 48 0
+ 548 0018 2946     		mov	r1, r5
+ 549 001a 5022     		movs	r2, #80
+ 550 001c 40F2AE30 		movw	r0, #942
+ 551 0020 FFF7FEFF 		bl	memcpy_to_eeprom_with_checksum
+ 552              	.LVL41:
+ 553              	.LBE31:
+ 554              	.LBE30:
+ 200:grbl/settings.c ****   }
+ 555              		.loc 1 200 0
+ 556 0024 2046     		mov	r0, r4
+ 557              		.loc 1 203 0
+ 558 0026 38BD     		pop	{r3, r4, r5, pc}
+ 559              		.cfi_endproc
+ 560              	.LFE709:
+ 562              		.section	.text.settings_read_coord_data,"ax",%progbits
+ 563              		.align	1
+ 564              		.p2align 2,,3
+ 565              		.global	settings_read_coord_data
+ 566              		.syntax unified
+ 567              		.thumb
+ 568              		.thumb_func
+ 569              		.fpu softvfp
+ 571              	settings_read_coord_data:
+ 572              	.LFB710:
+ 204:grbl/settings.c **** 
+ 205:grbl/settings.c **** 
+ 206:grbl/settings.c **** // Read selected coordinate data from EEPROM. Updates pointed coord_data value.
+ 207:grbl/settings.c **** uint8_t settings_read_coord_data(uint8_t coord_select, float *coord_data)
+ 208:grbl/settings.c **** {
+ 573              		.loc 1 208 0
+ 574              		.cfi_startproc
+ 575              		@ args = 0, pretend = 0, frame = 0
+ 576              		@ frame_needed = 0, uses_anonymous_args = 0
+ 577              	.LVL42:
+ 578 0000 70B5     		push	{r4, r5, r6, lr}
+ 579              	.LCFI12:
+ 580              		.cfi_def_cfa_offset 16
+ 581              		.cfi_offset 4, -16
+ 582              		.cfi_offset 5, -12
+ 583              		.cfi_offset 6, -8
+ 584              		.cfi_offset 14, -4
+ 585              		.loc 1 208 0
+ 586 0002 0E46     		mov	r6, r1
+ 209:grbl/settings.c ****   uint32_t addr = coord_select*(sizeof(float)*N_AXIS+1) + EEPROM_ADDR_PARAMETERS;
+ 587              		.loc 1 209 0
+ 588 0004 00EB4004 		add	r4, r0, r0, lsl #1
+ 589 0008 00EB8404 		add	r4, r0, r4, lsl #2
+ 590 000c 04F50074 		add	r4, r4, #512
+ 591              	.LVL43:
+ 210:grbl/settings.c ****   if (!(memcpy_from_eeprom_with_checksum((char*)coord_data, addr, sizeof(float)*N_AXIS))) {
+ 592              		.loc 1 210 0
+ 593 0010 2146     		mov	r1, r4
+ 594              	.LVL44:
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 16
+
+
+ 595 0012 3046     		mov	r0, r6
+ 596              	.LVL45:
+ 597 0014 0C22     		movs	r2, #12
+ 598 0016 FFF7FEFF 		bl	memcpy_from_eeprom_with_checksum
+ 599              	.LVL46:
+ 600 001a 08B1     		cbz	r0, .L50
+ 211:grbl/settings.c ****     // Reset with default zero vector
+ 212:grbl/settings.c ****     //clear_vector_float(coord_data);
+ 213:grbl/settings.c **** 		coord_data[X_AXIS] = 0.0f;
+ 214:grbl/settings.c **** 		coord_data[Y_AXIS] = 0.0f;
+ 215:grbl/settings.c **** 		coord_data[Z_AXIS] = 0.0f;
+ 216:grbl/settings.c ****     #if ( defined(STM32F1_4) || defined(STM32F4_4) )
+ 217:grbl/settings.c ****       coord_data[A_AXIS] = 0.0f;
+ 218:grbl/settings.c ****     #endif
+ 219:grbl/settings.c ****     #if ( defined(STM32F1_5) || defined(STM32F4_5) )
+ 220:grbl/settings.c ****       coord_data[A_AXIS] = 0.0f;
+ 221:grbl/settings.c ****       coord_data[B_AXIS] = 0.0f;
+ 222:grbl/settings.c ****     #endif
+ 223:grbl/settings.c ****     #if ( defined(STM32F1_6) || defined(STM32F4_6) )
+ 224:grbl/settings.c ****       coord_data[A_AXIS] = 0.0f;
+ 225:grbl/settings.c ****       coord_data[B_AXIS] = 0.0f;
+ 226:grbl/settings.c ****       coord_data[C_AXIS] = 0.0f;
+ 227:grbl/settings.c ****     #endif
+ 228:grbl/settings.c ****     settings_write_coord_data(coord_select,coord_data);
+ 229:grbl/settings.c ****     return(false);
+ 230:grbl/settings.c ****   }
+ 231:grbl/settings.c ****   return(true);
+ 601              		.loc 1 231 0
+ 602 001c 0120     		movs	r0, #1
+ 232:grbl/settings.c **** }
+ 603              		.loc 1 232 0
+ 604 001e 70BD     		pop	{r4, r5, r6, pc}
+ 605              	.LVL47:
+ 606              	.L50:
+ 213:grbl/settings.c **** 		coord_data[Y_AXIS] = 0.0f;
+ 607              		.loc 1 213 0
+ 608 0020 0023     		movs	r3, #0
+ 609 0022 0546     		mov	r5, r0
+ 610 0024 3360     		str	r3, [r6]	@ float
+ 214:grbl/settings.c **** 		coord_data[Z_AXIS] = 0.0f;
+ 611              		.loc 1 214 0
+ 612 0026 7360     		str	r3, [r6, #4]	@ float
+ 215:grbl/settings.c ****     #if ( defined(STM32F1_4) || defined(STM32F4_4) )
+ 613              		.loc 1 215 0
+ 614 0028 B360     		str	r3, [r6, #8]	@ float
+ 615              	.LVL48:
+ 616              	.LBB32:
+ 617              	.LBB33:
+  56:grbl/settings.c ****   #endif
+ 618              		.loc 1 56 0
+ 619 002a FFF7FEFF 		bl	protocol_buffer_synchronize
+ 620              	.LVL49:
+  59:grbl/settings.c **** }
+ 621              		.loc 1 59 0
+ 622 002e 2046     		mov	r0, r4
+ 623 0030 3146     		mov	r1, r6
+ 624 0032 0C22     		movs	r2, #12
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 17
+
+
+ 625 0034 FFF7FEFF 		bl	memcpy_to_eeprom_with_checksum
+ 626              	.LVL50:
+ 627              	.LBE33:
+ 628              	.LBE32:
+ 229:grbl/settings.c ****   }
+ 629              		.loc 1 229 0
+ 630 0038 2846     		mov	r0, r5
+ 631              		.loc 1 232 0
+ 632 003a 70BD     		pop	{r4, r5, r6, pc}
+ 633              		.cfi_endproc
+ 634              	.LFE710:
+ 636              		.section	.text.read_global_settings,"ax",%progbits
+ 637              		.align	1
+ 638              		.p2align 2,,3
+ 639              		.global	read_global_settings
+ 640              		.syntax unified
+ 641              		.thumb
+ 642              		.thumb_func
+ 643              		.fpu softvfp
+ 645              	read_global_settings:
+ 646              	.LFB711:
+ 233:grbl/settings.c **** 
+ 234:grbl/settings.c **** 
+ 235:grbl/settings.c **** // Reads Grbl global settings struct from EEPROM.
+ 236:grbl/settings.c **** uint8_t read_global_settings() {
+ 647              		.loc 1 236 0
+ 648              		.cfi_startproc
+ 649              		@ args = 0, pretend = 0, frame = 0
+ 650              		@ frame_needed = 0, uses_anonymous_args = 0
+ 651 0000 08B5     		push	{r3, lr}
+ 652              	.LCFI13:
+ 653              		.cfi_def_cfa_offset 8
+ 654              		.cfi_offset 3, -8
+ 655              		.cfi_offset 14, -4
+ 237:grbl/settings.c ****   // Check version-byte of eeprom
+ 238:grbl/settings.c ****   uint8_t version = eeprom_get_char(0);
+ 656              		.loc 1 238 0
+ 657 0002 0020     		movs	r0, #0
+ 658 0004 FFF7FEFF 		bl	eeprom_get_char
+ 659              	.LVL51:
+ 239:grbl/settings.c ****   if (version == SETTINGS_VERSION) {
+ 660              		.loc 1 239 0
+ 661 0008 0D28     		cmp	r0, #13
+ 662 000a 01D0     		beq	.L55
+ 240:grbl/settings.c ****     // Read settings-record and check checksum
+ 241:grbl/settings.c ****     if (!(memcpy_from_eeprom_with_checksum((char*)&settings, EEPROM_ADDR_GLOBAL, sizeof(settings_t)
+ 242:grbl/settings.c ****       return(false);
+ 243:grbl/settings.c ****     }
+ 244:grbl/settings.c ****   } else {
+ 245:grbl/settings.c ****     return(false);
+ 663              		.loc 1 245 0
+ 664 000c 0020     		movs	r0, #0
+ 665              	.LVL52:
+ 246:grbl/settings.c ****   }
+ 247:grbl/settings.c ****   return(true);
+ 248:grbl/settings.c **** }
+ 666              		.loc 1 248 0
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 18
+
+
+ 667 000e 08BD     		pop	{r3, pc}
+ 668              	.LVL53:
+ 669              	.L55:
+ 670              	.LBB36:
+ 671              	.LBB37:
+ 241:grbl/settings.c ****       return(false);
+ 672              		.loc 1 241 0
+ 673 0010 6422     		movs	r2, #100
+ 674 0012 0121     		movs	r1, #1
+ 675 0014 0348     		ldr	r0, .L56
+ 676              	.LVL54:
+ 677 0016 FFF7FEFF 		bl	memcpy_from_eeprom_with_checksum
+ 678              	.LVL55:
+ 247:grbl/settings.c **** }
+ 679              		.loc 1 247 0
+ 680 001a 0030     		adds	r0, r0, #0
+ 681 001c 18BF     		it	ne
+ 682 001e 0120     		movne	r0, #1
+ 683              	.LBE37:
+ 684              	.LBE36:
+ 685              		.loc 1 248 0
+ 686 0020 08BD     		pop	{r3, pc}
+ 687              	.L57:
+ 688 0022 00BF     		.align	2
+ 689              	.L56:
+ 690 0024 00000000 		.word	settings
+ 691              		.cfi_endproc
+ 692              	.LFE711:
+ 694              		.global	__aeabi_fcmplt
+ 695              		.global	__aeabi_f2d
+ 696              		.global	__aeabi_d2uiz
+ 697              		.global	__aeabi_fmul
+ 698              		.section	.text.settings_store_global_setting,"ax",%progbits
+ 699              		.align	1
+ 700              		.p2align 2,,3
+ 701              		.global	settings_store_global_setting
+ 702              		.syntax unified
+ 703              		.thumb
+ 704              		.thumb_func
+ 705              		.fpu softvfp
+ 707              	settings_store_global_setting:
+ 708              	.LFB712:
+ 249:grbl/settings.c **** 
+ 250:grbl/settings.c **** 
+ 251:grbl/settings.c **** // A helper method to set settings from command line
+ 252:grbl/settings.c **** uint8_t settings_store_global_setting(uint8_t parameter, float value) {
+ 709              		.loc 1 252 0
+ 710              		.cfi_startproc
+ 711              		@ args = 0, pretend = 0, frame = 0
+ 712              		@ frame_needed = 0, uses_anonymous_args = 0
+ 713              	.LVL56:
+ 714 0000 38B5     		push	{r3, r4, r5, lr}
+ 715              	.LCFI14:
+ 716              		.cfi_def_cfa_offset 16
+ 717              		.cfi_offset 3, -16
+ 718              		.cfi_offset 4, -12
+ 719              		.cfi_offset 5, -8
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 19
+
+
+ 720              		.cfi_offset 14, -4
+ 721              		.loc 1 252 0
+ 722 0002 0D46     		mov	r5, r1
+ 723 0004 0446     		mov	r4, r0
+ 253:grbl/settings.c ****   if (value < 0.0) { return(STATUS_NEGATIVE_VALUE); }
+ 724              		.loc 1 253 0
+ 725 0006 0021     		movs	r1, #0
+ 726              	.LVL57:
+ 727 0008 2846     		mov	r0, r5
+ 728              	.LVL58:
+ 729 000a FFF7FEFF 		bl	__aeabi_fcmplt
+ 730              	.LVL59:
+ 731 000e 0028     		cmp	r0, #0
+ 732 0010 40F09480 		bne	.L102
+ 254:grbl/settings.c ****   if (parameter >= AXIS_SETTINGS_START_VAL) {
+ 733              		.loc 1 254 0
+ 734 0014 632C     		cmp	r4, #99
+ 735 0016 1ED9     		bls	.L60
+ 736              	.LBB42:
+ 255:grbl/settings.c ****     // Store axis configuration. Axis numbering sequence set by AXIS_SETTING defines.
+ 256:grbl/settings.c ****     // NOTE: Ensure the setting index corresponds to the report.c settings printout.
+ 257:grbl/settings.c ****     parameter -= AXIS_SETTINGS_START_VAL;
+ 737              		.loc 1 257 0
+ 738 0018 A4F16403 		sub	r3, r4, #100
+ 739 001c DBB2     		uxtb	r3, r3
+ 740              	.LVL60:
+ 258:grbl/settings.c ****     uint8_t set_idx = 0;
+ 259:grbl/settings.c ****     while (set_idx < AXIS_N_SETTINGS) {
+ 260:grbl/settings.c ****       if (parameter < N_AXIS) {
+ 741              		.loc 1 260 0
+ 742 001e 022B     		cmp	r3, #2
+ 743 0020 40F23B81 		bls	.L111
+ 744              	.LVL61:
+ 261:grbl/settings.c ****         // Valid axis setting found.
+ 262:grbl/settings.c ****         switch (set_idx) {
+ 263:grbl/settings.c ****           case 0:
+ 264:grbl/settings.c ****             #ifdef MAX_STEP_RATE_HZ
+ 265:grbl/settings.c ****               if (value*settings.max_rate[parameter] > (MAX_STEP_RATE_HZ*60.0)) { return(STATUS_MAX
+ 266:grbl/settings.c ****             #endif
+ 267:grbl/settings.c ****             settings.steps_per_mm[parameter] = value;
+ 268:grbl/settings.c ****             break;
+ 269:grbl/settings.c ****           case 1:
+ 270:grbl/settings.c ****             #ifdef MAX_STEP_RATE_HZ
+ 271:grbl/settings.c ****               if (value*settings.steps_per_mm[parameter] > (MAX_STEP_RATE_HZ*60.0)) {  return(STATU
+ 272:grbl/settings.c ****             #endif
+ 273:grbl/settings.c ****             settings.max_rate[parameter] = value;
+ 274:grbl/settings.c ****             break;
+ 275:grbl/settings.c ****           case 2: settings.eeacceleration[parameter] = value*60*60; break; // Convert to mm/min^2 f
+ 276:grbl/settings.c ****           case 3: settings.max_travel[parameter] = -value; break;  // Store as negative for grbl in
+ 277:grbl/settings.c ****         }
+ 278:grbl/settings.c ****         break; // Exit while-loop after setting has been configured and proceed to the EEPROM write
+ 279:grbl/settings.c ****       } else {
+ 280:grbl/settings.c ****         set_idx++;
+ 281:grbl/settings.c ****         // If axis index greater than N_AXIS or setting index greater than number of axis settings,
+ 282:grbl/settings.c ****         if ((parameter < AXIS_SETTINGS_INCREMENT) || (set_idx == AXIS_N_SETTINGS)) { return(STATUS_
+ 745              		.loc 1 282 0
+ 746 0024 092B     		cmp	r3, #9
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 20
+
+
+ 747 0026 14D9     		bls	.L106
+ 283:grbl/settings.c ****         parameter -= AXIS_SETTINGS_INCREMENT;
+ 748              		.loc 1 283 0
+ 749 0028 A4F16E03 		sub	r3, r4, #110
+ 750              	.LVL62:
+ 751 002c DBB2     		uxtb	r3, r3
+ 752              	.LVL63:
+ 260:grbl/settings.c ****         // Valid axis setting found.
+ 753              		.loc 1 260 0
+ 754 002e 022B     		cmp	r3, #2
+ 755 0030 40F23781 		bls	.L112
+ 756              	.LVL64:
+ 282:grbl/settings.c ****         parameter -= AXIS_SETTINGS_INCREMENT;
+ 757              		.loc 1 282 0
+ 758 0034 092B     		cmp	r3, #9
+ 759 0036 0CD9     		bls	.L106
+ 760              		.loc 1 283 0
+ 761 0038 A4F17803 		sub	r3, r4, #120
+ 762              	.LVL65:
+ 763 003c DBB2     		uxtb	r3, r3
+ 764              	.LVL66:
+ 260:grbl/settings.c ****         // Valid axis setting found.
+ 765              		.loc 1 260 0
+ 766 003e 022B     		cmp	r3, #2
+ 767 0040 40F23481 		bls	.L64
+ 768              	.LVL67:
+ 282:grbl/settings.c ****         parameter -= AXIS_SETTINGS_INCREMENT;
+ 769              		.loc 1 282 0
+ 770 0044 092B     		cmp	r3, #9
+ 771 0046 04D9     		bls	.L106
+ 772              		.loc 1 283 0
+ 773 0048 7E34     		adds	r4, r4, #126
+ 774 004a E4B2     		uxtb	r4, r4
+ 775              	.LVL68:
+ 260:grbl/settings.c ****         // Valid axis setting found.
+ 776              		.loc 1 260 0
+ 777 004c 022C     		cmp	r4, #2
+ 778 004e 40F23981 		bls	.L65
+ 779              	.LVL69:
+ 780              	.L106:
+ 781              	.LBE42:
+ 782              	.LBB43:
+ 284:grbl/settings.c ****       }
+ 285:grbl/settings.c ****     }
+ 286:grbl/settings.c ****   } else {
+ 287:grbl/settings.c ****     // Store non-axis Grbl settings
+ 288:grbl/settings.c ****     uint8_t int_value = trunc(value);
+ 289:grbl/settings.c ****     switch(parameter) {
+ 290:grbl/settings.c ****       case 0:
+ 291:grbl/settings.c **** //        if (int_value < STATUS_SETTING_STEP_PULSE_MIN_LIMIT) { return(STATUS_SETTING_STEP_PULSE_M
+ 292:grbl/settings.c **** //        settings.pulse_microseconds = int_value; break;
+ 293:grbl/settings.c ****         if (value < STATUS_SETTING_STEP_PULSE_MIN_LIMIT) { return(STATUS_SETTING_STEP_PULSE_MIN); }
+ 294:grbl/settings.c ****         settings.fpulse_microseconds = value; break;
+ 295:grbl/settings.c ****       case 1: settings.stepper_idle_lock_time = int_value; break;
+ 296:grbl/settings.c ****       case 2:
+ 297:grbl/settings.c ****         settings.step_invert_mask = int_value;
+ 298:grbl/settings.c ****         st_generate_step_dir_invert_masks(); // Regenerate step and direction port invert masks.
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 21
+
+
+ 299:grbl/settings.c ****         break;
+ 300:grbl/settings.c ****       case 3:
+ 301:grbl/settings.c ****         settings.dir_invert_mask = int_value;
+ 302:grbl/settings.c ****         st_generate_step_dir_invert_masks(); // Regenerate step and direction port invert masks.
+ 303:grbl/settings.c ****         break;
+ 304:grbl/settings.c ****       case 4: // Reset to ensure change. Immediate re-init may cause problems.
+ 305:grbl/settings.c ****         if (int_value) { settings.flags |= BITFLAG_INVERT_ST_ENABLE; }
+ 306:grbl/settings.c ****         else { settings.flags &= ~BITFLAG_INVERT_ST_ENABLE; }
+ 307:grbl/settings.c ****         break;
+ 308:grbl/settings.c ****       case 5: // Reset to ensure change. Immediate re-init may cause problems.
+ 309:grbl/settings.c ****         if (int_value) { settings.flags |= BITFLAG_INVERT_LIMIT_PINS; }
+ 310:grbl/settings.c ****         else { settings.flags &= ~BITFLAG_INVERT_LIMIT_PINS; }
+ 311:grbl/settings.c ****         break;
+ 312:grbl/settings.c ****       case 6: // Reset to ensure change. Immediate re-init may cause problems.
+ 313:grbl/settings.c ****         if (int_value) { settings.flags |= BITFLAG_INVERT_PROBE_PIN; }
+ 314:grbl/settings.c ****         else { settings.flags &= ~BITFLAG_INVERT_PROBE_PIN; }
+ 315:grbl/settings.c ****         probe_configure_invert_mask(false);
+ 316:grbl/settings.c ****         break;
+ 317:grbl/settings.c ****       case 10: settings.status_report_mask = int_value; break;
+ 318:grbl/settings.c ****       case 11: settings.junction_deviation = value; break;
+ 319:grbl/settings.c ****       case 12: settings.arc_tolerance = value; break;
+ 320:grbl/settings.c ****       case 13:
+ 321:grbl/settings.c ****         if (int_value) { settings.flags |= BITFLAG_REPORT_INCHES; }
+ 322:grbl/settings.c ****         else { settings.flags &= ~BITFLAG_REPORT_INCHES; }
+ 323:grbl/settings.c ****         system_flag_wco_change(); // Make sure WCO is immediately updated.
+ 324:grbl/settings.c ****         break;
+ 325:grbl/settings.c ****       case 20:
+ 326:grbl/settings.c ****         if (int_value) {
+ 327:grbl/settings.c ****           if (bit_isfalse(settings.flags, BITFLAG_HOMING_ENABLE)) { return(STATUS_SOFT_LIMIT_ERROR)
+ 328:grbl/settings.c ****           settings.flags |= BITFLAG_SOFT_LIMIT_ENABLE;
+ 329:grbl/settings.c ****         } else { settings.flags &= ~BITFLAG_SOFT_LIMIT_ENABLE; }
+ 330:grbl/settings.c ****         break;
+ 331:grbl/settings.c ****       case 21:
+ 332:grbl/settings.c ****         if (int_value) { settings.flags |= BITFLAG_HARD_LIMIT_ENABLE; }
+ 333:grbl/settings.c ****         else { settings.flags &= ~BITFLAG_HARD_LIMIT_ENABLE; }
+ 334:grbl/settings.c ****         limits_init(); // Re-init to immediately change. NOTE: Nice to have but could be problemati
+ 335:grbl/settings.c ****         break;
+ 336:grbl/settings.c ****       case 22:
+ 337:grbl/settings.c ****         if (int_value) { settings.flags |= BITFLAG_HOMING_ENABLE; }
+ 338:grbl/settings.c ****         else {
+ 339:grbl/settings.c ****           settings.flags &= ~BITFLAG_HOMING_ENABLE;
+ 340:grbl/settings.c ****           settings.flags &= ~BITFLAG_SOFT_LIMIT_ENABLE; // Force disable soft-limits.
+ 341:grbl/settings.c ****         }
+ 342:grbl/settings.c ****         break;
+ 343:grbl/settings.c ****       case 23: settings.homing_dir_mask = int_value; break;
+ 344:grbl/settings.c ****       case 24: settings.homing_feed_rate = value; break;
+ 345:grbl/settings.c ****       case 25: settings.homing_seek_rate = value; break;
+ 346:grbl/settings.c ****       case 26: settings.homing_debounce_delay = int_value; break;
+ 347:grbl/settings.c ****       case 27: settings.homing_pulloff = value; break;
+ 348:grbl/settings.c ****       case 30: settings.rpm_max = value; spindle_init(); break; // Re-initialize spindle rpm calibr
+ 349:grbl/settings.c ****       case 31: settings.rpm_min = value; spindle_init(); break; // Re-initialize spindle rpm calibr
+ 350:grbl/settings.c ****       case 32:
+ 351:grbl/settings.c ****         #ifdef VARIABLE_SPINDLE
+ 352:grbl/settings.c ****           if (int_value) { settings.flags |= BITFLAG_LASER_MODE; }
+ 353:grbl/settings.c ****           else { settings.flags &= ~BITFLAG_LASER_MODE; }
+ 354:grbl/settings.c ****         #else
+ 355:grbl/settings.c ****           return(STATUS_SETTING_DISABLED_LASER);
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 22
+
+
+ 356:grbl/settings.c ****         #endif
+ 357:grbl/settings.c ****         break;
+ 358:grbl/settings.c **** 
+ 359:grbl/settings.c ****       #ifdef ENABLE_ANALOG_OUTPUT
+ 360:grbl/settings.c ****       case 40:
+ 361:grbl/settings.c ****         settings.analog_max = value;
+ 362:grbl/settings.c ****         outputs_analog_init(); // Re-initialize analog outputs calibration
+ 363:grbl/settings.c ****         break;
+ 364:grbl/settings.c **** 	  #endif
+ 365:grbl/settings.c **** 
+ 366:grbl/settings.c ****       #ifdef VARIABLE_SPINDLE_ENABLE_PIN
+ 367:grbl/settings.c ****       case 50:
+ 368:grbl/settings.c ****         settings.spindle_enable_pin_mode = int_value;
+ 369:grbl/settings.c ****         break;
+ 370:grbl/settings.c ****       #endif
+ 371:grbl/settings.c **** 
+ 372:grbl/settings.c ****       default:
+ 373:grbl/settings.c ****         return(STATUS_INVALID_STATEMENT);
+ 783              		.loc 1 373 0
+ 784 0052 0320     		movs	r0, #3
+ 785              	.LBE43:
+ 374:grbl/settings.c ****     }
+ 375:grbl/settings.c ****   }
+ 376:grbl/settings.c ****   write_global_settings();
+ 377:grbl/settings.c ****   return(STATUS_OK);
+ 378:grbl/settings.c **** }
+ 786              		.loc 1 378 0
+ 787 0054 38BD     		pop	{r3, r4, r5, pc}
+ 788              	.LVL70:
+ 789              	.L60:
+ 790              	.LBB44:
+ 288:grbl/settings.c ****     switch(parameter) {
+ 791              		.loc 1 288 0
+ 792 0056 2846     		mov	r0, r5
+ 793 0058 FFF7FEFF 		bl	__aeabi_f2d
+ 794              	.LVL71:
+ 795 005c FFF7FEFF 		bl	trunc
+ 796              	.LVL72:
+ 797 0060 FFF7FEFF 		bl	__aeabi_d2uiz
+ 798              	.LVL73:
+ 799 0064 C0B2     		uxtb	r0, r0
+ 800              	.LVL74:
+ 289:grbl/settings.c ****       case 0:
+ 801              		.loc 1 289 0
+ 802 0066 322C     		cmp	r4, #50
+ 803 0068 F3D8     		bhi	.L106
+ 804 006a 01A3     		adr	r3, .L67
+ 805 006c 53F824F0 		ldr	pc, [r3, r4, lsl #2]
+ 806              		.p2align 2
+ 807              	.L67:
+ 808 0070 5D010000 		.word	.L66+1
+ 809 0074 71010000 		.word	.L68+1
+ 810 0078 B1010000 		.word	.L69+1
+ 811 007c 79010000 		.word	.L70+1
+ 812 0080 85010000 		.word	.L71+1
+ 813 0084 9B010000 		.word	.L72+1
+ 814 0088 BD010000 		.word	.L73+1
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 23
+
+
+ 815 008c 53000000 		.word	.L106+1
+ 816 0090 53000000 		.word	.L106+1
+ 817 0094 53000000 		.word	.L106+1
+ 818 0098 D9010000 		.word	.L74+1
+ 819 009c 7F020000 		.word	.L75+1
+ 820 00a0 71020000 		.word	.L76+1
+ 821 00a4 85020000 		.word	.L77+1
+ 822 00a8 53000000 		.word	.L106+1
+ 823 00ac 53000000 		.word	.L106+1
+ 824 00b0 53000000 		.word	.L106+1
+ 825 00b4 53000000 		.word	.L106+1
+ 826 00b8 53000000 		.word	.L106+1
+ 827 00bc 53000000 		.word	.L106+1
+ 828 00c0 2D020000 		.word	.L78+1
+ 829 00c4 45020000 		.word	.L79+1
+ 830 00c8 5D020000 		.word	.L80+1
+ 831 00cc 77020000 		.word	.L81+1
+ 832 00d0 E1010000 		.word	.L82+1
+ 833 00d4 E7010000 		.word	.L83+1
+ 834 00d8 ED010000 		.word	.L84+1
+ 835 00dc F5010000 		.word	.L85+1
+ 836 00e0 53000000 		.word	.L106+1
+ 837 00e4 53000000 		.word	.L106+1
+ 838 00e8 FB010000 		.word	.L86+1
+ 839 00ec 05020000 		.word	.L87+1
+ 840 00f0 0F020000 		.word	.L88+1
+ 841 00f4 53000000 		.word	.L106+1
+ 842 00f8 53000000 		.word	.L106+1
+ 843 00fc 53000000 		.word	.L106+1
+ 844 0100 53000000 		.word	.L106+1
+ 845 0104 53000000 		.word	.L106+1
+ 846 0108 53000000 		.word	.L106+1
+ 847 010c 53000000 		.word	.L106+1
+ 848 0110 23020000 		.word	.L89+1
+ 849 0114 53000000 		.word	.L106+1
+ 850 0118 53000000 		.word	.L106+1
+ 851 011c 53000000 		.word	.L106+1
+ 852 0120 53000000 		.word	.L106+1
+ 853 0124 53000000 		.word	.L106+1
+ 854 0128 53000000 		.word	.L106+1
+ 855 012c 53000000 		.word	.L106+1
+ 856 0130 53000000 		.word	.L106+1
+ 857 0134 53000000 		.word	.L106+1
+ 858 0138 41010000 		.word	.L90+1
+ 859              	.LVL75:
+ 860              		.p2align 1
+ 861              	.L102:
+ 862              	.LBE44:
+ 253:grbl/settings.c ****   if (parameter >= AXIS_SETTINGS_START_VAL) {
+ 863              		.loc 1 253 0
+ 864 013c 0420     		movs	r0, #4
+ 865              		.loc 1 378 0
+ 866 013e 38BD     		pop	{r3, r4, r5, pc}
+ 867              	.LVL76:
+ 868              	.L90:
+ 869              	.LBB45:
+ 368:grbl/settings.c ****         break;
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 24
+
+
+ 870              		.loc 1 368 0
+ 871 0140 774B     		ldr	r3, .L113
+ 872 0142 83F86000 		strb	r0, [r3, #96]
+ 873              	.LVL77:
+ 874              	.L62:
+ 875              	.LBE45:
+ 876              	.LBB46:
+ 877              	.LBB47:
+  67:grbl/settings.c ****   memcpy_to_eeprom_with_checksum(EEPROM_ADDR_GLOBAL, (char*)&settings, sizeof(settings_t));
+ 878              		.loc 1 67 0
+ 879 0146 0D21     		movs	r1, #13
+ 880 0148 0020     		movs	r0, #0
+ 881 014a FFF7FEFF 		bl	eeprom_put_char
+ 882              	.LVL78:
+  68:grbl/settings.c **** }
+ 883              		.loc 1 68 0
+ 884 014e 6422     		movs	r2, #100
+ 885 0150 7349     		ldr	r1, .L113
+ 886 0152 0120     		movs	r0, #1
+ 887 0154 FFF7FEFF 		bl	memcpy_to_eeprom_with_checksum
+ 888              	.LVL79:
+ 889              	.LBE47:
+ 890              	.LBE46:
+ 377:grbl/settings.c **** }
+ 891              		.loc 1 377 0
+ 892 0158 0020     		movs	r0, #0
+ 893              		.loc 1 378 0
+ 894 015a 38BD     		pop	{r3, r4, r5, pc}
+ 895              	.LVL80:
+ 896              	.L66:
+ 897              	.LBB48:
+ 293:grbl/settings.c ****         settings.fpulse_microseconds = value; break;
+ 898              		.loc 1 293 0
+ 899 015c 7149     		ldr	r1, .L113+4
+ 900 015e 2846     		mov	r0, r5
+ 901              	.LVL81:
+ 902 0160 FFF7FEFF 		bl	__aeabi_fcmplt
+ 903              	.LVL82:
+ 904 0164 0028     		cmp	r0, #0
+ 905 0166 40F0D680 		bne	.L107
+ 294:grbl/settings.c ****       case 1: settings.stepper_idle_lock_time = int_value; break;
+ 906              		.loc 1 294 0
+ 907 016a 6D4B     		ldr	r3, .L113
+ 908 016c 1D63     		str	r5, [r3, #48]	@ float
+ 909 016e EAE7     		b	.L62
+ 910              	.LVL83:
+ 911              	.L68:
+ 295:grbl/settings.c ****       case 2:
+ 912              		.loc 1 295 0
+ 913 0170 6B4B     		ldr	r3, .L113
+ 914 0172 83F83600 		strb	r0, [r3, #54]
+ 915 0176 E6E7     		b	.L62
+ 916              	.L70:
+ 301:grbl/settings.c ****         st_generate_step_dir_invert_masks(); // Regenerate step and direction port invert masks.
+ 917              		.loc 1 301 0
+ 918 0178 694B     		ldr	r3, .L113
+ 919 017a 83F83500 		strb	r0, [r3, #53]
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 25
+
+
+ 302:grbl/settings.c ****         break;
+ 920              		.loc 1 302 0
+ 921 017e FFF7FEFF 		bl	st_generate_step_dir_invert_masks
+ 922              	.LVL84:
+ 303:grbl/settings.c ****       case 4: // Reset to ensure change. Immediate re-init may cause problems.
+ 923              		.loc 1 303 0
+ 924 0182 E0E7     		b	.L62
+ 925              	.LVL85:
+ 926              	.L71:
+ 927 0184 664A     		ldr	r2, .L113
+ 928 0186 92F84830 		ldrb	r3, [r2, #72]	@ zero_extendqisi2
+ 305:grbl/settings.c ****         else { settings.flags &= ~BITFLAG_INVERT_ST_ENABLE; }
+ 929              		.loc 1 305 0
+ 930 018a 0028     		cmp	r0, #0
+ 931 018c 00F0A180 		beq	.L91
+ 305:grbl/settings.c ****         else { settings.flags &= ~BITFLAG_INVERT_ST_ENABLE; }
+ 932              		.loc 1 305 0 is_stmt 0 discriminator 1
+ 933 0190 43F00403 		orr	r3, r3, #4
+ 934 0194 82F84830 		strb	r3, [r2, #72]
+ 935 0198 D5E7     		b	.L62
+ 936              	.L72:
+ 937 019a 614A     		ldr	r2, .L113
+ 938 019c 92F84830 		ldrb	r3, [r2, #72]	@ zero_extendqisi2
+ 309:grbl/settings.c ****         else { settings.flags &= ~BITFLAG_INVERT_LIMIT_PINS; }
+ 939              		.loc 1 309 0 is_stmt 1
+ 940 01a0 0028     		cmp	r0, #0
+ 941 01a2 00F0A880 		beq	.L92
+ 309:grbl/settings.c ****         else { settings.flags &= ~BITFLAG_INVERT_LIMIT_PINS; }
+ 942              		.loc 1 309 0 is_stmt 0 discriminator 1
+ 943 01a6 43F04003 		orr	r3, r3, #64
+ 944 01aa 82F84830 		strb	r3, [r2, #72]
+ 945 01ae CAE7     		b	.L62
+ 946              	.L69:
+ 297:grbl/settings.c ****         st_generate_step_dir_invert_masks(); // Regenerate step and direction port invert masks.
+ 947              		.loc 1 297 0 is_stmt 1
+ 948 01b0 5B4B     		ldr	r3, .L113
+ 949 01b2 83F83400 		strb	r0, [r3, #52]
+ 298:grbl/settings.c ****         break;
+ 950              		.loc 1 298 0
+ 951 01b6 FFF7FEFF 		bl	st_generate_step_dir_invert_masks
+ 952              	.LVL86:
+ 299:grbl/settings.c ****       case 3:
+ 953              		.loc 1 299 0
+ 954 01ba C4E7     		b	.L62
+ 955              	.LVL87:
+ 956              	.L73:
+ 957 01bc 584B     		ldr	r3, .L113
+ 958 01be 93F84820 		ldrb	r2, [r3, #72]	@ zero_extendqisi2
+ 313:grbl/settings.c ****         else { settings.flags &= ~BITFLAG_INVERT_PROBE_PIN; }
+ 959              		.loc 1 313 0
+ 960 01c2 0028     		cmp	r0, #0
+ 961 01c4 00F0A480 		beq	.L93
+ 313:grbl/settings.c ****         else { settings.flags &= ~BITFLAG_INVERT_PROBE_PIN; }
+ 962              		.loc 1 313 0 is_stmt 0 discriminator 1
+ 963 01c8 42F08002 		orr	r2, r2, #128
+ 964              	.L94:
+ 315:grbl/settings.c ****         break;
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 26
+
+
+ 965              		.loc 1 315 0 is_stmt 1
+ 966 01cc 0020     		movs	r0, #0
+ 967              	.LVL88:
+ 968 01ce 83F84820 		strb	r2, [r3, #72]
+ 969 01d2 FFF7FEFF 		bl	probe_configure_invert_mask
+ 970              	.LVL89:
+ 316:grbl/settings.c ****       case 10: settings.status_report_mask = int_value; break;
+ 971              		.loc 1 316 0
+ 972 01d6 B6E7     		b	.L62
+ 973              	.LVL90:
+ 974              	.L74:
+ 317:grbl/settings.c ****       case 11: settings.junction_deviation = value; break;
+ 975              		.loc 1 317 0
+ 976 01d8 514B     		ldr	r3, .L113
+ 977 01da 83F83700 		strb	r0, [r3, #55]
+ 978 01de B2E7     		b	.L62
+ 979              	.L82:
+ 344:grbl/settings.c ****       case 25: settings.homing_seek_rate = value; break;
+ 980              		.loc 1 344 0
+ 981 01e0 4F4B     		ldr	r3, .L113
+ 982 01e2 DD64     		str	r5, [r3, #76]	@ float
+ 983 01e4 AFE7     		b	.L62
+ 984              	.L83:
+ 345:grbl/settings.c ****       case 26: settings.homing_debounce_delay = int_value; break;
+ 985              		.loc 1 345 0
+ 986 01e6 4E4B     		ldr	r3, .L113
+ 987 01e8 1D65     		str	r5, [r3, #80]	@ float
+ 988 01ea ACE7     		b	.L62
+ 989              	.L84:
+ 346:grbl/settings.c ****       case 27: settings.homing_pulloff = value; break;
+ 990              		.loc 1 346 0
+ 991 01ec 4C4B     		ldr	r3, .L113
+ 992 01ee A3F85400 		strh	r0, [r3, #84]	@ movhi
+ 993 01f2 A8E7     		b	.L62
+ 994              	.L85:
+ 347:grbl/settings.c ****       case 30: settings.rpm_max = value; spindle_init(); break; // Re-initialize spindle rpm calibr
+ 995              		.loc 1 347 0
+ 996 01f4 4A4B     		ldr	r3, .L113
+ 997 01f6 9D65     		str	r5, [r3, #88]	@ float
+ 998 01f8 A5E7     		b	.L62
+ 999              	.L86:
+ 348:grbl/settings.c ****       case 31: settings.rpm_min = value; spindle_init(); break; // Re-initialize spindle rpm calibr
+ 1000              		.loc 1 348 0
+ 1001 01fa 494B     		ldr	r3, .L113
+ 1002 01fc 1D64     		str	r5, [r3, #64]	@ float
+ 1003 01fe FFF7FEFF 		bl	spindle_init
+ 1004              	.LVL91:
+ 1005 0202 A0E7     		b	.L62
+ 1006              	.LVL92:
+ 1007              	.L87:
+ 349:grbl/settings.c ****       case 32:
+ 1008              		.loc 1 349 0
+ 1009 0204 464B     		ldr	r3, .L113
+ 1010 0206 5D64     		str	r5, [r3, #68]	@ float
+ 1011 0208 FFF7FEFF 		bl	spindle_init
+ 1012              	.LVL93:
+ 1013 020c 9BE7     		b	.L62
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 27
+
+
+ 1014              	.LVL94:
+ 1015              	.L88:
+ 1016 020e 444A     		ldr	r2, .L113
+ 1017 0210 92F84830 		ldrb	r3, [r2, #72]	@ zero_extendqisi2
+ 352:grbl/settings.c ****           else { settings.flags &= ~BITFLAG_LASER_MODE; }
+ 1018              		.loc 1 352 0
+ 1019 0214 0028     		cmp	r0, #0
+ 1020 0216 61D0     		beq	.L101
+ 352:grbl/settings.c ****           else { settings.flags &= ~BITFLAG_LASER_MODE; }
+ 1021              		.loc 1 352 0 is_stmt 0 discriminator 1
+ 1022 0218 43F00203 		orr	r3, r3, #2
+ 1023 021c 82F84830 		strb	r3, [r2, #72]
+ 1024 0220 91E7     		b	.L62
+ 1025              	.L89:
+ 361:grbl/settings.c ****         outputs_analog_init(); // Re-initialize analog outputs calibration
+ 1026              		.loc 1 361 0 is_stmt 1
+ 1027 0222 3F4B     		ldr	r3, .L113
+ 1028 0224 DD65     		str	r5, [r3, #92]	@ float
+ 362:grbl/settings.c ****         break;
+ 1029              		.loc 1 362 0
+ 1030 0226 FFF7FEFF 		bl	outputs_analog_init
+ 1031              	.LVL95:
+ 363:grbl/settings.c **** 	  #endif
+ 1032              		.loc 1 363 0
+ 1033 022a 8CE7     		b	.L62
+ 1034              	.LVL96:
+ 1035              	.L78:
+ 1036 022c 3C4A     		ldr	r2, .L113
+ 1037 022e 92F84830 		ldrb	r3, [r2, #72]	@ zero_extendqisi2
+ 326:grbl/settings.c ****           if (bit_isfalse(settings.flags, BITFLAG_HOMING_ENABLE)) { return(STATUS_SOFT_LIMIT_ERROR)
+ 1038              		.loc 1 326 0
+ 1039 0232 0028     		cmp	r0, #0
+ 1040 0234 64D0     		beq	.L97
+ 327:grbl/settings.c ****           settings.flags |= BITFLAG_SOFT_LIMIT_ENABLE;
+ 1041              		.loc 1 327 0
+ 1042 0236 D906     		lsls	r1, r3, #27
+ 1043 0238 6FD5     		bpl	.L108
+ 328:grbl/settings.c ****         } else { settings.flags &= ~BITFLAG_SOFT_LIMIT_ENABLE; }
+ 1044              		.loc 1 328 0
+ 1045 023a 43F02003 		orr	r3, r3, #32
+ 1046 023e 82F84830 		strb	r3, [r2, #72]
+ 1047 0242 80E7     		b	.L62
+ 1048              	.L79:
+ 1049 0244 364B     		ldr	r3, .L113
+ 1050 0246 93F84820 		ldrb	r2, [r3, #72]	@ zero_extendqisi2
+ 332:grbl/settings.c ****         else { settings.flags &= ~BITFLAG_HARD_LIMIT_ENABLE; }
+ 1051              		.loc 1 332 0
+ 1052 024a 0028     		cmp	r0, #0
+ 1053 024c 5DD0     		beq	.L98
+ 332:grbl/settings.c ****         else { settings.flags &= ~BITFLAG_HARD_LIMIT_ENABLE; }
+ 1054              		.loc 1 332 0 is_stmt 0 discriminator 1
+ 1055 024e 42F00802 		orr	r2, r2, #8
+ 1056              	.L99:
+ 1057 0252 83F84820 		strb	r2, [r3, #72]
+ 334:grbl/settings.c ****         break;
+ 1058              		.loc 1 334 0 is_stmt 1
+ 1059 0256 FFF7FEFF 		bl	limits_init
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 28
+
+
+ 1060              	.LVL97:
+ 335:grbl/settings.c ****       case 22:
+ 1061              		.loc 1 335 0
+ 1062 025a 74E7     		b	.L62
+ 1063              	.LVL98:
+ 1064              	.L80:
+ 1065 025c 304A     		ldr	r2, .L113
+ 1066 025e 92F84830 		ldrb	r3, [r2, #72]	@ zero_extendqisi2
+ 337:grbl/settings.c ****         else {
+ 1067              		.loc 1 337 0
+ 1068 0262 0028     		cmp	r0, #0
+ 1069 0264 3FD0     		beq	.L100
+ 337:grbl/settings.c ****         else {
+ 1070              		.loc 1 337 0 is_stmt 0 discriminator 1
+ 1071 0266 43F01003 		orr	r3, r3, #16
+ 1072 026a 82F84830 		strb	r3, [r2, #72]
+ 1073 026e 6AE7     		b	.L62
+ 1074              	.L76:
+ 319:grbl/settings.c ****       case 13:
+ 1075              		.loc 1 319 0 is_stmt 1
+ 1076 0270 2B4B     		ldr	r3, .L113
+ 1077 0272 DD63     		str	r5, [r3, #60]	@ float
+ 1078 0274 67E7     		b	.L62
+ 1079              	.L81:
+ 343:grbl/settings.c ****       case 24: settings.homing_feed_rate = value; break;
+ 1080              		.loc 1 343 0
+ 1081 0276 2A4B     		ldr	r3, .L113
+ 1082 0278 83F84900 		strb	r0, [r3, #73]
+ 1083 027c 63E7     		b	.L62
+ 1084              	.L75:
+ 318:grbl/settings.c ****       case 12: settings.arc_tolerance = value; break;
+ 1085              		.loc 1 318 0
+ 1086 027e 284B     		ldr	r3, .L113
+ 1087 0280 9D63     		str	r5, [r3, #56]	@ float
+ 1088 0282 60E7     		b	.L62
+ 1089              	.L77:
+ 1090 0284 264B     		ldr	r3, .L113
+ 1091 0286 93F84820 		ldrb	r2, [r3, #72]	@ zero_extendqisi2
+ 321:grbl/settings.c ****         else { settings.flags &= ~BITFLAG_REPORT_INCHES; }
+ 1092              		.loc 1 321 0
+ 1093 028a 88B3     		cbz	r0, .L95
+ 321:grbl/settings.c ****         else { settings.flags &= ~BITFLAG_REPORT_INCHES; }
+ 1094              		.loc 1 321 0 is_stmt 0 discriminator 1
+ 1095 028c 42F00102 		orr	r2, r2, #1
+ 1096              	.L96:
+ 1097 0290 83F84820 		strb	r2, [r3, #72]
+ 323:grbl/settings.c ****         break;
+ 1098              		.loc 1 323 0 is_stmt 1
+ 1099 0294 FFF7FEFF 		bl	system_flag_wco_change
+ 1100              	.LVL99:
+ 324:grbl/settings.c ****       case 20:
+ 1101              		.loc 1 324 0
+ 1102 0298 55E7     		b	.L62
+ 1103              	.LVL100:
+ 1104              	.L111:
+ 1105              	.LBE48:
+ 1106              	.LBB49:
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 29
+
+
+ 267:grbl/settings.c ****             break;
+ 1107              		.loc 1 267 0
+ 1108 029a 214A     		ldr	r2, .L113
+ 1109 029c 42F82350 		str	r5, [r2, r3, lsl #2]	@ float
+ 268:grbl/settings.c ****           case 1:
+ 1110              		.loc 1 268 0
+ 1111 02a0 51E7     		b	.L62
+ 1112              	.LVL101:
+ 1113              	.L112:
+ 273:grbl/settings.c ****             break;
+ 1114              		.loc 1 273 0
+ 1115 02a2 1F4A     		ldr	r2, .L113
+ 1116 02a4 02EB8303 		add	r3, r2, r3, lsl #2
+ 1117              	.LVL102:
+ 1118 02a8 DD60     		str	r5, [r3, #12]	@ float
+ 274:grbl/settings.c ****           case 2: settings.eeacceleration[parameter] = value*60*60; break; // Convert to mm/min^2 f
+ 1119              		.loc 1 274 0
+ 1120 02aa 4CE7     		b	.L62
+ 1121              	.LVL103:
+ 1122              	.L64:
+ 275:grbl/settings.c ****           case 3: settings.max_travel[parameter] = -value; break;  // Store as negative for grbl in
+ 1123              		.loc 1 275 0
+ 1124 02ac 1E49     		ldr	r1, .L113+8
+ 1125 02ae 2846     		mov	r0, r5
+ 1126 02b0 9C1D     		adds	r4, r3, #6
+ 1127 02b2 FFF7FEFF 		bl	__aeabi_fmul
+ 1128              	.LVL104:
+ 1129 02b6 1C49     		ldr	r1, .L113+8
+ 1130 02b8 FFF7FEFF 		bl	__aeabi_fmul
+ 1131              	.LVL105:
+ 1132 02bc 184B     		ldr	r3, .L113
+ 1133 02be 43F82400 		str	r0, [r3, r4, lsl #2]	@ float
+ 1134 02c2 40E7     		b	.L62
+ 1135              	.LVL106:
+ 1136              	.L65:
+ 276:grbl/settings.c ****         }
+ 1137              		.loc 1 276 0
+ 1138 02c4 164B     		ldr	r3, .L113
+ 1139 02c6 05F10045 		add	r5, r5, #-2147483648
+ 1140              	.LVL107:
+ 1141 02ca 03EB8404 		add	r4, r3, r4, lsl #2
+ 1142              	.LVL108:
+ 1143 02ce 6562     		str	r5, [r4, #36]	@ float
+ 1144 02d0 39E7     		b	.L62
+ 1145              	.LVL109:
+ 1146              	.L91:
+ 1147              	.LBE49:
+ 1148              	.LBB50:
+ 306:grbl/settings.c ****         break;
+ 1149              		.loc 1 306 0
+ 1150 02d2 23F00403 		bic	r3, r3, #4
+ 1151 02d6 82F84830 		strb	r3, [r2, #72]
+ 1152 02da 34E7     		b	.L62
+ 1153              	.L101:
+ 353:grbl/settings.c ****         #else
+ 1154              		.loc 1 353 0
+ 1155 02dc 23F00203 		bic	r3, r3, #2
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 30
+
+
+ 1156 02e0 82F84830 		strb	r3, [r2, #72]
+ 1157 02e4 2FE7     		b	.L62
+ 1158              	.L100:
+ 340:grbl/settings.c ****         }
+ 1159              		.loc 1 340 0
+ 1160 02e6 23F03003 		bic	r3, r3, #48
+ 1161 02ea 82F84830 		strb	r3, [r2, #72]
+ 1162 02ee 2AE7     		b	.L62
+ 1163              	.L95:
+ 322:grbl/settings.c ****         system_flag_wco_change(); // Make sure WCO is immediately updated.
+ 1164              		.loc 1 322 0
+ 1165 02f0 02F0FE02 		and	r2, r2, #254
+ 1166 02f4 CCE7     		b	.L96
+ 1167              	.L92:
+ 310:grbl/settings.c ****         break;
+ 1168              		.loc 1 310 0
+ 1169 02f6 23F04003 		bic	r3, r3, #64
+ 1170 02fa 82F84830 		strb	r3, [r2, #72]
+ 1171 02fe 22E7     		b	.L62
+ 1172              	.L97:
+ 329:grbl/settings.c ****         break;
+ 1173              		.loc 1 329 0
+ 1174 0300 23F02003 		bic	r3, r3, #32
+ 1175 0304 82F84830 		strb	r3, [r2, #72]
+ 1176 0308 1DE7     		b	.L62
+ 1177              	.L98:
+ 333:grbl/settings.c ****         limits_init(); // Re-init to immediately change. NOTE: Nice to have but could be problemati
+ 1178              		.loc 1 333 0
+ 1179 030a 02F0F702 		and	r2, r2, #247
+ 1180 030e A0E7     		b	.L99
+ 1181              	.L93:
+ 314:grbl/settings.c ****         probe_configure_invert_mask(false);
+ 1182              		.loc 1 314 0
+ 1183 0310 02F07F02 		and	r2, r2, #127
+ 1184 0314 5AE7     		b	.L94
+ 1185              	.LVL110:
+ 1186              	.L107:
+ 293:grbl/settings.c ****         settings.fpulse_microseconds = value; break;
+ 1187              		.loc 1 293 0
+ 1188 0316 0620     		movs	r0, #6
+ 1189              	.LBE50:
+ 1190              		.loc 1 378 0
+ 1191 0318 38BD     		pop	{r3, r4, r5, pc}
+ 1192              	.LVL111:
+ 1193              	.L108:
+ 1194              	.LBB51:
+ 327:grbl/settings.c ****           settings.flags |= BITFLAG_SOFT_LIMIT_ENABLE;
+ 1195              		.loc 1 327 0
+ 1196 031a 0A20     		movs	r0, #10
+ 1197              	.LVL112:
+ 1198              	.LBE51:
+ 1199              		.loc 1 378 0
+ 1200 031c 38BD     		pop	{r3, r4, r5, pc}
+ 1201              	.LVL113:
+ 1202              	.L114:
+ 1203 031e 00BF     		.align	2
+ 1204              	.L113:
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 31
+
+
+ 1205 0320 00000000 		.word	settings
+ 1206 0324 0AD7233C 		.word	1008981770
+ 1207 0328 00007042 		.word	1114636288
+ 1208              		.cfi_endproc
+ 1209              	.LFE712:
+ 1211              		.global	__aeabi_fcmple
+ 1212              		.global	__aeabi_fcmpgt
+ 1213              		.section	.text.acceleration_scaling,"ax",%progbits
+ 1214              		.align	1
+ 1215              		.p2align 2,,3
+ 1216              		.global	acceleration_scaling
+ 1217              		.syntax unified
+ 1218              		.thumb
+ 1219              		.thumb_func
+ 1220              		.fpu softvfp
+ 1222              	acceleration_scaling:
+ 1223              	.LFB713:
+ 379:grbl/settings.c **** 
+ 380:grbl/settings.c **** 
+ 381:grbl/settings.c **** #ifdef ENABLE_ACCEL_SCALING
+ 382:grbl/settings.c **** void acceleration_scaling(uint8_t axis_index, float *pQscale)
+ 383:grbl/settings.c **** {
+ 1224              		.loc 1 383 0
+ 1225              		.cfi_startproc
+ 1226              		@ args = 0, pretend = 0, frame = 0
+ 1227              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1228              	.LVL114:
+ 1229 0000 70B5     		push	{r4, r5, r6, lr}
+ 1230              	.LCFI15:
+ 1231              		.cfi_def_cfa_offset 16
+ 1232              		.cfi_offset 4, -16
+ 1233              		.cfi_offset 5, -12
+ 1234              		.cfi_offset 6, -8
+ 1235              		.cfi_offset 14, -4
+ 384:grbl/settings.c ****   uint8_t i;
+ 385:grbl/settings.c **** 	float scale = *pQscale;
+ 1236              		.loc 1 385 0
+ 1237 0002 0C68     		ldr	r4, [r1]	@ float
+ 1238              	.LVL115:
+ 383:grbl/settings.c ****   uint8_t i;
+ 1239              		.loc 1 383 0
+ 1240 0004 0546     		mov	r5, r0
+ 386:grbl/settings.c **** 
+ 387:grbl/settings.c **** 	protocol_buffer_synchronize();
+ 1241              		.loc 1 387 0
+ 1242 0006 FFF7FEFF 		bl	protocol_buffer_synchronize
+ 1243              	.LVL116:
+ 388:grbl/settings.c **** 
+ 389:grbl/settings.c **** 	if (scale <= 0.0f) return;
+ 1244              		.loc 1 389 0
+ 1245 000a 2046     		mov	r0, r4
+ 1246 000c 0021     		movs	r1, #0
+ 1247 000e FFF7FEFF 		bl	__aeabi_fcmple
+ 1248              	.LVL117:
+ 1249 0012 C8B9     		cbnz	r0, .L115
+ 390:grbl/settings.c **** 	if (scale > 1.0f) scale = 1.0f;
+ 1250              		.loc 1 390 0
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 32
+
+
+ 1251 0014 4FF07E51 		mov	r1, #1065353216
+ 1252 0018 2046     		mov	r0, r4
+ 1253 001a FFF7FEFF 		bl	__aeabi_fcmpgt
+ 1254              	.LVL118:
+ 1255 001e 08B1     		cbz	r0, .L119
+ 1256 0020 4FF07E54 		mov	r4, #1065353216
+ 1257              	.LVL119:
+ 1258              	.L119:
+ 391:grbl/settings.c **** 
+ 392:grbl/settings.c **** 	if (axis_index == 0xFF) //all axis
+ 1259              		.loc 1 392 0
+ 1260 0024 FF2D     		cmp	r5, #255
+ 1261 0026 10D0     		beq	.L125
+ 393:grbl/settings.c **** 	{
+ 394:grbl/settings.c **** 	  for (i=0; i<N_AXIS; i++)
+ 395:grbl/settings.c **** 	  {
+ 396:grbl/settings.c **** 	  	adjustments.accel_scaling[i] = scale;
+ 397:grbl/settings.c **** 	  	adjustments.accel_adjusted[i] = settings.eeacceleration[i] * scale;
+ 398:grbl/settings.c **** 	  }
+ 399:grbl/settings.c **** 	}
+ 400:grbl/settings.c **** 	else if (axis_index < N_AXIS)
+ 1262              		.loc 1 400 0
+ 1263 0028 022D     		cmp	r5, #2
+ 1264 002a 0DD8     		bhi	.L115
+ 401:grbl/settings.c **** 	{
+ 402:grbl/settings.c ****   	adjustments.accel_scaling[axis_index] = scale;
+ 1265              		.loc 1 402 0
+ 1266 002c 114B     		ldr	r3, .L126
+ 403:grbl/settings.c ****   	adjustments.accel_adjusted[axis_index] = settings.eeacceleration[axis_index] * scale;
+ 1267              		.loc 1 403 0
+ 1268 002e 124A     		ldr	r2, .L126+4
+ 1269 0030 A81D     		adds	r0, r5, #6
+ 402:grbl/settings.c ****   	adjustments.accel_adjusted[axis_index] = settings.eeacceleration[axis_index] * scale;
+ 1270              		.loc 1 402 0
+ 1271 0032 43F82540 		str	r4, [r3, r5, lsl #2]	@ float
+ 1272              		.loc 1 403 0
+ 1273 0036 2146     		mov	r1, r4
+ 1274 0038 0235     		adds	r5, r5, #2
+ 1275 003a 52F82000 		ldr	r0, [r2, r0, lsl #2]	@ float
+ 1276 003e 03EB8505 		add	r5, r3, r5, lsl #2
+ 1277 0042 FFF7FEFF 		bl	__aeabi_fmul
+ 1278              	.LVL120:
+ 1279 0046 6860     		str	r0, [r5, #4]	@ float
+ 1280              	.L115:
+ 404:grbl/settings.c **** 	}
+ 405:grbl/settings.c **** }
+ 1281              		.loc 1 405 0
+ 1282 0048 70BD     		pop	{r4, r5, r6, pc}
+ 1283              	.LVL121:
+ 1284              	.L125:
+ 396:grbl/settings.c **** 	  	adjustments.accel_adjusted[i] = settings.eeacceleration[i] * scale;
+ 1285              		.loc 1 396 0
+ 1286 004a 0A4D     		ldr	r5, .L126
+ 397:grbl/settings.c **** 	  }
+ 1287              		.loc 1 397 0
+ 1288 004c 0A4E     		ldr	r6, .L126+4
+ 1289 004e 2146     		mov	r1, r4
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 33
+
+
+ 396:grbl/settings.c **** 	  	adjustments.accel_adjusted[i] = settings.eeacceleration[i] * scale;
+ 1290              		.loc 1 396 0
+ 1291 0050 2C60     		str	r4, [r5]	@ float
+ 397:grbl/settings.c **** 	  }
+ 1292              		.loc 1 397 0
+ 1293 0052 B069     		ldr	r0, [r6, #24]	@ float
+ 1294 0054 FFF7FEFF 		bl	__aeabi_fmul
+ 1295              	.LVL122:
+ 1296 0058 2146     		mov	r1, r4
+ 1297 005a E860     		str	r0, [r5, #12]	@ float
+ 1298              	.LVL123:
+ 396:grbl/settings.c **** 	  	adjustments.accel_adjusted[i] = settings.eeacceleration[i] * scale;
+ 1299              		.loc 1 396 0
+ 1300 005c 6C60     		str	r4, [r5, #4]	@ float
+ 397:grbl/settings.c **** 	  }
+ 1301              		.loc 1 397 0
+ 1302 005e F069     		ldr	r0, [r6, #28]	@ float
+ 1303 0060 FFF7FEFF 		bl	__aeabi_fmul
+ 1304              	.LVL124:
+ 1305 0064 2146     		mov	r1, r4
+ 1306 0066 2861     		str	r0, [r5, #16]	@ float
+ 1307              	.LVL125:
+ 396:grbl/settings.c **** 	  	adjustments.accel_adjusted[i] = settings.eeacceleration[i] * scale;
+ 1308              		.loc 1 396 0
+ 1309 0068 AC60     		str	r4, [r5, #8]	@ float
+ 397:grbl/settings.c **** 	  }
+ 1310              		.loc 1 397 0
+ 1311 006a 306A     		ldr	r0, [r6, #32]	@ float
+ 1312 006c FFF7FEFF 		bl	__aeabi_fmul
+ 1313              	.LVL126:
+ 1314 0070 6861     		str	r0, [r5, #20]	@ float
+ 1315              	.LVL127:
+ 1316              		.loc 1 405 0
+ 1317 0072 70BD     		pop	{r4, r5, r6, pc}
+ 1318              	.LVL128:
+ 1319              	.L127:
+ 1320              		.align	2
+ 1321              	.L126:
+ 1322 0074 00000000 		.word	adjustments
+ 1323 0078 00000000 		.word	settings
+ 1324              		.cfi_endproc
+ 1325              	.LFE713:
+ 1327              		.section	.text.settings_init,"ax",%progbits
+ 1328              		.align	1
+ 1329              		.p2align 2,,3
+ 1330              		.global	settings_init
+ 1331              		.syntax unified
+ 1332              		.thumb
+ 1333              		.thumb_func
+ 1334              		.fpu softvfp
+ 1336              	settings_init:
+ 1337              	.LFB714:
+ 406:grbl/settings.c **** #endif
+ 407:grbl/settings.c **** 
+ 408:grbl/settings.c **** 
+ 409:grbl/settings.c **** 
+ 410:grbl/settings.c **** // Initialize the config subsystem
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 34
+
+
+ 411:grbl/settings.c **** void settings_init() {
+ 1338              		.loc 1 411 0
+ 1339              		.cfi_startproc
+ 1340              		@ args = 0, pretend = 0, frame = 16
+ 1341              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1342 0000 70B5     		push	{r4, r5, r6, lr}
+ 1343              	.LCFI16:
+ 1344              		.cfi_def_cfa_offset 16
+ 1345              		.cfi_offset 4, -16
+ 1346              		.cfi_offset 5, -12
+ 1347              		.cfi_offset 6, -8
+ 1348              		.cfi_offset 14, -4
+ 1349              	.LBB63:
+ 1350              	.LBB64:
+ 238:grbl/settings.c ****   if (version == SETTINGS_VERSION) {
+ 1351              		.loc 1 238 0
+ 1352 0002 0020     		movs	r0, #0
+ 1353              	.LBE64:
+ 1354              	.LBE63:
+ 1355              		.loc 1 411 0
+ 1356 0004 84B0     		sub	sp, sp, #16
+ 1357              	.LCFI17:
+ 1358              		.cfi_def_cfa_offset 32
+ 1359              	.LBB69:
+ 1360              	.LBB67:
+ 238:grbl/settings.c ****   if (version == SETTINGS_VERSION) {
+ 1361              		.loc 1 238 0
+ 1362 0006 FFF7FEFF 		bl	eeprom_get_char
+ 1363              	.LVL129:
+ 239:grbl/settings.c ****     // Read settings-record and check checksum
+ 1364              		.loc 1 239 0
+ 1365 000a 0D28     		cmp	r0, #13
+ 1366 000c 7DD0     		beq	.L129
+ 1367              	.LVL130:
+ 1368              	.L131:
+ 1369              	.LBE67:
+ 1370              	.LBE69:
+ 1371              	.LBB70:
+ 1372              	.LBB71:
+  90:grbl/settings.c ****     settings.homing_pulloff = DEFAULT_HOMING_PULLOFF;
+ 1373              		.loc 1 90 0
+ 1374 000e FA26     		movs	r6, #250
+ 1375              	.LBE71:
+ 1376              	.LBE70:
+ 412:grbl/settings.c ****   if(!read_global_settings()) {
+ 413:grbl/settings.c ****     report_status_message(STATUS_SETTING_READ_FAIL);
+ 1377              		.loc 1 413 0
+ 1378 0010 0720     		movs	r0, #7
+ 1379 0012 FFF7FEFF 		bl	report_status_message
+ 1380              	.LVL131:
+ 1381              	.LBB83:
+ 1382              	.LBB82:
+  88:grbl/settings.c ****     settings.homing_seek_rate = DEFAULT_HOMING_SEEK_RATE;
+ 1383              		.loc 1 88 0
+ 1384 0016 424C     		ldr	r4, .L138
+ 1385 0018 4249     		ldr	r1, .L138+4
+ 117:grbl/settings.c **** 
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 35
+
+
+ 1386              		.loc 1 117 0
+ 1387 001a 4FF07C52 		mov	r2, #1056964608
+  88:grbl/settings.c ****     settings.homing_seek_rate = DEFAULT_HOMING_SEEK_RATE;
+ 1388              		.loc 1 88 0
+ 1389 001e E164     		str	r1, [r4, #76]	@ float
+  89:grbl/settings.c ****     settings.homing_debounce_delay = DEFAULT_HOMING_DEBOUNCE_DELAY;
+ 1390              		.loc 1 89 0
+ 1391 0020 4149     		ldr	r1, .L138+8
+  85:grbl/settings.c **** 
+ 1392              		.loc 1 85 0
+ 1393 0022 4FF49873 		mov	r3, #304
+  89:grbl/settings.c ****     settings.homing_debounce_delay = DEFAULT_HOMING_DEBOUNCE_DELAY;
+ 1394              		.loc 1 89 0
+ 1395 0026 2165     		str	r1, [r4, #80]	@ float
+  91:grbl/settings.c **** 
+ 1396              		.loc 1 91 0
+ 1397 0028 4FF07E51 		mov	r1, #1065353216
+  94:grbl/settings.c **** 
+ 1398              		.loc 1 94 0
+ 1399 002c 0025     		movs	r5, #0
+  90:grbl/settings.c ****     settings.homing_pulloff = DEFAULT_HOMING_PULLOFF;
+ 1400              		.loc 1 90 0
+ 1401 002e A4F85460 		strh	r6, [r4, #84]	@ movhi
+ 1402              	.LBB72:
+ 157:grbl/settings.c ****     for (idx=0; idx <= SETTING_INDEX_NCOORD; idx++) { settings_write_coord_data(idx, coord_data); }
+ 1403              		.loc 1 157 0
+ 1404 0032 4FF40076 		mov	r6, #512
+ 1405              	.LBE72:
+ 117:grbl/settings.c **** 
+ 1406              		.loc 1 117 0
+ 1407 0036 2263     		str	r2, [r4, #48]
+  91:grbl/settings.c **** 
+ 1408              		.loc 1 91 0
+ 1409 0038 A165     		str	r1, [r4, #88]	@ float
+  93:grbl/settings.c ****     settings.spindle_enable_pin_mode = DEFAULT_VARIABLE_SPINDLE_ENABLE_PIN;
+ 1410              		.loc 1 93 0
+ 1411 003a 3C4A     		ldr	r2, .L138+12
+ 107:grbl/settings.c ****     settings.steps_per_mm[Z_AXIS] = DEFAULT_Z_STEPS_PER_MM;
+ 1412              		.loc 1 107 0
+ 1413 003c 3C49     		ldr	r1, .L138+16
+  93:grbl/settings.c ****     settings.spindle_enable_pin_mode = DEFAULT_VARIABLE_SPINDLE_ENABLE_PIN;
+ 1414              		.loc 1 93 0
+ 1415 003e E265     		str	r2, [r4, #92]	@ float
+ 107:grbl/settings.c ****     settings.steps_per_mm[Z_AXIS] = DEFAULT_Z_STEPS_PER_MM;
+ 1416              		.loc 1 107 0
+ 1417 0040 A160     		str	r1, [r4, #8]
+ 114:grbl/settings.c ****     settings.max_travel[X_AXIS] = (-DEFAULT_X_MAX_TRAVEL);
+ 1418              		.loc 1 114 0
+ 1419 0042 3C4A     		ldr	r2, .L138+20
+ 115:grbl/settings.c ****     settings.max_travel[Y_AXIS] = (-DEFAULT_Y_MAX_TRAVEL);
+ 1420              		.loc 1 115 0
+ 1421 0044 3C49     		ldr	r1, .L138+24
+ 114:grbl/settings.c ****     settings.max_travel[X_AXIS] = (-DEFAULT_X_MAX_TRAVEL);
+ 1422              		.loc 1 114 0
+ 1423 0046 6262     		str	r2, [r4, #36]
+ 115:grbl/settings.c ****     settings.max_travel[Y_AXIS] = (-DEFAULT_Y_MAX_TRAVEL);
+ 1424              		.loc 1 115 0
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 36
+
+
+ 1425 0048 A162     		str	r1, [r4, #40]
+ 116:grbl/settings.c ****     settings.max_travel[Z_AXIS] = (-DEFAULT_Z_MAX_TRAVEL);
+ 1426              		.loc 1 116 0
+ 1427 004a A2F19C72 		sub	r2, r2, #20447232
+  76:grbl/settings.c ****     settings.stepper_idle_lock_time = DEFAULT_STEPPER_IDLE_LOCK_TIME;
+ 1428              		.loc 1 76 0
+ 1429 004e 3B49     		ldr	r1, .L138+28
+ 116:grbl/settings.c ****     settings.max_travel[Z_AXIS] = (-DEFAULT_Z_MAX_TRAVEL);
+ 1430              		.loc 1 116 0
+ 1431 0050 E262     		str	r2, [r4, #44]
+  78:grbl/settings.c ****     settings.dir_invert_mask = DEFAULT_DIRECTION_INVERT_MASK;
+ 1432              		.loc 1 78 0
+ 1433 0052 3B4A     		ldr	r2, .L138+32
+  76:grbl/settings.c ****     settings.stepper_idle_lock_time = DEFAULT_STEPPER_IDLE_LOCK_TIME;
+ 1434              		.loc 1 76 0
+ 1435 0054 6163     		str	r1, [r4, #52]
+  81:grbl/settings.c ****     settings.arc_tolerance = DEFAULT_ARC_TOLERANCE;
+ 1436              		.loc 1 81 0
+ 1437 0056 3B49     		ldr	r1, .L138+36
+  78:grbl/settings.c ****     settings.dir_invert_mask = DEFAULT_DIRECTION_INVERT_MASK;
+ 1438              		.loc 1 78 0
+ 1439 0058 A263     		str	r2, [r4, #56]
+  82:grbl/settings.c **** 
+ 1440              		.loc 1 82 0
+ 1441 005a 3B4A     		ldr	r2, .L138+40
+  81:grbl/settings.c ****     settings.arc_tolerance = DEFAULT_ARC_TOLERANCE;
+ 1442              		.loc 1 81 0
+ 1443 005c E163     		str	r1, [r4, #60]
+ 106:grbl/settings.c ****     settings.steps_per_mm[Y_AXIS] = DEFAULT_Y_STEPS_PER_MM;
+ 1444              		.loc 1 106 0
+ 1445 005e 3B49     		ldr	r1, .L138+44
+  82:grbl/settings.c **** 
+ 1446              		.loc 1 82 0
+ 1447 0060 2264     		str	r2, [r4, #64]
+  85:grbl/settings.c **** 
+ 1448              		.loc 1 85 0
+ 1449 0062 A4F84830 		strh	r3, [r4, #72]	@ movhi
+ 108:grbl/settings.c ****     settings.max_rate[X_AXIS] = DEFAULT_X_MAX_RATE;
+ 1450              		.loc 1 108 0
+ 1451 0066 304A     		ldr	r2, .L138+8
+ 111:grbl/settings.c ****     settings.eeacceleration[X_AXIS] = DEFAULT_X_ACCELERATION;
+ 1452              		.loc 1 111 0
+ 1453 0068 394B     		ldr	r3, .L138+48
+ 1454              	.LBB75:
+ 1455              	.LBB76:
+  67:grbl/settings.c ****   memcpy_to_eeprom_with_checksum(EEPROM_ADDR_GLOBAL, (char*)&settings, sizeof(settings_t));
+ 1456              		.loc 1 67 0
+ 1457 006a 2846     		mov	r0, r5
+ 1458              	.LBE76:
+ 1459              	.LBE75:
+ 106:grbl/settings.c ****     settings.steps_per_mm[Y_AXIS] = DEFAULT_Y_STEPS_PER_MM;
+ 1460              		.loc 1 106 0
+ 1461 006c C4E90011 		strd	r1, r1, [r4]
+ 1462              	.LBB79:
+ 1463              	.LBB77:
+  67:grbl/settings.c ****   memcpy_to_eeprom_with_checksum(EEPROM_ADDR_GLOBAL, (char*)&settings, sizeof(settings_t));
+ 1464              		.loc 1 67 0
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 37
+
+
+ 1465 0070 0D21     		movs	r1, #13
+ 1466              	.LBE77:
+ 1467              	.LBE79:
+ 111:grbl/settings.c ****     settings.eeacceleration[X_AXIS] = DEFAULT_X_ACCELERATION;
+ 1468              		.loc 1 111 0
+ 1469 0072 C4E90523 		strd	r2, r3, [r4, #20]
+ 109:grbl/settings.c ****     settings.max_rate[Y_AXIS] = DEFAULT_Y_MAX_RATE;
+ 1470              		.loc 1 109 0
+ 1471 0076 C4E90322 		strd	r2, r2, [r4, #12]
+ 113:grbl/settings.c ****     settings.eeacceleration[Z_AXIS] = DEFAULT_Z_ACCELERATION;
+ 1472              		.loc 1 113 0
+ 1473 007a C4E90733 		strd	r3, r3, [r4, #28]
+  94:grbl/settings.c **** 
+ 1474              		.loc 1 94 0
+ 1475 007e 84F86050 		strb	r5, [r4, #96]
+  84:grbl/settings.c ****     settings.rpm_min = DEFAULT_SPINDLE_RPM_MIN;
+ 1476              		.loc 1 84 0
+ 1477 0082 6564     		str	r5, [r4, #68]
+ 1478              	.LBB80:
+ 1479              	.LBB78:
+  67:grbl/settings.c ****   memcpy_to_eeprom_with_checksum(EEPROM_ADDR_GLOBAL, (char*)&settings, sizeof(settings_t));
+ 1480              		.loc 1 67 0
+ 1481 0084 FFF7FEFF 		bl	eeprom_put_char
+ 1482              	.LVL132:
+  68:grbl/settings.c **** }
+ 1483              		.loc 1 68 0
+ 1484 0088 2146     		mov	r1, r4
+ 1485 008a 6422     		movs	r2, #100
+ 1486 008c 0120     		movs	r0, #1
+ 1487 008e FFF7FEFF 		bl	memcpy_to_eeprom_with_checksum
+ 1488              	.LVL133:
+ 1489              	.LBE78:
+ 1490              	.LBE80:
+ 1491              	.LBB81:
+ 157:grbl/settings.c ****     for (idx=0; idx <= SETTING_INDEX_NCOORD; idx++) { settings_write_coord_data(idx, coord_data); }
+ 1492              		.loc 1 157 0
+ 1493 0092 CDE90155 		strd	r5, r5, [sp, #4]
+ 1494 0096 0395     		str	r5, [sp, #12]
+ 1495              	.LVL134:
+ 1496              	.L130:
+ 1497              	.LBB73:
+ 1498              	.LBB74:
+  56:grbl/settings.c ****   #endif
+ 1499              		.loc 1 56 0
+ 1500 0098 FFF7FEFF 		bl	protocol_buffer_synchronize
+ 1501              	.LVL135:
+  59:grbl/settings.c **** }
+ 1502              		.loc 1 59 0
+ 1503 009c 3046     		mov	r0, r6
+ 1504 009e 0C22     		movs	r2, #12
+ 1505 00a0 01A9     		add	r1, sp, #4
+ 1506              	.LVL136:
+ 1507 00a2 0D36     		adds	r6, r6, #13
+ 1508              	.LVL137:
+ 1509 00a4 FFF7FEFF 		bl	memcpy_to_eeprom_with_checksum
+ 1510              	.LVL138:
+ 1511              	.LBE74:
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 38
+
+
+ 1512              	.LBE73:
+ 158:grbl/settings.c ****   }
+ 1513              		.loc 1 158 0
+ 1514 00a8 B6F51A7F 		cmp	r6, #616
+ 1515 00ac F4D1     		bne	.L130
+ 1516              	.LBE81:
+ 163:grbl/settings.c ****       eeprom_put_char(EEPROM_ADDR_STARTUP_BLOCK+1, 0); // Checksum
+ 1517              		.loc 1 163 0
+ 1518 00ae 0021     		movs	r1, #0
+ 1519 00b0 4FF44070 		mov	r0, #768
+ 1520 00b4 FFF7FEFF 		bl	eeprom_put_char
+ 1521              	.LVL139:
+ 164:grbl/settings.c ****     #endif
+ 1522              		.loc 1 164 0
+ 1523 00b8 0021     		movs	r1, #0
+ 1524 00ba 40F20130 		movw	r0, #769
+ 1525 00be FFF7FEFF 		bl	eeprom_put_char
+ 1526              	.LVL140:
+ 167:grbl/settings.c ****       eeprom_put_char(EEPROM_ADDR_STARTUP_BLOCK+(LINE_BUFFER_SIZE+2), 0); // Checksum
+ 1527              		.loc 1 167 0
+ 1528 00c2 0021     		movs	r1, #0
+ 1529 00c4 40F25130 		movw	r0, #849
+ 1530 00c8 FFF7FEFF 		bl	eeprom_put_char
+ 1531              	.LVL141:
+ 168:grbl/settings.c ****     #endif
+ 1532              		.loc 1 168 0
+ 1533 00cc 0021     		movs	r1, #0
+ 1534 00ce 40F25230 		movw	r0, #850
+ 1535 00d2 FFF7FEFF 		bl	eeprom_put_char
+ 1536              	.LVL142:
+ 173:grbl/settings.c ****     eeprom_put_char(EEPROM_ADDR_BUILD_INFO+1 , 0); // Checksum
+ 1537              		.loc 1 173 0
+ 1538 00d6 0021     		movs	r1, #0
+ 1539 00d8 40F2AE30 		movw	r0, #942
+ 1540 00dc FFF7FEFF 		bl	eeprom_put_char
+ 1541              	.LVL143:
+ 174:grbl/settings.c ****   }
+ 1542              		.loc 1 174 0
+ 1543 00e0 0021     		movs	r1, #0
+ 1544 00e2 40F2AF30 		movw	r0, #943
+ 1545 00e6 FFF7FEFF 		bl	eeprom_put_char
+ 1546              	.LVL144:
+ 1547              	.LBE82:
+ 1548              	.LBE83:
+ 414:grbl/settings.c ****     settings_restore(SETTINGS_RESTORE_ALL); // Force restore all EEPROM data.
+ 415:grbl/settings.c ****     report_grbl_settings();
+ 1549              		.loc 1 415 0
+ 1550 00ea FFF7FEFF 		bl	report_grbl_settings
+ 1551              	.LVL145:
+ 1552              	.L132:
+ 416:grbl/settings.c ****   }
+ 417:grbl/settings.c **** #ifdef ENABLE_ACCEL_SCALING
+ 418:grbl/settings.c ****   uint8_t i;
+ 419:grbl/settings.c ****   for (i=0; i<N_AXIS; i++)
+ 420:grbl/settings.c ****   {
+ 421:grbl/settings.c ****   	adjustments.accel_scaling[i] = 1.0f;
+ 1553              		.loc 1 421 0 discriminator 1
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 39
+
+
+ 1554 00ee 4FF07E52 		mov	r2, #1065353216
+ 1555 00f2 184B     		ldr	r3, .L138+52
+ 422:grbl/settings.c ****   	adjustments.accel_adjusted[i] = settings.eeacceleration[i];
+ 1556              		.loc 1 422 0 discriminator 1
+ 1557 00f4 A569     		ldr	r5, [r4, #24]	@ float
+ 1558 00f6 E069     		ldr	r0, [r4, #28]	@ float
+ 1559 00f8 216A     		ldr	r1, [r4, #32]	@ float
+ 1560 00fa DD60     		str	r5, [r3, #12]	@ float
+ 1561              	.LVL146:
+ 1562 00fc 1861     		str	r0, [r3, #16]	@ float
+ 1563              	.LVL147:
+ 1564 00fe 5961     		str	r1, [r3, #20]	@ float
+ 1565              	.LVL148:
+ 421:grbl/settings.c ****   	adjustments.accel_adjusted[i] = settings.eeacceleration[i];
+ 1566              		.loc 1 421 0 discriminator 1
+ 1567 0100 1A60     		str	r2, [r3]	@ float
+ 1568 0102 5A60     		str	r2, [r3, #4]	@ float
+ 1569 0104 9A60     		str	r2, [r3, #8]	@ float
+ 423:grbl/settings.c ****   }
+ 424:grbl/settings.c **** #endif
+ 425:grbl/settings.c **** }
+ 1570              		.loc 1 425 0 discriminator 1
+ 1571 0106 04B0     		add	sp, sp, #16
+ 1572              	.LCFI18:
+ 1573              		.cfi_remember_state
+ 1574              		.cfi_def_cfa_offset 16
+ 1575              		@ sp needed
+ 1576 0108 70BD     		pop	{r4, r5, r6, pc}
+ 1577              	.LVL149:
+ 1578              	.L129:
+ 1579              	.LCFI19:
+ 1580              		.cfi_restore_state
+ 1581              	.LBB84:
+ 1582              	.LBB68:
+ 1583              	.LBB65:
+ 1584              	.LBB66:
+ 241:grbl/settings.c ****       return(false);
+ 1585              		.loc 1 241 0
+ 1586 010a 6422     		movs	r2, #100
+ 1587 010c 0121     		movs	r1, #1
+ 1588 010e 0448     		ldr	r0, .L138
+ 1589              	.LVL150:
+ 1590 0110 FFF7FEFF 		bl	memcpy_from_eeprom_with_checksum
+ 1591              	.LVL151:
+ 1592 0114 0028     		cmp	r0, #0
+ 1593 0116 3FF47AAF 		beq	.L131
+ 1594 011a 014C     		ldr	r4, .L138
+ 1595 011c E7E7     		b	.L132
+ 1596              	.L139:
+ 1597 011e 00BF     		.align	2
+ 1598              	.L138:
+ 1599 0120 00000000 		.word	settings
+ 1600 0124 0000C841 		.word	1103626240
+ 1601 0128 0000FA43 		.word	1140457472
+ 1602 012c 00401C46 		.word	1176256512
+ 1603 0130 0000C843 		.word	1137180672
+ 1604 0134 00008CC3 		.word	-1014235136
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 40
+
+
+ 1605 0138 0080BCC3 		.word	-1011056640
+ 1606 013c 00041903 		.word	51971072
+ 1607 0140 0AD7233C 		.word	1008981770
+ 1608 0144 6F12033B 		.word	990057071
+ 1609 0148 00409C45 		.word	1167867904
+ 1610 014c 00004844 		.word	1145569280
+ 1611 0150 00A00C47 		.word	1192009728
+ 1612 0154 00000000 		.word	adjustments
+ 1613              	.LBE66:
+ 1614              	.LBE65:
+ 1615              	.LBE68:
+ 1616              	.LBE84:
+ 1617              		.cfi_endproc
+ 1618              	.LFE714:
+ 1620              		.comm	adjustments,24,4
+ 1621              		.comm	settings,100,4
+ 1622              		.text
+ 1623              	.Letext0:
+ 1624              		.file 2 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/machine/_default_types
+ 1625              		.file 3 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/sys/lock.h"
+ 1626              		.file 4 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/sys/_types.h"
+ 1627              		.file 5 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/lib/gcc/arm-none-eabi/7.3.1/include/stddef.h
+ 1628              		.file 6 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/sys/reent.h"
+ 1629              		.file 7 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/math.h"
+ 1630              		.file 8 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/sys/_stdint.h"
+ 1631              		.file 9 "Drivers/CMSIS/Include/core_cm3.h"
+ 1632              		.file 10 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h"
+ 1633              		.file 11 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
+ 1634              		.file 12 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_tim.h"
+ 1635              		.file 13 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h"
+ 1636              		.file 14 "stm32/stm32utilities.h"
+ 1637              		.file 15 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/stdlib.h"
+ 1638              		.file 16 "grbl/settings.h"
+ 1639              		.file 17 "grbl/system.h"
+ 1640              		.file 18 "grbl/gcode.h"
+ 1641              		.file 19 "grbl/eeprom.h"
+ 1642              		.file 20 "grbl/protocol.h"
+ 1643              		.file 21 "grbl/report.h"
+ 1644              		.file 22 "grbl/stepper.h"
+ 1645              		.file 23 "grbl/probe.h"
+ 1646              		.file 24 "grbl/spindle_control.h"
+ 1647              		.file 25 "stm32/inoutputs.h"
+ 1648              		.file 26 "grbl/limits.h"
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 41
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 settings.c
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:16     .text.settings_store_startup_line:0000000000000000 $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:24     .text.settings_store_startup_line:0000000000000000 settings_store_startup_line
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:68     .text.settings_store_build_info:0000000000000000 $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:76     .text.settings_store_build_info:0000000000000000 settings_store_build_info
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:95     .text.settings_write_coord_data:0000000000000000 $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:103    .text.settings_write_coord_data:0000000000000000 settings_write_coord_data
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:146    .text.write_global_settings:0000000000000000 $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:154    .text.write_global_settings:0000000000000000 write_global_settings
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:185    .text.write_global_settings:0000000000000018 $d
+                            *COM*:0000000000000064 settings
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:190    .text.settings_restore:0000000000000000 $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:198    .text.settings_restore:0000000000000000 settings_restore
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:416    .text.settings_restore:00000000000000f8 $d
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:435    .text.settings_read_startup_line:0000000000000000 $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:443    .text.settings_read_startup_line:0000000000000000 settings_read_startup_line
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:504    .text.settings_read_build_info:0000000000000000 $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:512    .text.settings_read_build_info:0000000000000000 settings_read_build_info
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:563    .text.settings_read_coord_data:0000000000000000 $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:571    .text.settings_read_coord_data:0000000000000000 settings_read_coord_data
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:637    .text.read_global_settings:0000000000000000 $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:645    .text.read_global_settings:0000000000000000 read_global_settings
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:690    .text.read_global_settings:0000000000000024 $d
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:699    .text.settings_store_global_setting:0000000000000000 $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:707    .text.settings_store_global_setting:0000000000000000 settings_store_global_setting
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:808    .text.settings_store_global_setting:0000000000000070 $d
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:860    .text.settings_store_global_setting:000000000000013c $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:1205   .text.settings_store_global_setting:0000000000000320 $d
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:1214   .text.acceleration_scaling:0000000000000000 $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:1222   .text.acceleration_scaling:0000000000000000 acceleration_scaling
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:1322   .text.acceleration_scaling:0000000000000074 $d
+                            *COM*:0000000000000018 adjustments
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:1328   .text.settings_init:0000000000000000 $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:1336   .text.settings_init:0000000000000000 settings_init
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s:1599   .text.settings_init:0000000000000120 $d
+
+UNDEFINED SYMBOLS
+protocol_buffer_synchronize
+memcpy_to_eeprom_with_checksum
+eeprom_put_char
+memcpy_from_eeprom_with_checksum
+eeprom_get_char
+__aeabi_fcmplt
+__aeabi_f2d
+__aeabi_d2uiz
+__aeabi_fmul
+trunc
+st_generate_step_dir_invert_masks
+probe_configure_invert_mask
+spindle_init
+outputs_analog_init
+limits_init
+system_flag_wco_change
+__aeabi_fcmple
+__aeabi_fcmpgt
+report_status_message
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccSKEYy8.s 			page 42
+
+
+report_grbl_settings

@@ -1,0 +1,868 @@
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 2
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"eeprom.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.eeprom_flush,"ax",%progbits
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.global	eeprom_flush
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	eeprom_flush:
+  25              	.LFB703:
+  26              		.file 1 "grbl/eeprom.c"
+   1:grbl/eeprom.c **** 
+   2:grbl/eeprom.c **** // This file has been prepared for Doxygen automatic documentation generation.
+   3:grbl/eeprom.c **** /*! \file ********************************************************************
+   4:grbl/eeprom.c **** *
+   5:grbl/eeprom.c **** * Atmel Corporation
+   6:grbl/eeprom.c **** *
+   7:grbl/eeprom.c **** * \li File:               eeprom.c
+   8:grbl/eeprom.c **** * \li Compiler:           IAR EWAAVR 3.10c
+   9:grbl/eeprom.c **** * \li Support mail:       avr@atmel.com
+  10:grbl/eeprom.c **** *
+  11:grbl/eeprom.c **** * \li Supported devices:  All devices with split EEPROM erase/write
+  12:grbl/eeprom.c **** *                         capabilities can be used.
+  13:grbl/eeprom.c **** *                         The example is written for ATmega48.
+  14:grbl/eeprom.c **** *
+  15:grbl/eeprom.c **** * \li AppNote:            AVR103 - Using the EEPROM Programming Modes.
+  16:grbl/eeprom.c **** *
+  17:grbl/eeprom.c **** * \li Description:        Example on how to use the split EEPROM erase/write
+  18:grbl/eeprom.c **** *                         capabilities in e.g. ATmega48. All EEPROM
+  19:grbl/eeprom.c **** *                         programming modes are tested, i.e. Erase+Write,
+  20:grbl/eeprom.c **** *                         Erase-only and Write-only.
+  21:grbl/eeprom.c **** *
+  22:grbl/eeprom.c **** *                         $Revision: 1.6 $
+  23:grbl/eeprom.c **** *                         $Date: Friday, February 11, 2005 07:16:44 UTC $
+  24:grbl/eeprom.c **** *
+  25:grbl/eeprom.c **** ****************************************************************************/
+  26:grbl/eeprom.c **** /*
+  27:grbl/eeprom.c ****  *	  Copyright (c) 2018-2019 Thomas Truong
+  28:grbl/eeprom.c ****  *	  										EEPROM Simulation using Flash on STM32F103 and STM32F407
+  29:grbl/eeprom.c ****  *
+  30:grbl/eeprom.c ****  *
+  31:grbl/eeprom.c ****  *
+  32:grbl/eeprom.c ****  *
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s 			page 2
+
+
+  33:grbl/eeprom.c ****  */
+  34:grbl/eeprom.c **** 
+  35:grbl/eeprom.c **** 
+  36:grbl/eeprom.c **** #ifdef STM32
+  37:grbl/eeprom.c **** 	#include <string.h>
+  38:grbl/eeprom.c ****   #include "stm32eeprom.h"
+  39:grbl/eeprom.c ****   #include "settings.h"
+  40:grbl/eeprom.c **** 	unsigned char EE_Buffer[PAGE_SIZE];
+  41:grbl/eeprom.c **** #endif
+  42:grbl/eeprom.c **** 
+  43:grbl/eeprom.c **** 
+  44:grbl/eeprom.c **** #ifdef STM32
+  45:grbl/eeprom.c **** void eeprom_flush()
+  46:grbl/eeprom.c **** {
+  27              		.loc 1 46 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              	.LVL0:
+  32 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 24
+  35              		.cfi_offset 4, -24
+  36              		.cfi_offset 5, -20
+  37              		.cfi_offset 6, -16
+  38              		.cfi_offset 7, -12
+  39              		.cfi_offset 8, -8
+  40              		.cfi_offset 14, -4
+  47:grbl/eeprom.c ****   uint32_t nAddress = EEPROM_START_ADDRESS;
+  48:grbl/eeprom.c ****   uint16_t *pBuffer = (uint16_t *)EE_Buffer;
+  49:grbl/eeprom.c ****   uint16_t nSize = PAGE_SIZE;
+  50:grbl/eeprom.c **** 
+  51:grbl/eeprom.c ****   HAL_FLASH_Unlock();
+  41              		.loc 1 51 0
+  42 0004 FFF7FEFF 		bl	HAL_FLASH_Unlock
+  43              	.LVL1:
+  52:grbl/eeprom.c **** 
+  53:grbl/eeprom.c **** #ifdef STM32F1
+  54:grbl/eeprom.c ****   //__HAL_FLASH_CLEAR_FLAG (FLASH_FLAG_EOP | FLASH_FLAG_WRPERR FLASH | FLASH_FLAG_PGERR  FLASH | FL
+  55:grbl/eeprom.c ****   FLASH_PageErase(EEPROM_START_ADDRESS);
+  44              		.loc 1 55 0
+  45 0008 1948     		ldr	r0, .L8
+  46 000a FFF7FEFF 		bl	FLASH_PageErase
+  47              	.LVL2:
+  56:grbl/eeprom.c ****   FLASH_WaitForLastOperation((uint32_t)FLASH_TIMEOUT_VALUE); //-- !!
+  48              		.loc 1 56 0
+  49 000e 4CF25030 		movw	r0, #50000
+  50 0012 FFF7FEFF 		bl	FLASH_WaitForLastOperation
+  51              	.LVL3:
+  57:grbl/eeprom.c ****   CLEAR_BIT(FLASH->CR, FLASH_CR_PER);
+  52              		.loc 1 57 0
+  53 0016 174A     		ldr	r2, .L8+4
+  48:grbl/eeprom.c ****   uint16_t nSize = PAGE_SIZE;
+  54              		.loc 1 48 0
+  55 0018 174C     		ldr	r4, .L8+8
+  56              		.loc 1 57 0
+  57 001a 1369     		ldr	r3, [r2, #16]
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s 			page 3
+
+
+  58:grbl/eeprom.c **** #endif
+  59:grbl/eeprom.c **** #ifdef STM32F4
+  60:grbl/eeprom.c ****   __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | FLASH_FLAG_PGAERR 
+  61:grbl/eeprom.c ****   FLASH_Erase_Sector(EEPROM_START_SECTOR, VOLTAGE_RANGE_3);
+  62:grbl/eeprom.c ****   FLASH_WaitForLastOperation((uint32_t)FLASH_TIMEOUT_VALUE);
+  63:grbl/eeprom.c ****   CLEAR_BIT(FLASH->CR, (FLASH_CR_SER | FLASH_CR_SNB));
+  64:grbl/eeprom.c **** #endif
+  65:grbl/eeprom.c **** 
+  66:grbl/eeprom.c ****   while (nSize > 0)
+  67:grbl/eeprom.c ****   {
+  68:grbl/eeprom.c ****     if (*pBuffer != 0xffff)
+  69:grbl/eeprom.c ****     {
+  70:grbl/eeprom.c ****     	HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, nAddress, *pBuffer++);
+  71:grbl/eeprom.c ****     }
+  72:grbl/eeprom.c ****     else
+  73:grbl/eeprom.c ****     {
+  74:grbl/eeprom.c ****       pBuffer++;
+  75:grbl/eeprom.c ****     }
+  76:grbl/eeprom.c ****     if (*pBuffer != 0xffff)
+  77:grbl/eeprom.c ****     {
+  78:grbl/eeprom.c ****     	HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, nAddress+2, *pBuffer++);
+  58              		.loc 1 78 0
+  59 001c 174E     		ldr	r6, .L8+12
+  57:grbl/eeprom.c **** #endif
+  60              		.loc 1 57 0
+  61 001e 23F00203 		bic	r3, r3, #2
+  62 0022 C4F10067 		rsb	r7, r4, #134217728
+  63 0026 1361     		str	r3, [r2, #16]
+  64 0028 07F57C47 		add	r7, r7, #64512
+  65 002c 04F58068 		add	r8, r4, #1024
+  66              		.loc 1 78 0
+  67 0030 361B     		subs	r6, r6, r4
+  68              	.LVL4:
+  69              	.L4:
+  68:grbl/eeprom.c ****     {
+  70              		.loc 1 68 0
+  71 0032 2546     		mov	r5, r4
+  72 0034 4FF6FF73 		movw	r3, #65535
+  73 0038 35F8022B 		ldrh	r2, [r5], #2
+  74 003c E119     		adds	r1, r4, r7
+  75              	.LVL5:
+  76 003e 9A42     		cmp	r2, r3
+  77 0040 04F10404 		add	r4, r4, #4
+  78 0044 03D0     		beq	.L2
+  70:grbl/eeprom.c ****     }
+  79              		.loc 1 70 0
+  80 0046 0023     		movs	r3, #0
+  81 0048 0120     		movs	r0, #1
+  82 004a FFF7FEFF 		bl	HAL_FLASH_Program
+  83              	.LVL6:
+  84              	.L2:
+  76:grbl/eeprom.c ****     {
+  85              		.loc 1 76 0
+  86 004e 4FF6FF73 		movw	r3, #65535
+  87 0052 2A88     		ldrh	r2, [r5]
+  88              		.loc 1 78 0
+  89 0054 A119     		adds	r1, r4, r6
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s 			page 4
+
+
+  76:grbl/eeprom.c ****     {
+  90              		.loc 1 76 0
+  91 0056 9A42     		cmp	r2, r3
+  92 0058 03D0     		beq	.L3
+  93              		.loc 1 78 0
+  94 005a 0023     		movs	r3, #0
+  95 005c 0120     		movs	r0, #1
+  96 005e FFF7FEFF 		bl	HAL_FLASH_Program
+  97              	.LVL7:
+  98              	.L3:
+  66:grbl/eeprom.c ****   {
+  99              		.loc 1 66 0
+ 100 0062 4445     		cmp	r4, r8
+ 101 0064 E5D1     		bne	.L4
+  79:grbl/eeprom.c ****     }
+  80:grbl/eeprom.c ****     else
+  81:grbl/eeprom.c ****     {
+  82:grbl/eeprom.c ****       pBuffer++;
+  83:grbl/eeprom.c ****     }
+  84:grbl/eeprom.c ****     nSize -= 4;
+  85:grbl/eeprom.c ****     nAddress += 4;
+  86:grbl/eeprom.c ****   }
+  87:grbl/eeprom.c **** 
+  88:grbl/eeprom.c ****   HAL_FLASH_Lock();
+  89:grbl/eeprom.c **** 
+  90:grbl/eeprom.c **** }
+ 102              		.loc 1 90 0
+ 103 0066 BDE8F041 		pop	{r4, r5, r6, r7, r8, lr}
+ 104              	.LCFI1:
+ 105              		.cfi_restore 14
+ 106              		.cfi_restore 8
+ 107              		.cfi_restore 7
+ 108              		.cfi_restore 6
+ 109              		.cfi_restore 5
+ 110              		.cfi_restore 4
+ 111              		.cfi_def_cfa_offset 0
+  88:grbl/eeprom.c **** 
+ 112              		.loc 1 88 0
+ 113 006a FFF7FEBF 		b	HAL_FLASH_Lock
+ 114              	.LVL8:
+ 115              	.L9:
+ 116 006e 00BF     		.align	2
+ 117              	.L8:
+ 118 0070 00FC0008 		.word	134282240
+ 119 0074 00200240 		.word	1073881088
+ 120 0078 00000000 		.word	EE_Buffer
+ 121 007c FEFB0008 		.word	134282238
+ 122              		.cfi_endproc
+ 123              	.LFE703:
+ 125              		.section	.text.eeprom_init,"ax",%progbits
+ 126              		.align	1
+ 127              		.p2align 2,,3
+ 128              		.global	eeprom_init
+ 129              		.syntax unified
+ 130              		.thumb
+ 131              		.thumb_func
+ 132              		.fpu softvfp
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s 			page 5
+
+
+ 134              	eeprom_init:
+ 135              	.LFB704:
+  91:grbl/eeprom.c **** 
+  92:grbl/eeprom.c **** void eeprom_init()
+  93:grbl/eeprom.c **** {
+ 136              		.loc 1 93 0
+ 137              		.cfi_startproc
+ 138              		@ args = 0, pretend = 0, frame = 0
+ 139              		@ frame_needed = 0, uses_anonymous_args = 0
+ 140              		@ link register save eliminated.
+ 141              	.LVL9:
+ 142 0000 10B4     		push	{r4}
+ 143              	.LCFI2:
+ 144              		.cfi_def_cfa_offset 4
+ 145              		.cfi_offset 4, -4
+  94:grbl/eeprom.c ****   uint16_t VarIdx = 0;
+  95:grbl/eeprom.c ****   uint8_t *pTmp = EE_Buffer;
+ 146              		.loc 1 95 0
+ 147 0002 0D4C     		ldr	r4, .L15
+ 148 0004 2346     		mov	r3, r4
+ 149 0006 C4F10061 		rsb	r1, r4, #134217728
+ 150 000a 01F57C41 		add	r1, r1, #64512
+ 151 000e 04F58060 		add	r0, r4, #1024
+ 152              	.LVL10:
+ 153              	.L11:
+ 154 0012 5A18     		adds	r2, r3, r1
+  96:grbl/eeprom.c **** 
+  97:grbl/eeprom.c ****   for (VarIdx = 0; VarIdx < PAGE_SIZE; VarIdx++)
+  98:grbl/eeprom.c ****   {
+  99:grbl/eeprom.c ****     *pTmp++ = (*(__IO uint8_t*)(EEPROM_START_ADDRESS + VarIdx));
+ 155              		.loc 1 99 0 discriminator 3
+ 156 0014 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 157 0016 03F8012B 		strb	r2, [r3], #1
+ 158              	.LVL11:
+  97:grbl/eeprom.c ****   {
+ 159              		.loc 1 97 0 discriminator 3
+ 160 001a 8342     		cmp	r3, r0
+ 161 001c F9D1     		bne	.L11
+ 100:grbl/eeprom.c ****   }
+ 101:grbl/eeprom.c **** 
+ 102:grbl/eeprom.c ****   if (EE_Buffer[0] != SETTINGS_VERSION)
+ 162              		.loc 1 102 0
+ 163 001e 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 164              	.LVL12:
+ 165 0020 0D2B     		cmp	r3, #13
+ 166 0022 06D0     		beq	.L10
+ 167 0024 4FF48062 		mov	r2, #1024
+ 168 0028 FF21     		movs	r1, #255
+ 169 002a 0348     		ldr	r0, .L15
+ 103:grbl/eeprom.c ****   {
+ 104:grbl/eeprom.c ****     pTmp = EE_Buffer;
+ 105:grbl/eeprom.c **** 
+ 106:grbl/eeprom.c ****     for (VarIdx = 0; VarIdx < PAGE_SIZE; VarIdx++)
+ 107:grbl/eeprom.c ****     {
+ 108:grbl/eeprom.c ****       *pTmp++ = 0xFF;
+ 109:grbl/eeprom.c ****     }
+ 110:grbl/eeprom.c ****   }
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s 			page 6
+
+
+ 111:grbl/eeprom.c **** }
+ 170              		.loc 1 111 0
+ 171 002c 10BC     		pop	{r4}
+ 172              	.LCFI3:
+ 173              		.cfi_remember_state
+ 174              		.cfi_restore 4
+ 175              		.cfi_def_cfa_offset 0
+ 176 002e FFF7FEBF 		b	memset
+ 177              	.LVL13:
+ 178              	.L10:
+ 179              	.LCFI4:
+ 180              		.cfi_restore_state
+ 181 0032 10BC     		pop	{r4}
+ 182              	.LCFI5:
+ 183              		.cfi_restore 4
+ 184              		.cfi_def_cfa_offset 0
+ 185 0034 7047     		bx	lr
+ 186              	.L16:
+ 187 0036 00BF     		.align	2
+ 188              	.L15:
+ 189 0038 00000000 		.word	EE_Buffer
+ 190              		.cfi_endproc
+ 191              	.LFE704:
+ 193              		.section	.text.eeprom_get_char,"ax",%progbits
+ 194              		.align	1
+ 195              		.p2align 2,,3
+ 196              		.global	eeprom_get_char
+ 197              		.syntax unified
+ 198              		.thumb
+ 199              		.thumb_func
+ 200              		.fpu softvfp
+ 202              	eeprom_get_char:
+ 203              	.LFB705:
+ 112:grbl/eeprom.c **** #endif
+ 113:grbl/eeprom.c **** 
+ 114:grbl/eeprom.c **** /*! \brief  Read byte from EEPROM.
+ 115:grbl/eeprom.c ****  *
+ 116:grbl/eeprom.c ****  *  This function reads one byte from a given EEPROM address.
+ 117:grbl/eeprom.c ****  *
+ 118:grbl/eeprom.c ****  *  \note  The CPU is halted for 4 clock cycles during EEPROM read.
+ 119:grbl/eeprom.c ****  *
+ 120:grbl/eeprom.c ****  *  \param  addr  EEPROM address to read from.
+ 121:grbl/eeprom.c ****  *  \return  The byte read from the EEPROM address.
+ 122:grbl/eeprom.c ****  */
+ 123:grbl/eeprom.c **** unsigned char eeprom_get_char( unsigned int addr )
+ 124:grbl/eeprom.c **** {
+ 204              		.loc 1 124 0
+ 205              		.cfi_startproc
+ 206              		@ args = 0, pretend = 0, frame = 0
+ 207              		@ frame_needed = 0, uses_anonymous_args = 0
+ 208              		@ link register save eliminated.
+ 209              	.LVL14:
+ 125:grbl/eeprom.c **** #ifdef STM32
+ 126:grbl/eeprom.c ****   return EE_Buffer[addr];
+ 210              		.loc 1 126 0
+ 211 0000 014B     		ldr	r3, .L18
+ 127:grbl/eeprom.c **** #endif
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s 			page 7
+
+
+ 128:grbl/eeprom.c **** }
+ 212              		.loc 1 128 0
+ 213 0002 185C     		ldrb	r0, [r3, r0]	@ zero_extendqisi2
+ 214              	.LVL15:
+ 215 0004 7047     		bx	lr
+ 216              	.L19:
+ 217 0006 00BF     		.align	2
+ 218              	.L18:
+ 219 0008 00000000 		.word	EE_Buffer
+ 220              		.cfi_endproc
+ 221              	.LFE705:
+ 223              		.section	.text.eeprom_put_char,"ax",%progbits
+ 224              		.align	1
+ 225              		.p2align 2,,3
+ 226              		.global	eeprom_put_char
+ 227              		.syntax unified
+ 228              		.thumb
+ 229              		.thumb_func
+ 230              		.fpu softvfp
+ 232              	eeprom_put_char:
+ 233              	.LFB706:
+ 129:grbl/eeprom.c **** 
+ 130:grbl/eeprom.c **** /*! \brief  Write byte to EEPROM.
+ 131:grbl/eeprom.c ****  *
+ 132:grbl/eeprom.c ****  *  This function writes one byte to a given EEPROM address.
+ 133:grbl/eeprom.c ****  *  The differences between the existing byte and the new value is used
+ 134:grbl/eeprom.c ****  *  to select the most efficient EEPROM programming mode.
+ 135:grbl/eeprom.c ****  *
+ 136:grbl/eeprom.c ****  *  \note  The CPU is halted for 2 clock cycles during EEPROM programming.
+ 137:grbl/eeprom.c ****  *
+ 138:grbl/eeprom.c ****  *  \note  When this function returns, the new EEPROM value is not available
+ 139:grbl/eeprom.c ****  *         until the EEPROM programming time has passed. The EEPE bit in EECR
+ 140:grbl/eeprom.c ****  *         should be polled to check whether the programming is finished.
+ 141:grbl/eeprom.c ****  *
+ 142:grbl/eeprom.c ****  *  \note  The EEPROM_GetChar() function checks the EEPE bit automatically.
+ 143:grbl/eeprom.c ****  *
+ 144:grbl/eeprom.c ****  *  \param  addr  EEPROM address to write to.
+ 145:grbl/eeprom.c ****  *  \param  new_value  New EEPROM value.
+ 146:grbl/eeprom.c ****  */
+ 147:grbl/eeprom.c **** void eeprom_put_char( unsigned int addr, unsigned char new_value )
+ 148:grbl/eeprom.c **** {
+ 234              		.loc 1 148 0
+ 235              		.cfi_startproc
+ 236              		@ args = 0, pretend = 0, frame = 0
+ 237              		@ frame_needed = 0, uses_anonymous_args = 0
+ 238              		@ link register save eliminated.
+ 239              	.LVL16:
+ 149:grbl/eeprom.c **** #ifdef STM32
+ 150:grbl/eeprom.c ****   EE_Buffer[addr] = new_value;
+ 240              		.loc 1 150 0
+ 241 0000 014B     		ldr	r3, .L21
+ 242 0002 1954     		strb	r1, [r3, r0]
+ 151:grbl/eeprom.c **** #endif
+ 152:grbl/eeprom.c **** }
+ 243              		.loc 1 152 0
+ 244 0004 7047     		bx	lr
+ 245              	.L22:
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s 			page 8
+
+
+ 246 0006 00BF     		.align	2
+ 247              	.L21:
+ 248 0008 00000000 		.word	EE_Buffer
+ 249              		.cfi_endproc
+ 250              	.LFE706:
+ 252              		.section	.text.memcpy_to_eeprom_with_checksum,"ax",%progbits
+ 253              		.align	1
+ 254              		.p2align 2,,3
+ 255              		.global	memcpy_to_eeprom_with_checksum
+ 256              		.syntax unified
+ 257              		.thumb
+ 258              		.thumb_func
+ 259              		.fpu softvfp
+ 261              	memcpy_to_eeprom_with_checksum:
+ 262              	.LFB707:
+ 153:grbl/eeprom.c **** 
+ 154:grbl/eeprom.c **** // Extensions added as part of Grbl 
+ 155:grbl/eeprom.c **** 
+ 156:grbl/eeprom.c **** 
+ 157:grbl/eeprom.c **** void memcpy_to_eeprom_with_checksum(unsigned int destination, char *source, unsigned int size) {
+ 263              		.loc 1 157 0
+ 264              		.cfi_startproc
+ 265              		@ args = 0, pretend = 0, frame = 0
+ 266              		@ frame_needed = 0, uses_anonymous_args = 0
+ 267              	.LVL17:
+ 268 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 269              	.LCFI6:
+ 270              		.cfi_def_cfa_offset 24
+ 271              		.cfi_offset 4, -24
+ 272              		.cfi_offset 5, -20
+ 273              		.cfi_offset 6, -16
+ 274              		.cfi_offset 7, -12
+ 275              		.cfi_offset 8, -8
+ 276              		.cfi_offset 14, -4
+ 158:grbl/eeprom.c ****   unsigned char checksum = 0;
+ 159:grbl/eeprom.c ****   unsigned char temp1, temp2;
+ 160:grbl/eeprom.c ****   for(; size > 0; size--) {
+ 277              		.loc 1 160 0
+ 278 0004 002A     		cmp	r2, #0
+ 279 0006 4FD0     		beq	.L32
+ 158:grbl/eeprom.c ****   unsigned char checksum = 0;
+ 280              		.loc 1 158 0
+ 281 0008 0023     		movs	r3, #0
+ 282 000a 294F     		ldr	r7, .L35
+ 283 000c 441E     		subs	r4, r0, #1
+ 284 000e 3C44     		add	r4, r4, r7
+ 285 0010 8E18     		adds	r6, r1, r2
+ 286              	.LVL18:
+ 287              	.L25:
+ 161:grbl/eeprom.c **** 	temp1 = checksum << 1;
+ 288              		.loc 1 161 0
+ 289 0012 5D00     		lsls	r5, r3, #1
+ 162:grbl/eeprom.c **** 	temp2 = checksum >> 7;
+ 163:grbl/eeprom.c ****     checksum = temp1 || temp2;
+ 290              		.loc 1 163 0
+ 291 0014 15F0FE0F 		tst	r5, #254
+ 164:grbl/eeprom.c ****     checksum += *source;
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s 			page 9
+
+
+ 292              		.loc 1 164 0
+ 293 0018 11F8015B 		ldrb	r5, [r1], #1	@ zero_extendqisi2
+ 294              	.LVL19:
+ 163:grbl/eeprom.c ****     checksum += *source;
+ 295              		.loc 1 163 0
+ 296 001c 3DD1     		bne	.L26
+ 297              		.loc 1 164 0
+ 298 001e 05EBD313 		add	r3, r5, r3, lsr #7
+ 299              	.LVL20:
+ 160:grbl/eeprom.c **** 	temp1 = checksum << 1;
+ 300              		.loc 1 160 0
+ 301 0022 B142     		cmp	r1, r6
+ 302              		.loc 1 164 0
+ 303 0024 DBB2     		uxtb	r3, r3
+ 304              	.LVL21:
+ 305              	.LBB16:
+ 306              	.LBB17:
+ 150:grbl/eeprom.c **** #endif
+ 307              		.loc 1 150 0
+ 308 0026 04F8015F 		strb	r5, [r4, #1]!
+ 309              	.LVL22:
+ 310              	.LBE17:
+ 311              	.LBE16:
+ 160:grbl/eeprom.c **** 	temp1 = checksum << 1;
+ 312              		.loc 1 160 0
+ 313 002a F2D1     		bne	.L25
+ 314              	.L28:
+ 315 002c 1044     		add	r0, r0, r2
+ 316              	.LVL23:
+ 317              	.L24:
+ 318              	.LBB19:
+ 319              	.LBB20:
+ 150:grbl/eeprom.c **** #endif
+ 320              		.loc 1 150 0
+ 321 002e 3B54     		strb	r3, [r7, r0]
+ 322              	.LVL24:
+ 323              	.LBE20:
+ 324              	.LBE19:
+ 325              	.LBB21:
+ 326              	.LBB22:
+  51:grbl/eeprom.c **** 
+ 327              		.loc 1 51 0
+ 328 0030 FFF7FEFF 		bl	HAL_FLASH_Unlock
+ 329              	.LVL25:
+  55:grbl/eeprom.c ****   FLASH_WaitForLastOperation((uint32_t)FLASH_TIMEOUT_VALUE); //-- !!
+ 330              		.loc 1 55 0
+ 331 0034 1F48     		ldr	r0, .L35+4
+ 332 0036 FFF7FEFF 		bl	FLASH_PageErase
+ 333              	.LVL26:
+  56:grbl/eeprom.c ****   CLEAR_BIT(FLASH->CR, FLASH_CR_PER);
+ 334              		.loc 1 56 0
+ 335 003a 4CF25030 		movw	r0, #50000
+ 336 003e FFF7FEFF 		bl	FLASH_WaitForLastOperation
+ 337              	.LVL27:
+  57:grbl/eeprom.c **** #endif
+ 338              		.loc 1 57 0
+ 339 0042 1D4A     		ldr	r2, .L35+8
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s 			page 10
+
+
+  48:grbl/eeprom.c ****   uint16_t nSize = PAGE_SIZE;
+ 340              		.loc 1 48 0
+ 341 0044 1A4C     		ldr	r4, .L35
+  57:grbl/eeprom.c **** #endif
+ 342              		.loc 1 57 0
+ 343 0046 1369     		ldr	r3, [r2, #16]
+  78:grbl/eeprom.c ****     }
+ 344              		.loc 1 78 0
+ 345 0048 1C4E     		ldr	r6, .L35+12
+  57:grbl/eeprom.c **** #endif
+ 346              		.loc 1 57 0
+ 347 004a 23F00203 		bic	r3, r3, #2
+ 348 004e C4F10067 		rsb	r7, r4, #134217728
+ 349 0052 1361     		str	r3, [r2, #16]
+ 350 0054 07F57C47 		add	r7, r7, #64512
+ 351 0058 04F58068 		add	r8, r4, #1024
+  78:grbl/eeprom.c ****     }
+ 352              		.loc 1 78 0
+ 353 005c 361B     		subs	r6, r6, r4
+ 354              	.LVL28:
+ 355              	.L31:
+  68:grbl/eeprom.c ****     {
+ 356              		.loc 1 68 0
+ 357 005e 2546     		mov	r5, r4
+ 358 0060 4FF6FF73 		movw	r3, #65535
+ 359 0064 35F8022B 		ldrh	r2, [r5], #2
+ 360 0068 E119     		adds	r1, r4, r7
+ 361              	.LVL29:
+ 362 006a 9A42     		cmp	r2, r3
+ 363 006c 04F10404 		add	r4, r4, #4
+ 364 0070 03D0     		beq	.L29
+  70:grbl/eeprom.c ****     }
+ 365              		.loc 1 70 0
+ 366 0072 0023     		movs	r3, #0
+ 367 0074 0120     		movs	r0, #1
+ 368 0076 FFF7FEFF 		bl	HAL_FLASH_Program
+ 369              	.LVL30:
+ 370              	.L29:
+  76:grbl/eeprom.c ****     {
+ 371              		.loc 1 76 0
+ 372 007a 4FF6FF73 		movw	r3, #65535
+ 373 007e 2A88     		ldrh	r2, [r5]
+  78:grbl/eeprom.c ****     }
+ 374              		.loc 1 78 0
+ 375 0080 A119     		adds	r1, r4, r6
+  76:grbl/eeprom.c ****     {
+ 376              		.loc 1 76 0
+ 377 0082 9A42     		cmp	r2, r3
+ 378 0084 03D0     		beq	.L30
+  78:grbl/eeprom.c ****     }
+ 379              		.loc 1 78 0
+ 380 0086 0023     		movs	r3, #0
+ 381 0088 0120     		movs	r0, #1
+ 382 008a FFF7FEFF 		bl	HAL_FLASH_Program
+ 383              	.LVL31:
+ 384              	.L30:
+  66:grbl/eeprom.c ****   {
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s 			page 11
+
+
+ 385              		.loc 1 66 0
+ 386 008e 4445     		cmp	r4, r8
+ 387 0090 E5D1     		bne	.L31
+ 388              	.LBE22:
+ 389              	.LBE21:
+ 165:grbl/eeprom.c ****     eeprom_put_char(destination++, *(source++)); 
+ 166:grbl/eeprom.c ****   }
+ 167:grbl/eeprom.c ****   eeprom_put_char(destination, checksum);
+ 168:grbl/eeprom.c **** 
+ 169:grbl/eeprom.c **** #ifdef STM32
+ 170:grbl/eeprom.c ****   eeprom_flush();
+ 171:grbl/eeprom.c **** #endif
+ 172:grbl/eeprom.c **** 
+ 173:grbl/eeprom.c **** }
+ 390              		.loc 1 173 0
+ 391 0092 BDE8F041 		pop	{r4, r5, r6, r7, r8, lr}
+ 392              	.LCFI7:
+ 393              		.cfi_remember_state
+ 394              		.cfi_restore 14
+ 395              		.cfi_restore 8
+ 396              		.cfi_restore 7
+ 397              		.cfi_restore 6
+ 398              		.cfi_restore 5
+ 399              		.cfi_restore 4
+ 400              		.cfi_def_cfa_offset 0
+ 401              	.LBB24:
+ 402              	.LBB23:
+  88:grbl/eeprom.c **** 
+ 403              		.loc 1 88 0
+ 404 0096 FFF7FEBF 		b	HAL_FLASH_Lock
+ 405              	.LVL32:
+ 406              	.L26:
+ 407              	.LCFI8:
+ 408              		.cfi_restore_state
+ 409              	.LBE23:
+ 410              	.LBE24:
+ 164:grbl/eeprom.c ****     eeprom_put_char(destination++, *(source++)); 
+ 411              		.loc 1 164 0
+ 412 009a 6B1C     		adds	r3, r5, #1
+ 413              	.LVL33:
+ 160:grbl/eeprom.c **** 	temp1 = checksum << 1;
+ 414              		.loc 1 160 0
+ 415 009c B142     		cmp	r1, r6
+ 416              	.LBB25:
+ 417              	.LBB18:
+ 150:grbl/eeprom.c **** #endif
+ 418              		.loc 1 150 0
+ 419 009e 04F8015F 		strb	r5, [r4, #1]!
+ 420              	.LBE18:
+ 421              	.LBE25:
+ 164:grbl/eeprom.c ****     eeprom_put_char(destination++, *(source++)); 
+ 422              		.loc 1 164 0
+ 423 00a2 DBB2     		uxtb	r3, r3
+ 424              	.LVL34:
+ 160:grbl/eeprom.c **** 	temp1 = checksum << 1;
+ 425              		.loc 1 160 0
+ 426 00a4 B5D1     		bne	.L25
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s 			page 12
+
+
+ 427 00a6 C1E7     		b	.L28
+ 428              	.LVL35:
+ 429              	.L32:
+ 158:grbl/eeprom.c ****   unsigned char temp1, temp2;
+ 430              		.loc 1 158 0
+ 431 00a8 1346     		mov	r3, r2
+ 432 00aa 014F     		ldr	r7, .L35
+ 433 00ac BFE7     		b	.L24
+ 434              	.L36:
+ 435 00ae 00BF     		.align	2
+ 436              	.L35:
+ 437 00b0 00000000 		.word	EE_Buffer
+ 438 00b4 00FC0008 		.word	134282240
+ 439 00b8 00200240 		.word	1073881088
+ 440 00bc FEFB0008 		.word	134282238
+ 441              		.cfi_endproc
+ 442              	.LFE707:
+ 444              		.section	.text.memcpy_from_eeprom_with_checksum,"ax",%progbits
+ 445              		.align	1
+ 446              		.p2align 2,,3
+ 447              		.global	memcpy_from_eeprom_with_checksum
+ 448              		.syntax unified
+ 449              		.thumb
+ 450              		.thumb_func
+ 451              		.fpu softvfp
+ 453              	memcpy_from_eeprom_with_checksum:
+ 454              	.LFB708:
+ 174:grbl/eeprom.c **** 
+ 175:grbl/eeprom.c **** int memcpy_from_eeprom_with_checksum(char *destination, unsigned int source, unsigned int size) {
+ 455              		.loc 1 175 0
+ 456              		.cfi_startproc
+ 457              		@ args = 0, pretend = 0, frame = 0
+ 458              		@ frame_needed = 0, uses_anonymous_args = 0
+ 459              		@ link register save eliminated.
+ 460              	.LVL36:
+ 461 0000 F0B4     		push	{r4, r5, r6, r7}
+ 462              	.LCFI9:
+ 463              		.cfi_def_cfa_offset 16
+ 464              		.cfi_offset 4, -16
+ 465              		.cfi_offset 5, -12
+ 466              		.cfi_offset 6, -8
+ 467              		.cfi_offset 7, -4
+ 176:grbl/eeprom.c ****   unsigned char data, checksum = 0;
+ 177:grbl/eeprom.c ****   unsigned char temp1, temp2;
+ 178:grbl/eeprom.c ****   for(; size > 0; size--) { 
+ 468              		.loc 1 178 0
+ 469 0002 0AB3     		cbz	r2, .L43
+ 176:grbl/eeprom.c ****   unsigned char data, checksum = 0;
+ 470              		.loc 1 176 0
+ 471 0004 0023     		movs	r3, #0
+ 472 0006 DFF848C0 		ldr	ip, .L45
+ 473 000a 4D1E     		subs	r5, r1, #1
+ 474 000c 6544     		add	r5, r5, ip
+ 475 000e 8718     		adds	r7, r0, r2
+ 476              	.LVL37:
+ 477              	.L39:
+ 478              	.LBB26:
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s 			page 13
+
+
+ 479              	.LBB27:
+ 126:grbl/eeprom.c **** #endif
+ 480              		.loc 1 126 0
+ 481 0010 15F8014F 		ldrb	r4, [r5, #1]!	@ zero_extendqisi2
+ 482              	.LVL38:
+ 483              	.LBE27:
+ 484              	.LBE26:
+ 179:grbl/eeprom.c ****     data = eeprom_get_char(source++);
+ 180:grbl/eeprom.c **** 	temp1 = checksum << 1;
+ 485              		.loc 1 180 0
+ 486 0014 5E00     		lsls	r6, r3, #1
+ 181:grbl/eeprom.c **** 	temp2 = checksum >> 7;
+ 182:grbl/eeprom.c ****     checksum = temp1 || temp2;
+ 487              		.loc 1 182 0
+ 488 0016 16F0FE0F 		tst	r6, #254
+ 183:grbl/eeprom.c ****     checksum += data;    
+ 489              		.loc 1 183 0
+ 490 001a 04EBD313 		add	r3, r4, r3, lsr #7
+ 491              	.LVL39:
+ 184:grbl/eeprom.c ****     *(destination++) = data; 
+ 492              		.loc 1 184 0
+ 493 001e 00F8014B 		strb	r4, [r0], #1
+ 494              	.LVL40:
+ 183:grbl/eeprom.c ****     checksum += data;    
+ 495              		.loc 1 183 0
+ 496 0022 04F10106 		add	r6, r4, #1
+ 497 0026 DBB2     		uxtb	r3, r3
+ 498              	.LVL41:
+ 182:grbl/eeprom.c ****     checksum += data;    
+ 499              		.loc 1 182 0
+ 500 0028 0AD1     		bne	.L40
+ 178:grbl/eeprom.c ****     data = eeprom_get_char(source++);
+ 501              		.loc 1 178 0
+ 502 002a B842     		cmp	r0, r7
+ 503 002c F0D1     		bne	.L39
+ 504              	.L42:
+ 505 002e 1144     		add	r1, r1, r2
+ 506              	.LVL42:
+ 507              	.L38:
+ 185:grbl/eeprom.c ****   }
+ 186:grbl/eeprom.c ****   return(checksum == eeprom_get_char(source));
+ 508              		.loc 1 186 0
+ 509 0030 1CF80100 		ldrb	r0, [ip, r1]	@ zero_extendqisi2
+ 510              	.LVL43:
+ 187:grbl/eeprom.c **** }
+ 511              		.loc 1 187 0
+ 512 0034 F0BC     		pop	{r4, r5, r6, r7}
+ 513              	.LCFI10:
+ 514              		.cfi_remember_state
+ 515              		.cfi_restore 7
+ 516              		.cfi_restore 6
+ 517              		.cfi_restore 5
+ 518              		.cfi_restore 4
+ 519              		.cfi_def_cfa_offset 0
+ 520 0036 C01A     		subs	r0, r0, r3
+ 521 0038 B0FA80F0 		clz	r0, r0
+ 522 003c 4009     		lsrs	r0, r0, #5
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s 			page 14
+
+
+ 523 003e 7047     		bx	lr
+ 524              	.LVL44:
+ 525              	.L40:
+ 526              	.LCFI11:
+ 527              		.cfi_restore_state
+ 178:grbl/eeprom.c ****     data = eeprom_get_char(source++);
+ 528              		.loc 1 178 0
+ 529 0040 8742     		cmp	r7, r0
+ 183:grbl/eeprom.c ****     *(destination++) = data; 
+ 530              		.loc 1 183 0
+ 531 0042 F3B2     		uxtb	r3, r6
+ 532              	.LVL45:
+ 178:grbl/eeprom.c ****     data = eeprom_get_char(source++);
+ 533              		.loc 1 178 0
+ 534 0044 E4D1     		bne	.L39
+ 535 0046 F2E7     		b	.L42
+ 536              	.LVL46:
+ 537              	.L43:
+ 176:grbl/eeprom.c ****   unsigned char temp1, temp2;
+ 538              		.loc 1 176 0
+ 539 0048 1346     		mov	r3, r2
+ 540 004a DFF804C0 		ldr	ip, .L45
+ 541 004e EFE7     		b	.L38
+ 542              	.L46:
+ 543              		.align	2
+ 544              	.L45:
+ 545 0050 00000000 		.word	EE_Buffer
+ 546              		.cfi_endproc
+ 547              	.LFE708:
+ 549              		.comm	EE_Buffer,1024,4
+ 550              		.text
+ 551              	.Letext0:
+ 552              		.file 2 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/machine/_default_types
+ 553              		.file 3 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/sys/lock.h"
+ 554              		.file 4 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/sys/_types.h"
+ 555              		.file 5 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/lib/gcc/arm-none-eabi/7.3.1/include/stddef.h
+ 556              		.file 6 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/sys/reent.h"
+ 557              		.file 7 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/sys/_stdint.h"
+ 558              		.file 8 "Drivers/CMSIS/Include/core_cm3.h"
+ 559              		.file 9 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h"
+ 560              		.file 10 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 561              		.file 11 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
+ 562              		.file 12 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/math.h"
+ 563              		.file 13 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_tim.h"
+ 564              		.file 14 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h"
+ 565              		.file 15 "stm32/stm32utilities.h"
+ 566              		.file 16 "/usr/local/Cellar/gcc-arm-none-eabi/20180627/arm-none-eabi/include/stdlib.h"
+ 567              		.file 17 "grbl/system.h"
+ 568              		.file 18 "grbl/gcode.h"
+ 569              		.file 19 "grbl/settings.h"
+ 570              		.file 20 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h"
+ 571              		.file 21 "stm32/stm32eeprom.h"
+ 572              		.file 22 "<built-in>"
+ARM GAS  /var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s 			page 15
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 eeprom.c
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s:16     .text.eeprom_flush:0000000000000000 $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s:24     .text.eeprom_flush:0000000000000000 eeprom_flush
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s:118    .text.eeprom_flush:0000000000000070 $d
+                            *COM*:0000000000000400 EE_Buffer
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s:126    .text.eeprom_init:0000000000000000 $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s:134    .text.eeprom_init:0000000000000000 eeprom_init
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s:189    .text.eeprom_init:0000000000000038 $d
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s:194    .text.eeprom_get_char:0000000000000000 $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s:202    .text.eeprom_get_char:0000000000000000 eeprom_get_char
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s:219    .text.eeprom_get_char:0000000000000008 $d
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s:224    .text.eeprom_put_char:0000000000000000 $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s:232    .text.eeprom_put_char:0000000000000000 eeprom_put_char
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s:248    .text.eeprom_put_char:0000000000000008 $d
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s:253    .text.memcpy_to_eeprom_with_checksum:0000000000000000 $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s:261    .text.memcpy_to_eeprom_with_checksum:0000000000000000 memcpy_to_eeprom_with_checksum
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s:437    .text.memcpy_to_eeprom_with_checksum:00000000000000b0 $d
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s:445    .text.memcpy_from_eeprom_with_checksum:0000000000000000 $t
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s:453    .text.memcpy_from_eeprom_with_checksum:0000000000000000 memcpy_from_eeprom_with_checksum
+/var/folders/m1/3lv6xmzs0mlckxs4mx90nfb40000gn/T//ccZDgic2.s:545    .text.memcpy_from_eeprom_with_checksum:0000000000000050 $d
+
+UNDEFINED SYMBOLS
+HAL_FLASH_Unlock
+FLASH_PageErase
+FLASH_WaitForLastOperation
+HAL_FLASH_Program
+HAL_FLASH_Lock
+memset

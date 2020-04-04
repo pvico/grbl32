@@ -119,7 +119,7 @@ make
 
 <img src="/docs/SWD_CONN.jpg">
 
-##### I made myself an ad-hoc cable
+##### I made an ad-hoc cable
 
 <img src="/docs/ADHOC_CABLE.jpg">
 

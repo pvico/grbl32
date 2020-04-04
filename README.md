@@ -112,7 +112,7 @@ make
 ***
 ## Flash the firmware
 
-#### Connect the ST-LINK V2 to the blue pill
+#### Connect the ST-LINK V2 to the Blue Pill
 
 ##### Connection table
 
@@ -152,7 +152,7 @@ make flash
 ***
 ## Test the firmware
 
-On Mac and Linux, you can use the `screen` command to communicate serially with your blue pill board. I recommend `miniterm.py`.
+On Mac and Linux, you can use the `screen` command to communicate serially with your Blue Pill board. I recommend `miniterm.py`.
 
 #### Install miniterm.py
 
@@ -209,7 +209,7 @@ If the Blue Pill was to be used in production, the serial interface should go th
 
 <img src="/docs/STLINK+FTDI.jpg">
 
-Note that the VCC pin of the FTDI is not connected to the Blue Pill, the ST-LINK is powering it
+Note that the VCC pin of the FTDI is not connected to the Blue Pill as the ST-LINK is powering it
 
 #### Check the FTDI device address:
 
@@ -293,7 +293,7 @@ $130=280.000
 $131=377.000
 $132=53.000
 ```
-NOTE: if you re-flashed a new firmware with modified defaults in `grbl/defaults.h`, the new default parameters will only appear after you reset them. Type `$RST=$` + `<return>` to reset the parameters to firmware defaults.
+NOTE: if you re-flash a new firmware with modified defaults in `grbl/defaults.h`, the new default parameters will only appear after you reset them. Type `$RST=$` + `<return>` to reset the parameters to firmware defaults.
 
 To leave the Alarm state, unlock the device with `$X` followed by `<return>` then hit `?`
 ```

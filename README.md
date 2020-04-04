@@ -28,7 +28,9 @@ This repository is mostly an adaptation of the grbl32 repository from tomsroboti
 
 My intention is to use this as part of a larger project which will have a CNC controller board of my own design including the STM32 MCU, the stepper drivers, opto-coupled inputs for the limit switches, PWM spindle speed control and a buck converter providing 3.3V from the 24V stepper motor power supply. I will have the PCB fully assembled from [JLCPCB](https://jlcpcb.com).
 
-Another project to come is to stream the gcode and GRBL commands from a ESP32 board with touch screen, jog controls and WIFI to upload the gcode files from my Mac to the CNC. This, I already do with a Raspberry Pi clone connected to my Arduino Nano/CNC shield V4.
+Another project to come is to stream the gcode and GRBL commands from an ESP32 board with touch screen, jog controls and WIFI to upload the gcode files from my Mac to the CNC. This, I already do with a Raspberry Pi clone connected to my Arduino Nano/CNC shield V4.
+
+Please note that this is still work in progress and not yet fully tested in real CNC operation. Use at your own risk.
 
 ***
 ## Required hardware 
@@ -138,7 +140,7 @@ git clone git@github.com:pvico/grbl32.git
 
 #### Modify it
 
-Verify the CNC machine selection and settings in `grbl/config.h` and `grbl/defaults.h`. The default configuration is for my Ebay/Amazon chinese 3040.
+Modify as required the CNC machine selection and settings in `grbl/config.h` and `grbl/defaults.h`. The default configuration is for my Ebay/Amazon chinese 3040.
 
 #### Compile it
 

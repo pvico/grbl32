@@ -25,4 +25,4 @@ Please refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code
 
 * A cheap chinese ST-Link V2 programmer
 
-    ![ST-Link V2](/docs/ST-LINK V2.jpg)
+    [<img src="/docs/ST-LINK V2.jpg">](/docs/ST-LINK V2.jpg)

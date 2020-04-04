@@ -43,54 +43,54 @@ This one seems to work at 921600 baud. You can get it [here](https://www.amazon.
 
 #### The GNU Embedded Toolchain for Arm
 
-    #### Mac
-    Note: homebrew must be installed.
+#### Mac
+Note: homebrew must be installed.
 
-    ```
-    brew install gcc-arm-none-eabi
-    ```
+```
+brew install gcc-arm-none-eabi
+```
 
-    #### Linux
+#### Linux
 
-    Install the toolchain as per your Linux distro instructions. For example on debian/ubuntu:
-    ```
-    sudo apt-get update
-    sudo apt-get install gcc-arm-none-eabi
-    ```
+Install the toolchain as per your Linux distro instructions. For example on debian/ubuntu:
+```
+sudo apt-get update
+sudo apt-get install gcc-arm-none-eabi
+```
 
 #### The ST-Link software
 
-    #### Mac
+#### Mac
 
-    ```
-    brew install stlink
-    ```
+```
+brew install stlink
+```
 
-    #### Linux
+#### Linux
 
-    ##### With Ubuntu 19.04 or newer:
-    ```
-    sudo apt-get install stlink-tools
-    ```
-    ##### On older debian/ubuntu distros:
+##### With Ubuntu 19.04 or newer:
+```
+sudo apt-get install stlink-tools
+```
+##### On older debian/ubuntu distros:
 
-    ```
-    sudo apt-get install libusb-1.0-0-dev git cmake build-essential
-    git clone https://github.com/texane/stlink stlink.git
-    cd stlink.git
-    make
-    cd build/Release
-    sudo make install
-    ```
-    Test with:
-    ```
-    st-info
-    ```
-    If you get the message `st-info: error while loading shared libraries: libstlink.so.1: cannot open shared object file: No such file or directory`:
-    ```
-    echo "export LD_LIBRARY_PATH=/usr/local/lib" >> ~/.bashrc
-    source ~/.bashrc
-    ```     
+```
+sudo apt-get install libusb-1.0-0-dev git cmake build-essential
+git clone https://github.com/texane/stlink stlink.git
+cd stlink.git
+make
+cd build/Release
+sudo make install
+```
+Test with:
+```
+st-info
+```
+If you get the message `st-info: error while loading shared libraries: libstlink.so.1: cannot open shared object file: No such file or directory`:
+```
+echo "export LD_LIBRARY_PATH=/usr/local/lib" >> ~/.bashrc
+source ~/.bashrc
+```     
 
 ***
 ## Build the firmware

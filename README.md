@@ -90,7 +90,7 @@ Refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code.
 
 ### Build
 
-Download and extract the zip file or clone it
+Download and extract this repository's zip file or clone it
 
 ```
 cd ~
@@ -123,7 +123,7 @@ make
 
 <img src="/docs/ADHOC_CABLE.jpg">
 
-Note: The ST-LINK V2 device *does not appear as a serial device* (there is no entry in /dev/tty* or /dev/cu*).
+Note: The ST-LINK V2 *does not appear as a serial device* (there is no `/dev/tty*` or `/dev/cu*` entry).
 You can verify the connection with:
 ```
 st-info --probe
@@ -176,7 +176,7 @@ ls /dev/tty*
 #### Send GRBL commands serially
 
 ```
-miniterm.py /dev/<my_device_address> 921600
+miniterm.py -e /dev/<my_device_address> 921600
 ```
 will return something like this (with your own device serial address that you entered in the previous command)
 ```
@@ -185,17 +185,20 @@ will return something like this (with your own device serial address that you en
 ```
 Note that you must type Ctrl+] to exit miniterm
 
-Note: if you get garbage or no reply from the blue pill, verify the connection between the blue pill and the USB to FTDI adapter. It is also possible that the baud rate must be reduced. Try a more conservative standard baud rate like 115200. In `Src/usart.h`, comment out the line `#define USART_BAUD_RATE 921600` and un-comment `#define USART_BAUD_RATE 115200`. Compile and flash again. Then connect with `miniterm.py /dev/my_device_address 115200`.  
+Note: if you get garbage or no reply from the blue pill, verify the connection between the blue pill and the USB to FTDI adapter. It is also possible that the baud rate must be reduced. Try a more conservative standard baud rate like 115200. In `Src/usart.h`, comment out the line `#define USART_BAUD_RATE 921600` and un-comment `#define USART_BAUD_RATE 115200`. Compile and flash again. Then connect with `miniterm.py -e /dev/my_device_address 115200`.  
 
 Hit the `<return>` key a few times to see if GRBL reacts:
 ```
+
 ok
+ok
+
 ok
 ok
 ```
 Hit the `?` key to see the status report, no need for `<return>`
 ```
-<Alarm|MPos:0.000,0.000,0.000|Bf:199,254|FS:0,0|WCO:0.000,0.000,0.000>
+?<Alarm|MPos:0.000,0.000,0.000|Bf:199,254|FS:0,0|WCO:0.000,0.000,0.000>
 ```
 On power up, GRBL starts in Alarm state
 
@@ -242,7 +245,7 @@ NOTE: if you re-flashed a new firmware with modified defaults in `grbl/defaults.
 
 To leave the Alarm state, unlock the device with `$X` followed by `<return>`. then hit `?`
 ```
-<Idle|MPos:0.000,0.000,0.000|Bf:199,254|FS:0,0|Ov:100,100,100|A:S>
+?<Idle|MPos:0.000,0.000,0.000|Bf:199,254|FS:0,0|Ov:100,100,100|A:S>
 ```
 Type the following command + `<return>`
 ```
@@ -251,15 +254,15 @@ G90 G94 G21 F100
 GRBL is now in absolute mode, any move coordinates will be relative to the machine zero position.
 Type `X100` + `<return>` and immediately after hit the `?` key a few times. You will see the move progress
 ```
-<Run|MPos:3.338,0.000,0.000|Bf:198,254|FS:494,0>
-<Run|MPos:7.090,0.000,0.000|Bf:198,254|FS:718,0>
-<Run|MPos:12.486,0.000,0.000|Bf:198,254|FS:952,0>
-<Run|MPos:18.460,0.000,0.000|Bf:198,254|FS:1157,0>
-<Run|MPos:25.231,0.000,0.000|Bf:198,254|FS:1352,0>
-<Run|MPos:32.845,0.000,0.000|Bf:198,254|FS:1541,0>
-<Run|MPos:40.545,0.000,0.000|Bf:198,254|FS:1712,0>
-<Run|MPos:50.771,0.000,0.000|Bf:198,254|FS:1879,0>
-<Run|MPos:60.851,0.000,0.000|Bf:198,254|FS:1675,0>
+?<Run|MPos:5.665,0.000,0.000|Bf:198,254|FS:642,0>
+?<Run|MPos:14.036,0.000,0.000|Bf:198,254|FS:1009,0>
+?<Run|MPos:26.131,0.000,0.000|Bf:198,254|FS:1375,0>
+?<Run|MPos:43.985,0.000,0.000|Bf:198,254|FS:1783,0>
+?<Run|MPos:63.030,0.000,0.000|Bf:198,254|FS:1628,0|WCO:0.000,0.000,0.000>
+?<Run|MPos:78.075,0.000,0.000|Bf:198,254|FS:1253,0|Ov:100,100,100|A:S>
+?<Run|MPos:89.926,0.000,0.000|Bf:198,254|FS:848,0>
+?<Run|MPos:97.468,0.000,0.000|Bf:198,254|FS:420,0>
+?<Idle|MPos:100.000,0.000,0.000|Bf:199,254|FS:0,0>
 ```
 
 If you connect a [logic analyser](https://www.saleae.com) or an oscilloscope to the STEP-X pin (normally pin A0 of the blue pill) you can see the step pulses sent to the stepper motor driver.

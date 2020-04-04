@@ -9,7 +9,7 @@
 ***
 ## Highlights
 
-* 3-axis CNC GRBL controller
+* 3-axis 32-bit GRBL firmware
 * Serial baud rate: 921600
 * The STM32F103 outputs up to 250 KHz for each axis
 * Can be used with the "Blue Pill" STM32F103C8 board or any equivalent circuit
@@ -18,7 +18,17 @@
 ***
 ## Description
 
+This is GRBL 1.1f, a firmware used to control a CNC milling machine or laser engraver/cutter, for the STM32F103 micro-controller. That MCU is used on the very cheap "Blue Pill" board.
 
+A few other 32-bit GRBL repositories can be found on Github but most of these use dedicated IDE's like Eclipse or STM32CubeIDE and are not easy to use on a non-Windows computer.
+
+I wanted to be able to edit the code with a text editor like Atom or MS Visual Studio Code and to build and flash the firmware from the command line.
+
+This repository is mostly an adaptation of the grbl32 repository from tomsrobotics ([thomast777/grbl32](https://github.com/thomast777/grbl32)). This last repository also gives the possibility to build a 6-axis firmware for the STM32F103 and STM32F407 MCU's but I only retained the 3-axis STM32F103.
+
+My intention is to use this as part of a larger project which will have a CNC controller board of my own design including the STM32 MCU, the stepper drivers, opto-coupled inputs for the limit switches, PWM spindle speed control and a buck converter providing 3.3V from the 24V stepper motor power supply. I will have the PCB fully assembled from [JLCPCB](https://jlcpcb.com).
+
+Another project to come is to stream the gcode and GRBL commands from a ESP32 board with touch screen, jog controls and WIFI to upload the gcode files from my Mac to the CNC. This, I already do with a Raspberry Pi clone connected to my Arduino Nano/CNC shield V4.
 
 ***
 ## Required hardware 
@@ -165,7 +175,7 @@ make
 
 <img src="/docs/ADHOC_CABLE.jpg">
 
-Note: The ST-LINK V2 *does not appear as a serial device* (there is no `/dev/tty*` or `/dev/cu*` entry).
+Note: The ST-LINK V2 *does not appear as a serial device* (there is no `/dev/tty*` or `/dev/cu*` file for it).
 You can verify the connection with:
 ```
 st-info --probe
@@ -191,7 +201,7 @@ make flash
 |    GND     |    GND    |
 |    VCC     |    3.3    |
 
-* Only connect VCC if the Blue Pill is not powered by the ST-LINK
+* Only connect VCC when the Blue Pill is not powered by the ST-LINK or any other device
 * Connect VCC to 3.3V of the Blue Pill **only if the jumper on the USB to FTDI adapter is on 3.3V!**
 * If the jumper is on 5V or if the adapter has no 3.3V jumper, **connect VCC to 5V of the Blue Pill**. (The Blue Pill has an on-board 3.3V regulator)
 * **NEVER CONNECT A PIN OF THE BLUE PILL TO 5V, the only exception is the 5V pin**
@@ -237,9 +247,9 @@ The device should appear as `/dev/ttyUSBx`.
 #### Send GRBL commands serially
 
 ```
-miniterm.py -e /dev/<my_device_address> 921600
+miniterm.py -e /dev/<my_device_file> 921600
 ```
-will return something like this (with your own device serial address that you entered in the previous command).
+will return something like this (with your own serial device file that you entered in the previous command).
 ```
 --- Miniterm on /dev/cu.usbserial-A50285BI  921600,8,N,1 ---
 --- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H ---
@@ -329,13 +339,45 @@ Type `X100` + `<return>` and immediately after hit the `?` key a few times. You 
 If you connect a [logic analyser](https://www.saleae.com) or an oscilloscope to the STEP-X pin (normally pin A0 of the blue pill) you can see the step pulses sent to the stepper motor driver.
 
 ***
-## Blue Pill pinout
+## Connection to the CNC machine
+
+#### Blue Pill pinout
 
 <img src="/docs/BLUE_PILL_CONN.png">
 
+#### Minimum connections to control a basic CNC like the 3040 with a stepper driver board like the CNC shield
+
+* GND
+* if required (see below), positive supply, from either the USB connector, 5V on the 5V pin or 3.3V on the 3.3V pin
+* STEP-ENABLE
+* STEP-X
+* STEP-Y
+* STEP-Z
+* DIR-X
+* DIR-Y
+* DIR-Z
+
+All these control pins are output pins from the Blue Pill to the CNC shield. There is no need for a 3.3V <-> 5V conversion.
+
+#### Connection to the device sending the serial commands from the controlling computer or device
+
+USART1-TX and USART1-RX must be connected to the device sending the serial commands like the USB to FTDI adapter we used earlier. USART1-TX must be connected to the RX pin of that device and USART1-RX to the TX pin. These pins are 3.3V and you must use a 5V <-> 3.3V adapter board if you intend to connect them to a 5V device like an Arduino.
+
+The GND of that device must be connected to GND of the Blue Pill.
+
+#### Power supply connection
+
+The Blue Pill must be powered (positive supply connection) _from only one device_, either the stepper driver board, the serial device or a 3.3V or 5V power supply. Again, do not put 5V on the 3.3 pin!
+
+The stepper driver board will likely take a higher voltage like 12V or 24V to feed the motors but for boards like the [CNC shields](https://www.banggood.com/CNC-Shield-4-X-DRV8825-Driver-Kit-For-Arduino-3D-Printer-p-1134939.html?cur_warehouse=CN), no 3.3V or 5V is derived from this higher voltage. The ubiquitous [Pololu-like](https://www.pololu.com/category/154/drv8825-stepper-motor-driver-carriers-high-current) driver boards (A4988, DRV8825, etc.) do not require a 5V or 3.3V power supply but they do receive 3.3V or 5V input signals from the controlling device (the Blue Pill).
+
+NOTE: the Blue Pill is not pin compatible with the Arduino Nano. **Do not plug it in a board designed for the Arduino Nano** like the [CNC shield V4](https://www.instructables.com/id/How-to-Use-the-CNC-V4-Board-despite-Its-quirks/).
+
 ***
-## GRBL and GCODE commands
+## Additional documentation
 
 You can find the GRBL commands [in the GRBL wiki](https://github.com/gnea/grbl/wiki/Grbl-v1.1-Commands).
 
 [Here](https://wiki.shapeoko.com/index.php/G-Code) is a list of gcode commands.
+
+Be sure to read the thomast777/grbl32 [wiki pages](https://github.com/thomast777/grbl32/wiki) for additional gcode commands and useful information.

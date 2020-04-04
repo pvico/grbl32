@@ -7,7 +7,6 @@ Refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code.
 
 ***
 ## Highlights
-***
 
 * 3-axis STM32F103 version only
 * Serial on USART1: TX on PB6, RX on PB7
@@ -17,7 +16,6 @@ Refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code.
 
 ***
 ## Prerequisites
-***
 
 1. A Blue Pill STM32F103 board
 
@@ -90,7 +88,6 @@ Refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code.
 
 ***
 ## Build the firmware
-***
 
 Download and extract this repository's zip file or clone it
 
@@ -108,7 +105,6 @@ make
 
 ***
 ## Flash
-***
 
 #### Connect the ST-LINK V2 to the blue pill
 
@@ -149,7 +145,6 @@ make flash
 
 ***
 ## Test the firmware
-***
 
 On Mac and Linux, you can use the `screen` command to communicate serially with your blue pill board. I recommend `miniterm.py`.
 

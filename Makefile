@@ -70,8 +70,7 @@ $(wildcard stm32/*.c) \
 $(wildcard grbl/*.c)
 
 # ASM sources
-ASM_SOURCES =  \
-startup_stm32f103xb.s
+ASM_SOURCES = STM32CubeMX/startup_stm32f103xb.s
 
 
 #######################################
@@ -155,7 +154,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = STM32F103C8Tx_FLASH.ld
+LDSCRIPT = STM32CubeMX/STM32F103C8Tx_FLASH.ld
 
 # libraries
 LIBS = -lc -lm -lnosys 

@@ -8,34 +8,39 @@ Refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code.
 ***
 ## Highlights
 
-* 3-axis STM32F103 version only
-* Serial on USART1: TX on PB6, RX on PB7
-* Serial baud rate of 921600
-* The STM32F103 outputs up to 250 KHz for each axis.
-* Can be used on the "Blue Pill" STM32F103C8 board or equivalent circuit
+* 3-axis CNC GRBL controller
+* Serial baud rate: 921600
+* The STM32F103 outputs up to 250 KHz for each axis
+* Can be used with the "Blue Pill" STM32F103C8 board or any equivalent circuit
+* The code can be edited with your favorite text editor and built from the command line on a Mac or Linux computer
+
+***
+## Description
+
+
 
 ***
 ## Prerequisites
 
-1. A Blue Pill STM32F103 board
+#### A Blue Pill STM32F103 board
 
     <img src="/docs/BluePill.jpg">
 
     Available [here](https://www.amazon.de/dp/B07CRHX5F5/ref=sspa_dk_detail_0?pd_rd_i=B07CRHYTDG&pd_rd_w=BfiZr&pf_rd_p=d3e24f85-c2f2-4959-bef4-3acc5e4e81dc&pd_rd_wg=g8SUT&pf_rd_r=2KXN58GYSKCJW51FNP21&pd_rd_r=665a1ebb-2ed4-4c9e-909b-bb4b300e20a4&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUFVWDIyTVpWUkJQTlQmZW5jcnlwdGVkSWQ9QTAzMjQxNjQzRFhMSE9ONUtWMERSJmVuY3J5cHRlZEFkSWQ9QTA1MDE5MjhQR0lLTk5TRU45ODgmd2lkZ2V0TmFtZT1zcF9kZXRhaWwmYWN0aW9uPWNsaWNrUmVkaXJlY3QmZG9Ob3RMb2dDbGljaz10cnVl&th=1).
 
-2. A cheap chinese ST-LINK V2 programmer
+#### A cheap chinese ST-LINK V2 programmer
 
     <img src="/docs/ST-LINK V2.jpg">
 
     Like [this one](https://www.amazon.de/-/en/dp/B07QBLNDPM/ref=sr_1_fkmr1_1?dchild=1&keywords=azdelivery+st-link&qid=1585972853&s=industrial&sr=8-1-fkmr1).
 
-3. A USB to FTDI adapter for testing
+#### A USB to FTDI adapter for testing
 
     <img src="/docs/FTDI.jpg">
 
     This one seems to work at 921600 baud. You can get it [here](https://www.amazon.de/dp/B01N9RZK6I/ref=sspa_dk_detail_2?psc=1&pd_rd_i=B01N9RZK6I&pd_rd_w=EiSKu&pf_rd_p=d3e24f85-c2f2-4959-bef4-3acc5e4e81dc&pd_rd_wg=LoeX3&pf_rd_r=ZZ9HJ0736BW5XP9AV9Y1&pd_rd_r=310718f1-2cd9-4810-8e25-4d5afcdf4522&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUExVElTVFM0UU1ENTlQJmVuY3J5cHRlZElkPUEwNzY0MTU4MkdRRlZPU0tOWkRURCZlbmNyeXB0ZWRBZElkPUEwNzEyNDIxVkZZREQ5TjVDWkpYJndpZGdldE5hbWU9c3BfZGV0YWlsJmFjdGlvbj1jbGlja1JlZGlyZWN0JmRvTm90TG9nQ2xpY2s9dHJ1ZQ==).
 
-4. The GNU Embedded Toolchain for Arm
+#### The GNU Embedded Toolchain for Arm
 
     #### Mac
     Note: homebrew must be installed.
@@ -52,7 +57,7 @@ Refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code.
     sudo apt-get install gcc-arm-none-eabi
     ```
 
-5. The ST-Link software
+#### The ST-Link software
 
     #### Mac
 
@@ -203,7 +208,7 @@ Note the jumper on 3.3V.
 
 The positive supply is connected to the 3.3 pin. This is OK because the jumper on the FTDI is on 3.3V. If that was not the case, the red wire should be connected to the 5V pin.
 
-If the Blue Pill was to be used in production, the serial interface should go through the USB port. However, I consider the Blue Pill only as a prototyping device. I intend to design my own controller PCB.
+If the Blue Pill was to be used in production, the serial interface should go through the USB port. I consider the Blue Pill only as a prototyping device.
 
 ##### Simultaneous connection
 

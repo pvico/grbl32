@@ -109,6 +109,15 @@ make
 
 #### Connect the ST-LINK V2 to the blue pill
 
+##### Connection table
+
+| ST-LINK | Blue Pill |
+| ------- | --------- |
+|  SWCLK  |   SWCLK   |
+|  SWDIO  |   SWIO    |
+|  GND    |   GND     |
+|  3.3V   |   3V3     |
+
 ##### Jumper wires at the ST-LINK V2
 
 <img src="/docs/STLINK_CONN.jpg">

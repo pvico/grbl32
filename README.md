@@ -111,12 +111,12 @@ make
 
 ##### Connection table
 
-| ST-LINK | Blue Pill |
-| ------- | --------- |
-|  SWCLK  |   SWCLK   |
-|  SWDIO  |   SWIO    |
-|  GND    |   GND     |
-|  3.3V   |   3V3     |
+| ST-LINK V2 | Blue Pill SWD |
+| :--------: | :-----------: |
+|  SWCLK     |     SWCLK     |
+|  SWDIO     |     SWIO      |
+|  GND       |     GND       |
+|  3.3V      |     3V3       |
 
 ##### Jumper wires at the ST-LINK V2
 

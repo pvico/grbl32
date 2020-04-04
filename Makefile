@@ -94,7 +94,7 @@ endif
 HEX = $(CP) -O ihex
 BIN = $(CP) -O binary -S
 
-FLASH = st-flash --reset --format ihex write
+FLASH = st-flash
 
 #######################################
 # CFLAGS
@@ -205,7 +205,7 @@ clean:
 # flash
 #######################################
 flash: all
-	$(FLASH) build/$(TARGET).hex  
+	$(FLASH) --reset --format ihex write build/$(TARGET).hex  
 
 #######################################
 # erase

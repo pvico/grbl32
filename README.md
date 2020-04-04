@@ -9,8 +9,8 @@ Please refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code
 
 * 3-axis STM32F103 version only
 * Serial on USART1: TX on PB6, RX on PB7
-* Serial baud rate of 921600 defined in 'usart.h'
-* The STM32F103 [ARM Cortex M3] outputs up to 250 KHz for each axis.
+* Serial baud rate of 921600
+* The STM32F103 outputs up to 250 KHz for each axis.
 * Can be used on the "Blue Pill" STM32F103C8 board or equivalent circuit
 
 
@@ -64,12 +64,13 @@ Please refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code
     ```
     sudo apt-get install stlink-tools
     ```
-    ##### On an older debian/ubuntu:
+    ##### On older debian/ubuntu distros:
 
     ```
     sudo apt-get install libusb-1.0-0-dev git cmake build-essential
     git clone https://github.com/texane/stlink stlink.git
     cd stlink.git
+    make
     cd build/Release
     sudo make install
     ```
@@ -87,11 +88,163 @@ Please refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code
 ### Build
 
 Verify the defaults settings in `grbl/config.h` and `grbl/defaults.h`. The default configuration is for my Ebay/Amazon chinese 3040.
+Download and extract the zip file or clone it:
 
 ```
+cd ~
+git clone git@github.com:pvico/grbl32.git
+```
+
+Compile:
+```
+cd ~/grbl32
 make
 ```
 
 
-### Flash the firmware
+### Flash
 
+#### Connect the ST-LINK V2 to the blue pill
+
+Note: The ST-LINK V2 device *does not appear as a serial device* (there is no entry in /dev/tty* or /dev/cu*).
+You can verify the connection with:
+```
+st-info --probe
+```
+
+#### Flash the firmware
+
+```
+make flash
+```
+
+
+### Test it
+
+On Mac and Linux, you can use the `screen` command to communicate serially with your blue pill board. I recommend `miniterm.py`.
+
+#### Install miniterm.py
+
+##### Mac
+```
+sudo easy_install pip
+pip install pyserial
+sudo cp `sudo find /usr -iname miniterm.py` /usr/bin
+sudo chmod +x /usr/bin/miniterm.py
+```
+
+##### Ubuntu/debian
+```
+sudo apt-get install python-serial
+sudo cp `find /usr -iname miniterm.py` /usr/bin
+sudo chmod +x /usr/bin/miniterm.py
+```
+
+#### Connect the USB to FTDI adapter to the blue pill
+
+Check the FTDI device address:
+
+##### Mac
+The device should appear as `/dev/cu.usbserial-xxxxxxxx`
+```
+ls /dev/cu*
+```
+
+##### Linux
+The device should appear as `/dev/ttyUSBx`
+```
+ls /dev/tty*
+```
+
+#### Send GRBL commands serially
+
+```
+miniterm.py /dev/my_device_address 921600
+```
+will return this (with your device serial address)
+```
+--- Miniterm on /dev/cu.usbserial-A50285BI  921600,8,N,1 ---
+--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H ---
+```
+Note that you must type Ctrl+] to exit miniterm
+
+Hit the `<return>` key a few times to see if GRBL reacts:
+```
+ok
+ok
+ok
+```
+Hit the `?` key to see the status report, no need for `<return>`
+```
+<Alarm|MPos:0.000,0.000,0.000|Bf:199,254|FS:0,0|WCO:0.000,0.000,0.000>
+```
+On power up, GRBL starts in Alarm state
+
+Type `$$` + `<return>` to see the GRBL parameters
+```
+$0=0.500
+$1=25
+$2=0
+$3=4
+$4=0
+$5=0
+$6=0
+$10=3
+$11=0.010
+$12=0.002
+$13=0
+$20=1
+$21=0
+$22=1
+$23=1
+$24=25.000
+$25=500.000
+$26=250
+$27=1.000
+$30=5000
+$31=0
+$32=0
+$40=10000.000
+$50=0
+$100=800.000
+$101=800.000
+$102=400.000
+$110=3000.000
+$111=3000.000
+$112=500.000
+$120=10.000
+$121=10.000
+$122=10.000
+$130=280.000
+$131=377.000
+$132=53.000
+```
+NOTE: if you re-flashed a new firmware with modified defaults in `grbl/defaults.h`, the new default parameters will only appear after you reset them. Type `$RST=$` + `<return>` to reset the parameters to firmware defaults.
+
+To leave the Alarm state, unlock the device with `$X` followed by `<return>`. then hit `?`
+```
+<Idle|MPos:0.000,0.000,0.000|Bf:199,254|FS:0,0|Ov:100,100,100|A:S>
+```
+Type the following commands + `<return>`
+```
+G90 G94 G21 F100
+```
+Machine is now in absolute mode, any coordinate given will be relative to the machine zero position.
+Type `X100` + `<return>` and immediately after hit a few times the `?` key. You will see the move progress
+```
+<Run|MPos:3.338,0.000,0.000|Bf:198,254|FS:494,0>
+<Run|MPos:7.090,0.000,0.000|Bf:198,254|FS:718,0>
+<Run|MPos:12.486,0.000,0.000|Bf:198,254|FS:952,0>
+<Run|MPos:18.460,0.000,0.000|Bf:198,254|FS:1157,0>
+<Run|MPos:25.231,0.000,0.000|Bf:198,254|FS:1352,0>
+<Run|MPos:32.845,0.000,0.000|Bf:198,254|FS:1541,0>
+<Run|MPos:40.545,0.000,0.000|Bf:198,254|FS:1712,0>
+<Run|MPos:50.771,0.000,0.000|Bf:198,254|FS:1879,0>
+<Run|MPos:60.851,0.000,0.000|Bf:198,254|FS:1675,0>
+```
+
+If you connect a logic analyser or an oscilloscope to the STEP-X pin (normally pin A0 of the blue pill) you can see the pulses.
+
+You can find the GRBL commands [in the GRBL wiki](https://github.com/gnea/grbl/wiki/Grbl-v1.1-Commands).
+
+You can find a list of gcode commands [here](https://wiki.shapeoko.com/index.php/G-Code)

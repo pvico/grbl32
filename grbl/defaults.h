@@ -41,8 +41,8 @@
 #define DEFAULT_Y_STEPS_PER_MM (STEPS_PER_REV * Y_MICROSTEPS / MM_PER_REV)		// $101
 #define DEFAULT_Z_STEPS_PER_MM (STEPS_PER_REV * Z_MICROSTEPS / MM_PER_REV)		// $102
 
-#define DEFAULT_X_MAX_RATE 500.0f // mm/min	$110
-#define DEFAULT_Y_MAX_RATE 500.0f // mm/min	$111
+#define DEFAULT_X_MAX_RATE 3000.0f // mm/min	$110
+#define DEFAULT_Y_MAX_RATE 3000.0f // mm/min	$111
 #define DEFAULT_Z_MAX_RATE 500.0f // mm/min	$112
 
 #define DEFAULT_X_ACCELERATION (10.0f * 60 * 60) // 10*60*60 mm/min^2 = 10 mm/sec^2	$120
@@ -66,8 +66,8 @@
 #define DEFAULT_ARC_TOLERANCE 0.002f // mm						$12
 #define DEFAULT_REPORT_INCHES 0 // false							$13
 
-#define DEFAULT_SOFT_LIMIT_ENABLE 1 // false					$20
-#define DEFAULT_HARD_LIMIT_ENABLE 0  // true					$21
+#define DEFAULT_SOFT_LIMIT_ENABLE 0 // false					$20
+#define DEFAULT_HARD_LIMIT_ENABLE 1  // true					$21
 #define DEFAULT_HOMING_ENABLE 1  // false							$22
 #define DEFAULT_HOMING_DIR_MASK 1 // move positive dir $23
 #define DEFAULT_HOMING_FEED_RATE 25.0f // mm/min			$24

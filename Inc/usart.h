@@ -31,7 +31,8 @@
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
-
+#define USART_BAUD_RATE 921600
+// #define USART_BAUD_RATE 115200
 /* USER CODE END Private defines */
 
 void MX_USART1_UART_Init(void);

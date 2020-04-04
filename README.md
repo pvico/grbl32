@@ -1,7 +1,10 @@
 # grbl32
 ***
-From [thomast777/grbl32](https://github.com/thomast777/grbl32). Adapted for command line build on Mac/Linux.
-Please refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code.
+Refer to [thomast777/grbl32](https://github.com/thomast777/grbl32) for the STM32 code.
+
+Modified for command line building and flashing on Mac/Linux.
+
+Refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code.
 ***
 
 
@@ -87,15 +90,15 @@ Please refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code
 
 ### Build
 
-Verify the defaults settings in `grbl/config.h` and `grbl/defaults.h`. The default configuration is for my Ebay/Amazon chinese 3040.
-Download and extract the zip file or clone it:
+Download and extract the zip file or clone it
 
 ```
 cd ~
 git clone git@github.com:pvico/grbl32.git
 ```
+Verify the CNC machine selection and settings in `grbl/config.h` and `grbl/defaults.h`. The default configuration is for my Ebay/Amazon chinese 3040.
 
-Compile:
+Compile
 ```
 cd ~/grbl32
 make
@@ -105,6 +108,17 @@ make
 ### Flash
 
 #### Connect the ST-LINK V2 to the blue pill
+
+##### Jumper wires at the ST-LINK V2
+<img src="/docs/STLINK_CONN.jpg">
+
+**Do not use the 5V pin!**
+
+##### Jumper wires at the SWD connector of the blue pill
+<img src="/docs/SWD_CONN.jpg">
+
+##### I made myself an ad-hoc cable
+<img src="/docs/ADHOC_CABLE.jpg">
 
 Note: The ST-LINK V2 device *does not appear as a serial device* (there is no entry in /dev/tty* or /dev/cu*).
 You can verify the connection with:
@@ -159,14 +173,16 @@ ls /dev/tty*
 #### Send GRBL commands serially
 
 ```
-miniterm.py /dev/my_device_address 921600
+miniterm.py /dev/<my_device_address> 921600
 ```
-will return this (with your device serial address)
+will return something like this (with your own device serial address that you entered in the previous command)
 ```
 --- Miniterm on /dev/cu.usbserial-A50285BI  921600,8,N,1 ---
 --- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H ---
 ```
 Note that you must type Ctrl+] to exit miniterm
+
+Note: if you get garbage or no reply from the blue pill, verify the connection between the blue pill and the USB to FTDI adapter. It is also possible that the baud rate must be reduced. Try a more conservative standard baud rate like 115200. In `Src/usart.h`, comment out the line `#define USART_BAUD_RATE 921600` and un-comment `#define USART_BAUD_RATE 115200`. Compile and flash again. Then connect with `miniterm.py /dev/my_device_address 115200`.  
 
 Hit the `<return>` key a few times to see if GRBL reacts:
 ```
@@ -225,12 +241,12 @@ To leave the Alarm state, unlock the device with `$X` followed by `<return>`. th
 ```
 <Idle|MPos:0.000,0.000,0.000|Bf:199,254|FS:0,0|Ov:100,100,100|A:S>
 ```
-Type the following commands + `<return>`
+Type the following command + `<return>`
 ```
 G90 G94 G21 F100
 ```
-Machine is now in absolute mode, any coordinate given will be relative to the machine zero position.
-Type `X100` + `<return>` and immediately after hit a few times the `?` key. You will see the move progress
+GRBL is now in absolute mode, any move coordinates will be relative to the machine zero position.
+Type `X100` + `<return>` and immediately after hit the `?` key a few times. You will see the move progress
 ```
 <Run|MPos:3.338,0.000,0.000|Bf:198,254|FS:494,0>
 <Run|MPos:7.090,0.000,0.000|Bf:198,254|FS:718,0>
@@ -243,7 +259,7 @@ Type `X100` + `<return>` and immediately after hit a few times the `?` key. You 
 <Run|MPos:60.851,0.000,0.000|Bf:198,254|FS:1675,0>
 ```
 
-If you connect a logic analyser or an oscilloscope to the STEP-X pin (normally pin A0 of the blue pill) you can see the pulses.
+If you connect a [logic analyser](https://www.saleae.com) or an oscilloscope to the STEP-X pin (normally pin A0 of the blue pill) you can see the step pulses sent to the stepper motor driver.
 
 You can find the GRBL commands [in the GRBL wiki](https://github.com/gnea/grbl/wiki/Grbl-v1.1-Commands).
 

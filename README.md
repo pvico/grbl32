@@ -15,6 +15,12 @@ Please refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code
 
 
 ### Prerequisites
+* A Blue Pill STM32F103 board
+
+    <img src="/docs/BluePill.jpg">
+
+    Available [here](https://www.amazon.de/dp/B07CRHX5F5/ref=sspa_dk_detail_0?pd_rd_i=B07CRHYTDG&pd_rd_w=BfiZr&pf_rd_p=d3e24f85-c2f2-4959-bef4-3acc5e4e81dc&pd_rd_wg=g8SUT&pf_rd_r=2KXN58GYSKCJW51FNP21&pd_rd_r=665a1ebb-2ed4-4c9e-909b-bb4b300e20a4&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUFVWDIyTVpWUkJQTlQmZW5jcnlwdGVkSWQ9QTAzMjQxNjQzRFhMSE9ONUtWMERSJmVuY3J5cHRlZEFkSWQ9QTA1MDE5MjhQR0lLTk5TRU45ODgmd2lkZ2V0TmFtZT1zcF9kZXRhaWwmYWN0aW9uPWNsaWNrUmVkaXJlY3QmZG9Ob3RMb2dDbGljaz10cnVl&th=1).
+
 * A cheap chinese ST-LINK V2 programmer
 
     <img src="/docs/ST-LINK V2.jpg">
@@ -25,7 +31,7 @@ Please refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code
 
     <img src="/docs/FTDI.jpg">
 
-    This one seem to work at 921600 baud. You can get it [here](https://www.amazon.de/dp/B01N9RZK6I/ref=sspa_dk_detail_2?psc=1&pd_rd_i=B01N9RZK6I&pd_rd_w=EiSKu&pf_rd_p=d3e24f85-c2f2-4959-bef4-3acc5e4e81dc&pd_rd_wg=LoeX3&pf_rd_r=ZZ9HJ0736BW5XP9AV9Y1&pd_rd_r=310718f1-2cd9-4810-8e25-4d5afcdf4522&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUExVElTVFM0UU1ENTlQJmVuY3J5cHRlZElkPUEwNzY0MTU4MkdRRlZPU0tOWkRURCZlbmNyeXB0ZWRBZElkPUEwNzEyNDIxVkZZREQ5TjVDWkpYJndpZGdldE5hbWU9c3BfZGV0YWlsJmFjdGlvbj1jbGlja1JlZGlyZWN0JmRvTm90TG9nQ2xpY2s9dHJ1ZQ==).
+    This one seems to work at 921600 baud. You can get it [here](https://www.amazon.de/dp/B01N9RZK6I/ref=sspa_dk_detail_2?psc=1&pd_rd_i=B01N9RZK6I&pd_rd_w=EiSKu&pf_rd_p=d3e24f85-c2f2-4959-bef4-3acc5e4e81dc&pd_rd_wg=LoeX3&pf_rd_r=ZZ9HJ0736BW5XP9AV9Y1&pd_rd_r=310718f1-2cd9-4810-8e25-4d5afcdf4522&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUExVElTVFM0UU1ENTlQJmVuY3J5cHRlZElkPUEwNzY0MTU4MkdRRlZPU0tOWkRURCZlbmNyeXB0ZWRBZElkPUEwNzEyNDIxVkZZREQ5TjVDWkpYJndpZGdldE5hbWU9c3BfZGV0YWlsJmFjdGlvbj1jbGlja1JlZGlyZWN0JmRvTm90TG9nQ2xpY2s9dHJ1ZQ==).
 
 * The GNU Embedded Toolchain for Arm
 
@@ -80,7 +86,7 @@ Please refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code
 
 ### Build
 
-Verify the defults settings in `grbl/config.h` and `grbl/defaults.h`. The default configuration is for my Ebay/Amazon chinese 3040.
+Verify the defaults settings in `grbl/config.h` and `grbl/defaults.h`. The default configuration is for my Ebay/Amazon chinese 3040.
 
 ```
 make

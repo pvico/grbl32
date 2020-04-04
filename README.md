@@ -1,14 +1,13 @@
 # grbl32
-***
 Refer to [thomast777/grbl32](https://github.com/thomast777/grbl32) for the STM32 code.
 
 Modified for command line building and flashing on Mac/Linux.
 
 Refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code.
+
 ***
-
-
-### Highlights
+## Highlights
+***
 
 * 3-axis STM32F103 version only
 * Serial on USART1: TX on PB6, RX on PB7
@@ -16,8 +15,10 @@ Refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code.
 * The STM32F103 outputs up to 250 KHz for each axis.
 * Can be used on the "Blue Pill" STM32F103C8 board or equivalent circuit
 
+***
+## Prerequisites
+***
 
-### Prerequisites
 1. A Blue Pill STM32F103 board
 
     <img src="/docs/BluePill.jpg">
@@ -87,8 +88,9 @@ Refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code.
     source ~/.bashrc
     ```     
 
-
-### Build
+***
+## Build the firmware
+***
 
 Download and extract this repository's zip file or clone it
 
@@ -104,8 +106,9 @@ cd ~/grbl32
 make
 ```
 
-
-### Flash
+***
+## Flash
+***
 
 #### Connect the ST-LINK V2 to the blue pill
 
@@ -144,8 +147,9 @@ st-info --probe
 make flash
 ```
 
-
-### Test it
+***
+## Test the firmware
+***
 
 On Mac and Linux, you can use the `screen` command to communicate serially with your blue pill board. I recommend `miniterm.py`.
 

@@ -91,7 +91,7 @@ Refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code.
 
 #### Get the source code
 
-Download and extract this repository's zip file or clone it
+Download and unzip this repository's zip file or clone it
 
 ```
 cd ~
@@ -110,7 +110,7 @@ make
 ```
 
 ***
-## Flash
+## Flash the firmware
 
 #### Connect the ST-LINK V2 to the blue pill
 
@@ -201,7 +201,9 @@ Note the jumper on 3.3V
 
 <img src="/docs/BP_SERIAL.jpg">
 
-The positive supply is connected to the 3.3 pin. This is acceptable because the jumper on the FTDI is on 3.3V. If that was not the case, the red wire should be connected to the 5V pin
+The positive supply is connected to the 3.3 pin. This is OK because the jumper on the FTDI is on 3.3V. If that was not the case, the red wire should be connected to the 5V pin
+
+If the Blue Pill was to be used in production, the serial interface should go through the USB port. However, I consider the Blue Pill only as a prototyping device. I intend to design my own controller PCB.
 
 ##### Simultaneous connection
 
@@ -212,16 +214,16 @@ Note that the VCC pin of the FTDI is not connected to the Blue Pill, the ST-LINK
 #### Check the FTDI device address:
 
 ##### Mac
-The device should appear as `/dev/cu.usbserial-xxxxxxxx`
 ```
 ls /dev/cu*
 ```
+The device should appear as `/dev/cu.usbserial-xxxxxxxx`
 
 ##### Linux
-The device should appear as `/dev/ttyUSBx`
 ```
 ls /dev/tty*
 ```
+The device should appear as `/dev/ttyUSBx`
 
 #### Send GRBL commands serially
 
@@ -293,7 +295,7 @@ $132=53.000
 ```
 NOTE: if you re-flashed a new firmware with modified defaults in `grbl/defaults.h`, the new default parameters will only appear after you reset them. Type `$RST=$` + `<return>` to reset the parameters to firmware defaults.
 
-To leave the Alarm state, unlock the device with `$X` followed by `<return>`. then hit `?`
+To leave the Alarm state, unlock the device with `$X` followed by `<return>` then hit `?`
 ```
 ?<Idle|MPos:0.000,0.000,0.000|Bf:199,254|FS:0,0|Ov:100,100,100|A:S>
 ```

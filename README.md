@@ -168,7 +168,23 @@ sudo chmod +x /usr/bin/miniterm.py
 
 #### Connect the USB to FTDI adapter to the blue pill
 
-Check the FTDI device address:
+##### Connection table
+
+| USB<->FTDI | Blue Pill |
+| :--------: | :-------: |
+|    RX      |    B6     |
+|    TX      |    B7     |
+|    GND     |    GND    |
+|    VCC     |    3.3    |
+
+* Only connect VCC if the Blue Pill is not powered by the ST-LINK
+* Connect VCC to 3.3V of the Blue Pill **only if the jumper on the USB to FTDI adapter is on 3.3V**
+* If the jumper is on 5V or if the adapter has no 3.3V jumper, **connect VCC to 5V of the Blue Pill**. (The Blue Pill has an on-board 3.3V regulator)
+* **NEVER CONNECT A PIN OF THE BLUE PILL TO 5V, the only exception is the 5V pin**
+
+<img src="/docs/FTDI-PINS.png">
+
+#### Check the FTDI device address:
 
 ##### Mac
 The device should appear as `/dev/cu.usbserial-xxxxxxxx`

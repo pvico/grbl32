@@ -89,15 +89,21 @@ Refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code.
 ***
 ## Build the firmware
 
+#### Get the source code
+
 Download and extract this repository's zip file or clone it
 
 ```
 cd ~
 git clone git@github.com:pvico/grbl32.git
 ```
+
+#### Modify it
+
 Verify the CNC machine selection and settings in `grbl/config.h` and `grbl/defaults.h`. The default configuration is for my Ebay/Amazon chinese 3040.
 
-Compile
+#### Compile it
+
 ```
 cd ~/grbl32
 make

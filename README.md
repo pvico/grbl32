@@ -38,7 +38,7 @@ Refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code.
 4. The GNU Embedded Toolchain for Arm
 
     #### Mac
-    Note: homebrew must be installed
+    Note: homebrew must be installed.
 
     ```
     brew install gcc-arm-none-eabi
@@ -91,7 +91,7 @@ Refer to [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code.
 
 #### Get the source code
 
-Download and unzip this repository's zip file or clone it
+Download and unzip this repository's zip file or clone it.
 
 ```
 cd ~
@@ -187,7 +187,7 @@ sudo chmod +x /usr/bin/miniterm.py
 * If the jumper is on 5V or if the adapter has no 3.3V jumper, **connect VCC to 5V of the Blue Pill**. (The Blue Pill has an on-board 3.3V regulator)
 * **NEVER CONNECT A PIN OF THE BLUE PILL TO 5V, the only exception is the 5V pin**
 
-##### USB to FTDI adapter pinout
+##### USB to FTDI adapter SWD connector pinout
 
 <img src="/docs/FTDI-PINS.png">
 
@@ -195,13 +195,13 @@ sudo chmod +x /usr/bin/miniterm.py
 
 <img src="/docs/FTDI_SERIAL.jpg">
 
-Note the jumper on 3.3V
+Note the jumper on 3.3V.
 
 ##### Jumper wires at the Blue Pill
 
 <img src="/docs/BP_SERIAL.jpg">
 
-The positive supply is connected to the 3.3 pin. This is OK because the jumper on the FTDI is on 3.3V. If that was not the case, the red wire should be connected to the 5V pin
+The positive supply is connected to the 3.3 pin. This is OK because the jumper on the FTDI is on 3.3V. If that was not the case, the red wire should be connected to the 5V pin.
 
 If the Blue Pill was to be used in production, the serial interface should go through the USB port. However, I consider the Blue Pill only as a prototyping device. I intend to design my own controller PCB.
 
@@ -209,7 +209,7 @@ If the Blue Pill was to be used in production, the serial interface should go th
 
 <img src="/docs/STLINK+FTDI.jpg">
 
-Note that the VCC pin of the FTDI is not connected to the Blue Pill as the ST-LINK is powering it
+Note that the VCC pin of the FTDI is not connected to the Blue Pill as the ST-LINK is powering it.
 
 #### Check the FTDI device address:
 
@@ -217,25 +217,25 @@ Note that the VCC pin of the FTDI is not connected to the Blue Pill as the ST-LI
 ```
 ls /dev/cu*
 ```
-The device should appear as `/dev/cu.usbserial-xxxxxxxx`
+The device should appear as `/dev/cu.usbserial-xxxxxxxx`.
 
 ##### Linux
 ```
 ls /dev/tty*
 ```
-The device should appear as `/dev/ttyUSBx`
+The device should appear as `/dev/ttyUSBx`.
 
 #### Send GRBL commands serially
 
 ```
 miniterm.py -e /dev/<my_device_address> 921600
 ```
-will return something like this (with your own device serial address that you entered in the previous command)
+will return something like this (with your own device serial address that you entered in the previous command).
 ```
 --- Miniterm on /dev/cu.usbserial-A50285BI  921600,8,N,1 ---
 --- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H ---
 ```
-Note that you must type Ctrl+] to exit miniterm
+Note that you must type Ctrl+] to exit miniterm.
 
 Note: if you get garbage or no reply from the blue pill, verify the connection between the blue pill and the USB to FTDI adapter. It is also possible that the baud rate must be reduced. Try a more conservative standard baud rate like 115200. In `Src/usart.h`, comment out the line `#define USART_BAUD_RATE 921600` and un-comment `#define USART_BAUD_RATE 115200`. Compile and flash again. Then connect with `miniterm.py -e /dev/my_device_address 115200`.  
 
@@ -252,9 +252,9 @@ Hit the `?` key to see the status report, no need for `<return>`
 ```
 ?<Alarm|MPos:0.000,0.000,0.000|Bf:199,254|FS:0,0|WCO:0.000,0.000,0.000>
 ```
-On power up, GRBL starts in Alarm state
+On power up, GRBL starts in Alarm state.
 
-Type `$$` + `<return>` to see the GRBL parameters
+Type `$$` + `<return>` to see the GRBL parameters.
 ```
 $0=0.500
 $1=25
@@ -304,7 +304,7 @@ Type the following command + `<return>`
 G90 G94 G21 F100
 ```
 GRBL is now in absolute mode, any move coordinates will be relative to the machine zero position.
-Type `X100` + `<return>` and immediately after hit the `?` key a few times. You will see the move progress
+Type `X100` + `<return>` and immediately after hit the `?` key a few times. You will see the move progress.
 ```
 ?<Run|MPos:5.665,0.000,0.000|Bf:198,254|FS:642,0>
 ?<Run|MPos:14.036,0.000,0.000|Bf:198,254|FS:1009,0>
@@ -319,6 +319,14 @@ Type `X100` + `<return>` and immediately after hit the `?` key a few times. You 
 
 If you connect a [logic analyser](https://www.saleae.com) or an oscilloscope to the STEP-X pin (normally pin A0 of the blue pill) you can see the step pulses sent to the stepper motor driver.
 
+***
+## Blue Pill pinout
+
+<img src="/docs/BLUE_PILL_CONN.png">
+
+***
+## GRBL and GCODE commands
+
 You can find the GRBL commands [in the GRBL wiki](https://github.com/gnea/grbl/wiki/Grbl-v1.1-Commands).
 
-You can find a list of gcode commands [here](https://wiki.shapeoko.com/index.php/G-Code)
+[Here](https://wiki.shapeoko.com/index.php/G-Code) is a list of gcode commands.

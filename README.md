@@ -129,7 +129,7 @@ make
 
 **Do not use the 5V pin!**
 
-##### Jumper wires at the SWD connector of the blue pill
+##### Jumper wires at the SWD connector of the Blue Pill
 
 <img src="/docs/SWD_CONN.jpg">
 
@@ -171,7 +171,7 @@ sudo cp `find /usr -iname miniterm.py` /usr/bin
 sudo chmod +x /usr/bin/miniterm.py
 ```
 
-#### Connect the USB to FTDI adapter to the blue pill
+#### Connect the USB to FTDI adapter to the Blue Pill
 
 ##### Connection table
 
@@ -183,11 +183,31 @@ sudo chmod +x /usr/bin/miniterm.py
 |    VCC     |    3.3    |
 
 * Only connect VCC if the Blue Pill is not powered by the ST-LINK
-* Connect VCC to 3.3V of the Blue Pill **only if the jumper on the USB to FTDI adapter is on 3.3V**
+* Connect VCC to 3.3V of the Blue Pill **only if the jumper on the USB to FTDI adapter is on 3.3V!**
 * If the jumper is on 5V or if the adapter has no 3.3V jumper, **connect VCC to 5V of the Blue Pill**. (The Blue Pill has an on-board 3.3V regulator)
 * **NEVER CONNECT A PIN OF THE BLUE PILL TO 5V, the only exception is the 5V pin**
 
+##### USB to FTDI adapter pinout
+
 <img src="/docs/FTDI-PINS.png">
+
+##### Jumper wires at the USB to FTDI adapter
+
+<img src="/docs/FTDI_SERIAL.jpg">
+
+Note the jumper on 3.3V
+
+##### Jumper wires at the Blue Pill
+
+<img src="/docs/BP_SERIAL.jpg">
+
+The positive supply is connected to the 3.3 pin. This is acceptable because the jumper on the FTDI is on 3.3V. If that was not the case, the red wire should be connected to the 5V pin
+
+##### Simultaneous connection
+
+<img src="/docs/STLINK+FTDI.jpg">
+
+Note that the VCC pin of the FTDI is not connected to the Blue Pill, the ST-LINK is powering it
 
 #### Check the FTDI device address:
 

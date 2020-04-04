@@ -110,14 +110,17 @@ make
 #### Connect the ST-LINK V2 to the blue pill
 
 ##### Jumper wires at the ST-LINK V2
+
 <img src="/docs/STLINK_CONN.jpg">
 
 **Do not use the 5V pin!**
 
 ##### Jumper wires at the SWD connector of the blue pill
+
 <img src="/docs/SWD_CONN.jpg">
 
 ##### I made myself an ad-hoc cable
+
 <img src="/docs/ADHOC_CABLE.jpg">
 
 Note: The ST-LINK V2 device *does not appear as a serial device* (there is no entry in /dev/tty* or /dev/cu*).

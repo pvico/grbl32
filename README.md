@@ -314,7 +314,7 @@ $130=280.000
 $131=377.000
 $132=53.000
 ```
-NOTE: if you re-flash a new firmware with modified defaults in `grbl/defaults.h`, the new default parameters will only appear after you reset them. Type `$RST=$` + `<return>` to reset the parameters to firmware defaults.
+NOTE: if you re-flash a new firmware with modified defaults in `grbl/defaults.h`, the new default parameters will only appear after you reset them. Type `$RST=$` + `<return>` to reset the parameters to the new firmware defaults.
 
 To leave the Alarm state, unlock the device with `$X` followed by `<return>` then hit `?`
 ```
@@ -322,10 +322,10 @@ To leave the Alarm state, unlock the device with `$X` followed by `<return>` the
 ```
 Type the following command + `<return>`
 ```
-G90 G94 G21 F100
+G90 G94 G21
 ```
-GRBL is now in absolute mode, any move coordinates will be relative to the machine zero position.
-Type `X100` + `<return>` and immediately after hit the `?` key a few times. You will see the move progress.
+GRBL is now in absolute mode, any movement coordinates will be relative to the machine zero position.
+Type `X100` + `<return>` and immediately after this, hit the `?` key a few times. You will see the progress.
 ```
 ?<Run|MPos:5.665,0.000,0.000|Bf:198,254|FS:642,0>
 ?<Run|MPos:14.036,0.000,0.000|Bf:198,254|FS:1009,0>

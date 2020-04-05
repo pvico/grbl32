@@ -388,7 +388,7 @@ We see that we do have 80,000 pulses in about 11" which is correct. However, the
 
 Zooming in towards the center of the pulse train, we clearly see the uneven pulse width:
 
-<img src="/docs/LOGIC.png">
+<img src="/docs/LOGIC_ZOOM.png">
 
 Looking at the datasheet of the DRV8825, the stepper driver I am using, the minimum pulse width is 1.9μs, so this will work but there is still work to do to make the pulse width correspond to the `$0` parameter (DEFAULT_STEP_PULSE_MICROSECONDS in `grbl/defaults.h`).
 

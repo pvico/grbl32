@@ -384,7 +384,7 @@ The feed rate is 10mm/s so we should have 80,000 steps in about 10" (actually a 
 
 <img src="/docs/LOGIC.png">
 
-We see that we do have 80,000 pulses in about 11" which is correct. However, the pulse width varies from 2.5μs and 5.8μs.
+We see that we do have 80,000 pulses in about 11" which is correct. However, the pulse width varies between 2.5μs and 5.8μs.
 
 Zooming in towards the center of the pulse train, we clearly see the uneven pulse width:
 

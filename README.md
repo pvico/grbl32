@@ -322,7 +322,7 @@ To leave the Alarm state, unlock the device with `$X` followed by `<return>` the
 ```
 Type the following command + `<return>`
 ```
-G90 G94 G21
+G90
 ```
 GRBL is now in absolute mode, any movement coordinates will be relative to the machine zero position.
 Type `X100` + `<return>` and immediately after this, hit the `?` key a few times. You will see the progress.
@@ -374,6 +374,23 @@ The Blue Pill must be powered (positive supply connection) _from only one device
 The stepper driver board will likely take a higher voltage like 12V or 24V to feed the motors but for boards like the [CNC shields](https://www.banggood.com/CNC-Shield-4-X-DRV8825-Driver-Kit-For-Arduino-3D-Printer-p-1134939.html?cur_warehouse=CN), no 3.3V or 5V is derived from this higher voltage. The ubiquitous [Pololu-like](https://www.pololu.com/category/154/drv8825-stepper-motor-driver-carriers-high-current) driver boards (A4988, DRV8825, etc.) do not require a 5V or 3.3V power supply but they do receive 3.3V or 5V input signals from the controlling device (the Blue Pill).
 
 NOTE: the Blue Pill is not pin compatible with the Arduino Nano. **Do not plug it in a board designed for the Arduino Nano** like the [CNC shield V4](https://www.instructables.com/id/How-to-Use-the-CNC-V4-Board-despite-Its-quirks/).
+
+***
+## First measurements
+
+We are probing the STEP-X pin with a logic analyzer after the command `G1 X100 F600` (move 100mm along the X axis with a feed rate of 600mm/min) is issued. The machine parameters are 4mm/revolution, micro-stepping 1/16 and 200 steps/revolution which results in 800 steps/mm. Pulse width is set to 10μs. 
+
+The feed rate is 10mm/s so we should have 80,000 steps in about 10" (actually a bit more than 10" considering the acceleration and deceleration phase).
+
+<img src="/docs/LOGIC.png">
+
+We see that we do have 80,000 pulses in about 11" which is correct. However, the pulse width varies from 2.5μs and 5.8μs.
+
+Zooming in towards the center of the pulse train, we clearly see the uneven pulse width:
+
+<img src="/docs/LOGIC.png">
+
+Looking at the datasheet of the DRV8825, the stepper driver I am using, the minimum pulse width is 1.9μs, so this will work but there is still work to do to make the pulse width correspond to the `$0` parameter (DEFAULT_STEP_PULSE_MICROSECONDS in `grbl/defaults.h`).
 
 ***
 ## Additional documentation

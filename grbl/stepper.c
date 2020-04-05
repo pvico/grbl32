@@ -238,10 +238,8 @@ void st_wake_up()
   #else // Normal operation
     #ifdef STM32
 			#ifdef STM32F1
-    		st.step_pulse_time = (settings.fpulse_microseconds)*uTICKS_PER_MICROSECOND;
-			#endif
-			#ifdef STM32F4
-   		st.step_pulse_time = (settings.fpulse_microseconds)*uTICKS_PER_MICROSECOND;
+    		st.step_pulse_time = (settings.pulse_microseconds)*uTICKS_PER_MICROSECOND;
+    		// st.step_pulse_time = (settings.fpulse_microseconds)*uTICKS_PER_MICROSECOND;
 			#endif
     #endif
   #endif
@@ -352,7 +350,11 @@ void HandleStepSetIT(void)
   //Step_Reset_IT_Clear(TIM_IT_UPDATE);
 	//HAL_TIM_CLEAR_IT(STEP_SET_TIMER, TIM_IT_UPDATE);
   //TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
-  LL_TIM_ClearFlag_UPDATE(STEP_RESET_TIMER);
+
+// original
+ LL_TIM_ClearFlag_UPDATE(STEP_RESET_TIMER);
+// pvico modified
+  // WRITE_REG(STEP_RESET_TIMER->SR, ~( TIM_SR_UIF | TIM_SR_CC1IF));
 
 
   // Then pulse the stepping pins

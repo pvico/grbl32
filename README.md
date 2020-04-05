@@ -338,7 +338,7 @@ Type `X100` + `<return>` and immediately after this, hit the `?` key a few times
 ?<Idle|MPos:100.000,0.000,0.000|Bf:199,254|FS:0,0>
 ```
 
-If you connect a [logic analyser](https://www.saleae.com) or an oscilloscope to the STEP-X pin (normally pin A0 of the blue pill) you can see the step pulses sent to the stepper motor driver.
+If you connect a [logic analyzer](https://www.saleae.com) or an oscilloscope to the STEP-X pin (normally pin A0 of the blue pill) you can see the step pulses sent to the stepper motor driver.
 
 ***
 ## Connection to the CNC machine

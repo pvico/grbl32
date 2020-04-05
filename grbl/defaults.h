@@ -53,10 +53,10 @@
 #define DEFAULT_Y_MAX_TRAVEL 377.0f // mm NOTE: Must be a positive value.	$131
 #define DEFAULT_Z_MAX_TRAVEL 53.0f // mm NOTE: Must be a positive value.	$132
 
-#define DEFAULT_STEP_PULSE_MICROSECONDS 0.5f		//usec		$0
+#define DEFAULT_STEP_PULSE_MICROSECONDS 10.0f		//usec		$0
 #define DEFAULT_STEPPER_IDLE_LOCK_TIME 25 // msec (0-254, 255 keeps steppers enabled)	$1
 #define DEFAULT_STEPPING_INVERT_MASK 0		//					$2
-#define DEFAULT_DIRECTION_INVERT_MASK 4		//					$3
+#define DEFAULT_DIRECTION_INVERT_MASK 4		//					$3  invert Z
 #define DEFAULT_INVERT_ST_ENABLE 0 // false						$4
 #define DEFAULT_INVERT_LIMIT_PINS 0 // false					$5
 #define DEFAULT_INVERT_PROBE_PIN 0 // true						$6
@@ -75,7 +75,7 @@
 #define DEFAULT_HOMING_DEBOUNCE_DELAY 250 // msec (0-65k)	$26
 #define DEFAULT_HOMING_PULLOFF 1.0f // mm							$27
 
-#define DEFAULT_SPINDLE_RPM_MAX 5000.0f 		//rpm			$30
+#define DEFAULT_SPINDLE_RPM_MAX 8000.0f 		//rpm			$30
 #define DEFAULT_SPINDLE_RPM_MIN 0.0f 			//rpm				$31
 #define DEFAULT_LASER_MODE 0 // false									$32
 

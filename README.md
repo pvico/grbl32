@@ -232,7 +232,7 @@ If the Blue Pill was to be used in production, the serial interface should go th
 
 Note that the VCC pin of the FTDI is not connected to the Blue Pill as the ST-LINK is powering it.
 
-#### Check the FTDI device address:
+#### Check the FTDI device file:
 
 ##### Mac
 ```

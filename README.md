@@ -350,7 +350,7 @@ If you connect a [logic analyser](https://www.saleae.com) or an oscilloscope to 
 #### Minimum connections to control a basic CNC like the 3040 with a stepper driver board like the CNC shield
 
 * GND
-* if required (see below), positive supply, from either the USB connector, 5V on the 5V pin or 3.3V on the 3.3V pin
+* Positive supply (see below), from either the USB connector, 5V on the 5V pin or 3.3V on the 3.3V pin
 * STEP-ENABLE
 * STEP-X
 * STEP-Y

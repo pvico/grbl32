@@ -5,12 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Cortex Debug",
             "cwd": "${workspaceRoot}",
             "executable": "./build/Grbl32_F103C8.elf",
+            "armToolchainPath": "/usr/local/bin/",
+            "name": "Debug Microcontroller",
             "request": "launch",
+            "device": "STM32F103C8T6",
+            "searchDir": ["/usr/local/Cellar/open-ocd/0.10.0/share/openocd/scripts/"],
+            "configFiles": ["interface/stlink-v2.cfg", "target/stm32f1x.cfg"],
             "type": "cortex-debug",
-            "servertype": "stutil"
+            "runToMain": true,
+            "servertype": "openocd"
         }
     ]
 }

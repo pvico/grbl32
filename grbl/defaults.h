@@ -117,7 +117,7 @@
   #define DEFAULT_C_MAX_TRAVEL 200.0f // mm NOTE: Must be a positive value.	$135
 
 
-  #define DEFAULT_STEP_PULSE_MICROSECONDS 0.5		//usec		$0
+  #define DEFAULT_STEP_PULSE_MICROSECONDS 1		//usec		$0
   #define DEFAULT_STEPPER_IDLE_LOCK_TIME 1 // msec (0-254, 255 keeps steppers enabled)	$1
   #define DEFAULT_STEPPING_INVERT_MASK 0		//					$2
   #define DEFAULT_DIRECTION_INVERT_MASK 0		//					$3
@@ -176,7 +176,7 @@
   #define DEFAULT_C_MAX_TRAVEL 150.0f // mm NOTE: Must be a positive value.	$135
 
 
-  #define DEFAULT_STEP_PULSE_MICROSECONDS 0.5		//usec		$0
+  #define DEFAULT_STEP_PULSE_MICROSECONDS 1		//usec		$0
   #define DEFAULT_STEPPER_IDLE_LOCK_TIME 1 // msec (0-254, 255 keeps steppers enabled)	$1
   #define DEFAULT_STEPPING_INVERT_MASK 0		//					$2
   #define DEFAULT_DIRECTION_INVERT_MASK 1		//					$3

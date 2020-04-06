@@ -22,7 +22,7 @@
 #define report_h
 
 #ifdef STM32
-	#define STATUS_SETTING_STEP_PULSE_MIN_LIMIT	0.01f
+	#define STATUS_SETTING_STEP_PULSE_MIN_LIMIT	1
 #endif
 
 // Define Grbl status codes. Valid values (0-255)

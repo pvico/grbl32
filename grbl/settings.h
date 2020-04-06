@@ -95,7 +95,6 @@ typedef struct {
 
   // Remaining Grbl settings
   uint8_t pulse_microseconds;
-  // float fpulse_microseconds;			// changed to float for STM32F4 500KHz rate
   uint8_t step_invert_mask;
   uint8_t dir_invert_mask;
   uint8_t stepper_idle_lock_time; // If max value 255, steppers do not disable.

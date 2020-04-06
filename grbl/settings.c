@@ -73,7 +73,6 @@ void write_global_settings()
 void settings_restore(uint8_t restore_flag) {
   if (restore_flag & SETTINGS_RESTORE_DEFAULTS) {
     settings.pulse_microseconds = DEFAULT_STEP_PULSE_MICROSECONDS;
-    // settings.fpulse_microseconds = DEFAULT_STEP_PULSE_MICROSECONDS;
     settings.stepper_idle_lock_time = DEFAULT_STEPPER_IDLE_LOCK_TIME;
     settings.step_invert_mask = DEFAULT_STEPPING_INVERT_MASK;
     settings.dir_invert_mask = DEFAULT_DIRECTION_INVERT_MASK;
@@ -290,8 +289,6 @@ uint8_t settings_store_global_setting(uint8_t parameter, float value) {
       case 0:
        if (int_value < STATUS_SETTING_STEP_PULSE_MIN_LIMIT) { return(STATUS_SETTING_STEP_PULSE_MIN); }
        settings.pulse_microseconds = int_value; break;
-        // if (value < STATUS_SETTING_STEP_PULSE_MIN_LIMIT) { return(STATUS_SETTING_STEP_PULSE_MIN); }
-        // settings.fpulse_microseconds = value; break;
       case 1: settings.stepper_idle_lock_time = int_value; break;
       case 2:
         settings.step_invert_mask = int_value;

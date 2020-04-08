@@ -424,7 +424,7 @@ ok
 ok
 ```
 
-Let's move 2000mm along the X axis at mas speed
+Let's move 2000mm along the X axis at maximum speed
 
 ```
 G1 F20000 X2000

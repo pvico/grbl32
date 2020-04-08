@@ -13,7 +13,7 @@
 ######################################
 # target
 ######################################
-TARGET = G3RBL2_F103C8
+TARGET = GRBL32_F103C8
 
 CONFIG_DEFS = -DSTM32F103C8 -DSTM32F103C8T6 \
 # -DUSEUSB

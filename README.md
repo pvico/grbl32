@@ -260,7 +260,7 @@ will return something like this (with your own serial device file that you enter
 ```
 Note that you must type Ctrl+] to exit miniterm.
 
-Note: if you get garbage or no reply from the blue pill, verify the connection between the blue pill and the USB to FTDI adapter. It is also possible that the baud rate must be reduced. Try a more conservative standard baud rate like 115200. In `inc/config.h`, comment out the line `#define BAUD_RATE 921600` and un-comment `#define BAUD_RATE 115200`. Compile and flash again. Then connect with `miniterm.py -e /dev/my_device_address 115200`.  
+Note: if you get garbage or no reply from the blue pill, verify the connection between the blue pill and the USB to FTDI adapter. It is also possible that the baud rate must be reduced. Try a more conservative standard baud rate like 115200. In `inc/config.h`, comment out the line `#define BAUD_RATE 921600` and un-comment `#define BAUD_RATE 115200`. Compile and flash again. Then connect with `miniterm.py -e /dev/<my_device_file> 115200`.  
 
 ### Connection with the USB port of the Blue Pill
 

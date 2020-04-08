@@ -400,7 +400,7 @@ The feed rate is 10mm/s so we should have 80,000 steps in about 10" (actually a 
 
 We see that we have 80,000 pulses in about 10.31" which is correct.
 
-The pulse width is set for 4μs which is a conservative value considering that the DRV8825 used as a stepper driver chip has a minimum pulse width of 1.9μs.
+The pulse width is set for 4μs, a conservative value considering that the DRV8825 used as a stepper driver chip has a minimum pulse width of 1.9μs.
 
 <img src="/doc/img/PROBE2.png">
 
@@ -411,7 +411,7 @@ If we zoom in on the beginning of the pulse train, we see the acceleration:
 <img src="/doc/img/PROBE3.png">
 
 ***
-Compile for more than 3 axis
+## Compile for more than 3 axis
 
 In `config.h`, read the instructions in the comments and undefine one of the lines `#define AA_AXIS`, `#define AB_AXIS`, `#define ABC_AXIS`. On top of that file, comment out `#define DEFAULTS_3040T` and un-comment the line `// #define ABC_AXIS_EXAMPLE`
 

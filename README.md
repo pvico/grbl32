@@ -359,7 +359,7 @@ If you connect a [logic analyzer](https://www.saleae.com) or an oscilloscope to 
 
 #### Blue Pill pinout
 
-<img src="/doc/img/STM32F103-USBCNC-Pinout.png">
+<img src="/doc/img/BLUE_PILL_CONN.png">
 
 #### Minimum connections to control a basic CNC like the 3040 with a stepper driver board like the CNC shield
 
@@ -434,7 +434,7 @@ G1 F20000 X2000
 
 This gives a frequency of 222kHz, about the maximum we can get with a 3-axis firmware.
 
-**Remember to reset these parameters values or do a `$RST=$` before using the Blue Pill in a real CNC machine.**
+**Remember to reset these parameter values or do a `$RST=$` before using the Blue Pill in a real CNC machine.**
 
 ***
 ## Compile for more than 3 axis

@@ -412,7 +412,7 @@ If we zoom in on the beginning of the pulse train, we see the acceleration:
 
 Let's _pretend_ we have a very high performance CNC machine and let's set the X maximum feed rate to 20000mm/min and the X acceleration to 2000 mm/s2 and the pulse width to 2μs
 
-'''
+```
 $110=20000
 ok
 ok
@@ -422,7 +422,7 @@ ok
 $0=2
 ok
 ok
-'''
+```
 
 Let's move 2000mm along the X axis at mas speed
 

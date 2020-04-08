@@ -404,7 +404,7 @@ The pulse width is set for 4μs, a conservative value considering that the DRV88
 
 <img src="/doc/img/PROBE2.png">
 
-The pulse widths observed are from 3.98μs to 4.2μs.
+The pulse widths observed are from 3.95μs to 4.2μs.
 
 If we zoom in on the beginning of the pulse train, we see the acceleration:
 

@@ -365,19 +365,19 @@ If you connect a [logic analyzer](https://www.saleae.com) or an oscilloscope to 
 
 * GND
 * Positive supply (see below), from either the USB connector, 5V on the 5V pin or 3.3V on the 3.3V pin
-* STEPPERS-DISABLE-BIT (to the ENABLE pin of the CNC shield)
-* X_STEP_BIT
-* Y_STEP_BIT
-* Z_STEP_BIT
-* X_DIRECTION_BIT
-* Y_DIRECTION_BIT
-* Z_DIRECTION_BIT
+* STEPPERS_DISABLE (to the ENABLE pin of the CNC shield)
+* X_STEP
+* Y_STEP
+* Z_STEP
+* X_DIRECTION
+* Y_DIRECTION
+* Z_DIRECTION
 
 All these control pins are output pins from the Blue Pill to the CNC shield. There is no need for a 3.3V <-> 5V conversion.
 
 #### Connection to the device sending the serial commands from the controlling computer or device
 
-TX1 (pin A9 of the Blue Pill) and RX1 (pin A10) must be connected to the device sending the serial commands like the USB to FTDI adapter we used earlier. TX1 must be connected to the RX pin of that device and RX1 to the TX pin. These pins are 3.3V and you must use a 5V <-> 3.3V adapter board if you intend to connect them to a 5V device like an Arduino.
+TX1 and RX1 must be connected to the device sending the serial commands like the USB to FTDI adapter we used earlier. TX1 must be connected to the RX pin of that device and RX1 to the TX pin. These pins are 3.3V and you must use a 5V <-> 3.3V adapter board if you intend to connect them to a 5V device like an Arduino.
 
 The GND of that device must be connected to GND of the Blue Pill.
 

@@ -400,7 +400,7 @@ The feed rate is 10mm/s so we should have 80,000 steps in about 10" (actually a 
 
 We see that we have 80,000 pulses in about 10.31" which is correct.
 
-The pulse width is set for 4μs, a conservative value considering that the DRV8825 used as a stepper driver chip has a minimum pulse width of 1.9μs.
+The pulse width is set for 4μs, a conservative value considering that the DRV8825 used as a stepper driver has a minimum pulse width of 1.9μs.
 
 <img src="/doc/img/PROBE2.png">
 
@@ -409,6 +409,30 @@ The pulse widths observed are from 3.95μs to 4.2μs.
 If we zoom in on the beginning of the pulse train, we see the acceleration:
 
 <img src="/doc/img/PROBE3.png">
+
+Let's _pretend_ we have a very high performance CNC machine and let's set the X maximum feed rate to 20000 and the X acceleration to 2000 mm/s2 and the pulse width to 2μs
+
+'''
+$110=20000
+ok
+ok
+$120=2000
+ok
+ok
+$0=2
+ok
+ok
+'''
+
+Let's move 2000mm along the X axis at mas speed
+
+```
+G1 F20000 X2000
+```
+
+<img src="/doc/img/PROBE4.png">
+
+We have a frequency of 222kHz, about the maximum we can get with a 3-axis firmware.
 
 ***
 ## Compile for more than 3 axis

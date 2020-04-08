@@ -2,7 +2,7 @@
 
 ## Credits
 
-[thomast777/grbl32](https://github.com/thomast777/grbl32) for the STM32 code.
+[trobomechs/6-AXIS-USBCNC-GRBL](https://github.com/robomechs/6-AXIS-USBCNC-GRBL), based on [usbcnc/grbl](https://github.com/usbcnc/grbl) for the STM32 code.
 
 [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code.
 
@@ -10,10 +10,12 @@
 ## Highlights
 
 * 3-axis 32-bit GRBL firmware
-* Serial baud rate: 921600
-* The STM32F103 outputs up to 250 KHz for each axis
+* USB or USART communication
+* USART serial baud rate: 921600
+* Up to 6 axis
 * Can be used with the "Blue Pill" STM32F103C8 board or any equivalent circuit
-* The code can be edited with your favorite text editor and built from the command line on a Mac or Linux computer
+* The code can be edited with your favorite text editor and built from the command line on a Mac or Linux computer. Config included for MS Visual Studio Code
+* Compiled .hex firmware files are available in the Release directory
 
 ***
 ## Description
@@ -24,7 +26,7 @@ A few other 32-bit GRBL repositories can be found on Github but most of these us
 
 I wanted to be able to edit the code with a text editor like Atom or MS Visual Studio Code and to build and flash the firmware from the command line.
 
-This repository is mostly an adaptation of the grbl32 repository from tomsrobotics ([thomast777/grbl32](https://github.com/thomast777/grbl32)). This last repository also gives the possibility to build a 6-axis firmware for the STM32F103 and STM32F407 MCU's but I only retained the 3-axis STM32F103.
+This repository is mostly an adaptation of the grbl32 repository from tomsrobotics ([trobomechs/6-AXIS-USBCNC-GRBL](https://github.com/robomechs/6-AXIS-USBCNC-GRBL)).
 
 My intention is to use this as part of a larger project which will have a CNC controller board of my own design including the STM32 MCU, the stepper drivers, opto-coupled inputs for the limit switches, PWM spindle speed control and a buck converter providing 3.3V from the 24V stepper motor power supply. I will have the PCB fully assembled from [JLCPCB](https://jlcpcb.com).
 
@@ -37,19 +39,19 @@ Please note that this is still work in progress and not yet fully tested in real
 
 #### A Blue Pill STM32F103 board
 
-<img src="/docs/BluePill.jpg">
+<img src="/docs/img/BluePill.jpg">
 
 Available [here](https://www.amazon.de/dp/B07CRHX5F5/ref=sspa_dk_detail_0?pd_rd_i=B07CRHYTDG&pd_rd_w=BfiZr&pf_rd_p=d3e24f85-c2f2-4959-bef4-3acc5e4e81dc&pd_rd_wg=g8SUT&pf_rd_r=2KXN58GYSKCJW51FNP21&pd_rd_r=665a1ebb-2ed4-4c9e-909b-bb4b300e20a4&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUFVWDIyTVpWUkJQTlQmZW5jcnlwdGVkSWQ9QTAzMjQxNjQzRFhMSE9ONUtWMERSJmVuY3J5cHRlZEFkSWQ9QTA1MDE5MjhQR0lLTk5TRU45ODgmd2lkZ2V0TmFtZT1zcF9kZXRhaWwmYWN0aW9uPWNsaWNrUmVkaXJlY3QmZG9Ob3RMb2dDbGljaz10cnVl&th=1).
 
 #### A cheap chinese ST-LINK V2 programmer
 
-<img src="/docs/ST-LINK V2.jpg">
+<img src="/docs/img/ST-LINK V2.jpg">
 
 Like [this one](https://www.amazon.de/-/en/dp/B07QBLNDPM/ref=sr_1_fkmr1_1?dchild=1&keywords=azdelivery+st-link&qid=1585972853&s=industrial&sr=8-1-fkmr1).
 
-#### A USB to FTDI adapter for testing
+#### A USB to FTDI adapter for testing the USART interface
 
-<img src="/docs/FTDI.jpg">
+<img src="/docs/img/FTDI.jpg">
 
 This one seems to work at 921600 baud. You can get it [here](https://www.amazon.de/dp/B01N9RZK6I/ref=sspa_dk_detail_2?psc=1&pd_rd_i=B01N9RZK6I&pd_rd_w=EiSKu&pf_rd_p=d3e24f85-c2f2-4959-bef4-3acc5e4e81dc&pd_rd_wg=LoeX3&pf_rd_r=ZZ9HJ0736BW5XP9AV9Y1&pd_rd_r=310718f1-2cd9-4810-8e25-4d5afcdf4522&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUExVElTVFM0UU1ENTlQJmVuY3J5cHRlZElkPUEwNzY0MTU4MkdRRlZPU0tOWkRURCZlbmNyeXB0ZWRBZElkPUEwNzEyNDIxVkZZREQ5TjVDWkpYJndpZGdldE5hbWU9c3BfZGV0YWlsJmFjdGlvbj1jbGlja1JlZGlyZWN0JmRvTm90TG9nQ2xpY2s9dHJ1ZQ==).
 
@@ -165,17 +167,17 @@ make
 
 ##### Jumper wires at the ST-LINK V2
 
-<img src="/docs/STLINK_CONN.jpg">
+<img src="/docs/img/STLINK_CONN.jpg">
 
 **Do not use the 5V pin!**
 
 ##### Jumper wires at the SWD connector of the Blue Pill
 
-<img src="/docs/SWD_CONN.jpg">
+<img src="/docs/img/SWD_CONN.jpg">
 
 ##### I made an ad-hoc cable
 
-<img src="/docs/ADHOC_CABLE.jpg">
+<img src="/docs/img/ADHOC_CABLE.jpg">
 
 Note: The ST-LINK V2 *does not appear as a serial device* (there is no `/dev/tty*` or `/dev/cu*` file for it).
 You can verify the connection with:
@@ -190,9 +192,9 @@ make flash
 ```
 
 ***
-## Test the firmware
+## Serial connection to the PC or controlling device
 
-#### Connect the USB to FTDI adapter to the Blue Pill
+### USART serial connection with a USB to FTDI adapter
 
 ##### Connection table
 
@@ -210,17 +212,17 @@ make flash
 
 ##### USB to FTDI adapter SWD connector pinout
 
-<img src="/docs/FTDI-PINS.png">
+<img src="/docs/img/FTDI-PINS.png">
 
 ##### Jumper wires at the USB to FTDI adapter
 
-<img src="/docs/FTDI_SERIAL.jpg">
+<img src="/docs/img/FTDI_SERIAL.jpg">
 
 Note the jumper on 3.3V.
 
 ##### Jumper wires at the Blue Pill
 
-<img src="/docs/BP_SERIAL.jpg">
+<img src="/docs/img/BP_SERIAL.jpg">
 
 The positive supply is connected to the 3.3 pin. This is OK because the jumper on the FTDI is on 3.3V. If that was not the case, the red wire should be connected to the 5V pin.
 
@@ -228,7 +230,7 @@ If the Blue Pill was to be used in production, the serial interface should go th
 
 ##### Simultaneous connection
 
-<img src="/docs/STLINK+FTDI.jpg">
+<img src="/docs/img/STLINK+FTDI.jpg">
 
 Note that the VCC pin of the FTDI is not connected to the Blue Pill as the ST-LINK is powering it.
 
@@ -258,7 +260,22 @@ will return something like this (with your own serial device file that you enter
 ```
 Note that you must type Ctrl+] to exit miniterm.
 
-Note: if you get garbage or no reply from the blue pill, verify the connection between the blue pill and the USB to FTDI adapter. It is also possible that the baud rate must be reduced. Try a more conservative standard baud rate like 115200. In `Src/usart.h`, comment out the line `#define USART_BAUD_RATE 921600` and un-comment `#define USART_BAUD_RATE 115200`. Compile and flash again. Then connect with `miniterm.py -e /dev/my_device_address 115200`.  
+Note: if you get garbage or no reply from the blue pill, verify the connection between the blue pill and the USB to FTDI adapter. It is also possible that the baud rate must be reduced. Try a more conservative standard baud rate like 115200. In `inc/config.h`, comment out the line `#define BAUD_RATE 921600` and un-comment `#define BAUD_RATE 115200`. Compile and flash again. Then connect with `miniterm.py -e /dev/my_device_address 115200`.  
+
+### Connection with the USB port of the Blue Pill
+
+To compile the source code for USB connection, un-comment the line `# -DUSEUSB` just under `CONFIG_DEFS = ...` at the beginning of the Makefile.
+
+The USB connection will appear as a `/dev/` file device
+
+Like the USART interface, connect to it with miniterm at a baud rate of 115200
+
+```
+miniterm.py -e /dev/<my_device_file> 115200
+```
+
+***
+## Test the firmware
 
 Hit the `<return>` key a few times to see if GRBL reacts:
 ```
@@ -269,6 +286,7 @@ ok
 ok
 ok
 ```
+
 Hit the `?` key to see the status report, no need for `<return>`
 ```
 ?<Alarm|MPos:0.000,0.000,0.000|Bf:199,254|FS:0,0|WCO:0.000,0.000,0.000>
@@ -277,7 +295,7 @@ On power up, GRBL starts in Alarm state.
 
 Type `$$` + `<return>` to see the GRBL parameters.
 ```
-$0=20.000
+$0=4
 $1=25
 $2=0
 $3=4
@@ -299,16 +317,14 @@ $27=1.000
 $30=8000
 $31=0
 $32=0
-$40=10000.000
-$50=0
 $100=800.000
 $101=800.000
 $102=400.000
 $110=3000.000
 $111=3000.000
 $112=500.000
-$120=10.000
-$121=10.000
+$120=50.000
+$121=50.000
 $122=10.000
 $130=280.000
 $131=377.000
@@ -327,15 +343,13 @@ G90
 GRBL is now in absolute mode, any movement coordinates will be relative to the machine zero position.
 Type `X100` + `<return>` and immediately after this, hit the `?` key a few times. You will see the progress.
 ```
-?<Run|MPos:5.665,0.000,0.000|Bf:198,254|FS:642,0>
-?<Run|MPos:14.036,0.000,0.000|Bf:198,254|FS:1009,0>
-?<Run|MPos:26.131,0.000,0.000|Bf:198,254|FS:1375,0>
-?<Run|MPos:43.985,0.000,0.000|Bf:198,254|FS:1783,0>
-?<Run|MPos:63.030,0.000,0.000|Bf:198,254|FS:1628,0|WCO:0.000,0.000,0.000>
-?<Run|MPos:78.075,0.000,0.000|Bf:198,254|FS:1253,0|Ov:100,100,100|A:S>
-?<Run|MPos:89.926,0.000,0.000|Bf:198,254|FS:848,0>
-?<Run|MPos:97.468,0.000,0.000|Bf:198,254|FS:420,0>
-?<Idle|MPos:100.000,0.000,0.000|Bf:199,254|FS:0,0>
+?<Run|MPos:13.664,0.000,0.000|Bf:34,254|FS:2460,0>
+?<Run|MPos:31.818,0.000,0.000|Bf:34,254|FS:3000,0>
+?<Run|MPos:50.086,0.000,0.000|Bf:34,254|FS:3000,0>
+?<Run|MPos:67.565,0.000,0.000|Bf:34,254|FS:3000,0>
+?<Run|MPos:83.438,0.000,0.000|Bf:34,254|FS:2190,0>
+?<Run|MPos:95.566,0.000,0.000|Bf:34,254|FS:1020,0|WCO:0.000,0.000,0.000>
+?<Idle|MPos:100.000,0.000,0.000|Bf:35,254|FS:0,0|Ov:100,100,100>
 ```
 
 If you connect a [logic analyzer](https://www.saleae.com) or an oscilloscope to the STEP-X pin (normally pin A0 of the blue pill) you can see the step pulses sent to the stepper motor driver.
@@ -345,25 +359,25 @@ If you connect a [logic analyzer](https://www.saleae.com) or an oscilloscope to 
 
 #### Blue Pill pinout
 
-<img src="/docs/BLUE_PILL_CONN.png">
+<img src="/docs/img/STM32F103-USBCNC-Pinout.png">
 
 #### Minimum connections to control a basic CNC like the 3040 with a stepper driver board like the CNC shield
 
 * GND
 * Positive supply (see below), from either the USB connector, 5V on the 5V pin or 3.3V on the 3.3V pin
-* STEP-ENABLE
-* STEP-X
-* STEP-Y
-* STEP-Z
-* DIR-X
-* DIR-Y
-* DIR-Z
+* STEPPERS-DISABLE-BIT (to the ENABLE pin of the CNC shield)
+* X_STEP_BIT
+* Y_STEP_BIT
+* Z_STEP_BIT
+* X_DIRECTION_BIT
+* Y_DIRECTION_BIT
+* Z_DIRECTION_BIT
 
 All these control pins are output pins from the Blue Pill to the CNC shield. There is no need for a 3.3V <-> 5V conversion.
 
 #### Connection to the device sending the serial commands from the controlling computer or device
 
-USART1-TX and USART1-RX must be connected to the device sending the serial commands like the USB to FTDI adapter we used earlier. USART1-TX must be connected to the RX pin of that device and USART1-RX to the TX pin. These pins are 3.3V and you must use a 5V <-> 3.3V adapter board if you intend to connect them to a 5V device like an Arduino.
+TX1 (pin A9 of the Blue Pill) and RX1 (pin A10) must be connected to the device sending the serial commands like the USB to FTDI adapter we used earlier. TX1 must be connected to the RX pin of that device and RX1 to the TX pin. These pins are 3.3V and you must use a 5V <-> 3.3V adapter board if you intend to connect them to a 5V device like an Arduino.
 
 The GND of that device must be connected to GND of the Blue Pill.
 
@@ -378,19 +392,32 @@ NOTE: the Blue Pill is not pin compatible with the Arduino Nano. **Do not plug i
 ***
 ## First measurements
 
-We are probing the STEP-X pin with a logic analyzer after the command `G1 X100 F600` (move 100mm along the X axis with a feed rate of 600mm/min) is issued. The machine parameters are 4mm/revolution, micro-stepping 1/16 and 200 steps/revolution which results in 800 steps/mm. Pulse width is set to 10μs. 
+We are probing the X_STEP_BIT pin with a logic analyzer after the command `G1 X100 F600` (move 100mm along the X axis with a feed rate of 600mm/min) is issued. The machine parameters are 4mm/revolution, micro-stepping 1/16 and 200 steps/revolution which results in 800 steps/mm. 
 
 The feed rate is 10mm/s so we should have 80,000 steps in about 10" (actually a bit more than 10" considering the acceleration and deceleration phase).
 
-<img src="/docs/LOGIC.png">
+<img src="/docs/img/PROBE1.png">
 
-We see that we do have 80,000 pulses in about 11" which is correct. However, the pulse width varies between 2.5μs and 5.8μs.
+We see that we have 80,000 pulses in about 10.31" which is correct.
 
-Zooming in towards the center of the pulse train, we clearly see the uneven pulse width:
+The pulse width is set for 4μs which is a conservative value considering that the DRV8825 used as a stepper driver chip has a minimum pulse width of 1.9μs.
 
-<img src="/docs/LOGIC_ZOOM.png">
+<img src="/docs/img/PROBE2.png">
 
-Looking at the datasheet of the DRV8825, the stepper driver I am using, the minimum pulse width is 1.9μs, so this will work but there is still work to do to make the pulse width correspond to the `$0` parameter (DEFAULT_STEP_PULSE_MICROSECONDS in `grbl/defaults.h`).
+The pulse widths observed are from 3.98μs to 4.2μs.
+
+If we zoom in on the beginning of the pulse train, we see the acceleration:
+
+<img src="/docs/img/PROBE3.png">
+
+***
+Compile for more than 3 axis
+
+In `config.h`, read the instructions in the comments and undefine one of the lines `#define AA_AXIS`, `#define AB_AXIS`, `#define ABC_AXIS`. On top of that file, comment out `#define DEFAULTS_3040T` and un-comment the line `// #define ABC_AXIS_EXAMPLE`
+
+In `defaults.h`, modify as required the parameters for `ABC_AXIS_EXAMPLE` at the end of the file.
+
+For more than 4 axis, only the USB version can be compiled as the B axis step and direction bits use the A9 and A10 pins normally used for USART. Alternatively, the USART can be re-mapped to pins A11 and A12 in the `USART1_Configuration` function in `src/main.c`.
 
 ***
 ## Additional documentation
@@ -398,5 +425,3 @@ Looking at the datasheet of the DRV8825, the stepper driver I am using, the mini
 You can find the GRBL commands [in the GRBL wiki](https://github.com/gnea/grbl/wiki/Grbl-v1.1-Commands).
 
 [Here](https://wiki.shapeoko.com/index.php/G-Code) is a list of gcode commands.
-
-Be sure to read the thomast777/grbl32 [wiki pages](https://github.com/thomast777/grbl32/wiki) for additional gcode commands and useful information.

@@ -7,10 +7,8 @@
             ],
             "defines": [
                 "STM32",
-                "STM32F1",
-                "STM32F13",
-                "STM32F103xB",
-                "STM32F1_3"
+                "STM32F103C8T6",
+                "STM32F103C8"
             ],
             "macFrameworkPath": [
                 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks"

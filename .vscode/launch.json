@@ -14,7 +14,7 @@
             "searchDir": ["/usr/local/Cellar/open-ocd/0.10.0/share/openocd/scripts/"],
             "configFiles": ["interface/stlink-v2.cfg", "target/stm32f1x.cfg"],
             "type": "cortex-debug",
-            "runToMain": true,
+            "runToMain": false,
             "servertype": "openocd"
         }
     ]

@@ -13,16 +13,18 @@
 ######################################
 # target
 ######################################
-TARGET = Grbl32_F103C8
+TARGET = G3RBL2_F103C8
 
-PROCESSOR_DEFS = -DSTM32 -DSTM32F1 -DSTM32F13 -DSTM32F103xB -DSTM32F1_3 -DUSE_FULL_LL_DRIVER -DUSE_HAL_DRIVER
+CONFIG_DEFS = -DSTM32F103C8 -DSTM32F103C8T6 \
+# -DUSEUSB
+
 # PROCESSOR_DEFS = 
 
 ######################################
 # building variables
 ######################################
 # debug build?
-DEBUG = 1
+DEBUG = 0
 # optimization
 OPT = -O3
 
@@ -37,40 +39,16 @@ BUILD_DIR = build
 ######################################
 # C sources
 C_SOURCES = \
-Src/main.c \
-Src/gpio.c \
-Src/i2c.c \
-Src/tim.c \
-Src/usart.c \
-Src/stm32f1xx_it.c \
-Src/stm32f1xx_hal_msp.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_rcc.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_utils.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_exti.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_tim.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_gpio.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_dma.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_usart.c \
-Src/system_stm32f1xx.c \
-$(wildcard stm32/*.c) \
-$(wildcard grbl/*.c)
+$(wildcard Libraries/STM32F10x_StdPeriph_Driver/src/*.c) \
+$(wildcard src/*.c) \
+$(wildcard stm_usb_fs_lib/src/*.c) \
+$(wildcard usb/*.c) \
+$(wildcard util/*.c)
+
+
 
 # ASM sources
-ASM_SOURCES = STM32CubeMX/startup_stm32f103xb.s
+ASM_SOURCES = src/startup_stm32f10x_md.s
 
 
 #######################################
@@ -118,7 +96,6 @@ AS_DEFS =
 C_DEFS =  \
 -DUSE_FULL_LL_DRIVER \
 -DUSE_HAL_DRIVER \
--DSTM32F103xB 
 
 
 # AS includes
@@ -126,20 +103,18 @@ AS_INCLUDES =
 
 # C includes
 C_INCLUDES =  \
--IInc \
--Istm32 \
--IDrivers/STM32F1xx_HAL_Driver/Inc \
--IDrivers/STM32F1xx_HAL_Driver/Inc/Legacy \
--IDrivers/CMSIS/Device/ST/STM32F1xx/Include \
--IDrivers/CMSIS/Include \
--IDrivers/CMSIS/Include \
--Igrbl
-
+-Iinc \
+-ILibraries/CMSIS/Include \
+-ILibraries/CMSIS/Device/ST/STM32F10x/Include \
+-ILibraries/STM32F10x_StdPeriph_Driver/inc \
+-Iusb \
+-Istm_usb_fs_lib/inc \
+-Iutil
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
 
-CFLAGS = $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections $(PROCESSOR_DEFS) -DEXISTINGFLAGS
+CFLAGS = $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -Wno-comment -Wno-int-in-bool-context -fdata-sections -ffunction-sections $(CONFIG_DEFS) -DEXISTINGFLAGS
 
 ifeq ($(DEBUG), 1)
 CFLAGS += -g -gdwarf-2
@@ -154,7 +129,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = STM32CubeMX/STM32F103C8Tx_FLASH.ld
+LDSCRIPT = linker/stm32_flash.ld
 
 # libraries
 LIBS = -lc -lm -lnosys 
@@ -186,10 +161,10 @@ $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
 
 $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(HEX) $< $@
-	
+
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(BIN) $< $@	
-	
+
 $(BUILD_DIR):
 	mkdir $@		
 

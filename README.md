@@ -359,7 +359,7 @@ If you connect a [logic analyzer](https://www.saleae.com) or an oscilloscope to 
 
 #### Blue Pill pinout
 
-<img src="/doc/img/BLUE_PILL_CONN.png">
+<img src="/doc/img/BLUE_PILL_PINS.png">
 
 #### Minimum connections to control a basic CNC like the 3040 with a stepper driver board like the CNC shield
 

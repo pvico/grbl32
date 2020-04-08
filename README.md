@@ -434,7 +434,7 @@ G1 F20000 X2000
 
 This gives a frequency of 222kHz, about the maximum we can get with a 3-axis firmware.
 
-**Remember to reset these parameters correct values or do a `$RST=$` before using the Blue Pill in a real CNC machine.**
+**Remember to reset these parameters values or do a `$RST=$` before using the Blue Pill in a real CNC machine.**
 
 ***
 ## Compile for more than 3 axis

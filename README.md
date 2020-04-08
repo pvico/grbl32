@@ -39,19 +39,19 @@ Please note that this is still work in progress and not yet fully tested in real
 
 #### A Blue Pill STM32F103 board
 
-<img src="/docs/img/BluePill.jpg">
+<img src="/doc/img/BluePill.jpg">
 
 Available [here](https://www.amazon.de/dp/B07CRHX5F5/ref=sspa_dk_detail_0?pd_rd_i=B07CRHYTDG&pd_rd_w=BfiZr&pf_rd_p=d3e24f85-c2f2-4959-bef4-3acc5e4e81dc&pd_rd_wg=g8SUT&pf_rd_r=2KXN58GYSKCJW51FNP21&pd_rd_r=665a1ebb-2ed4-4c9e-909b-bb4b300e20a4&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUFVWDIyTVpWUkJQTlQmZW5jcnlwdGVkSWQ9QTAzMjQxNjQzRFhMSE9ONUtWMERSJmVuY3J5cHRlZEFkSWQ9QTA1MDE5MjhQR0lLTk5TRU45ODgmd2lkZ2V0TmFtZT1zcF9kZXRhaWwmYWN0aW9uPWNsaWNrUmVkaXJlY3QmZG9Ob3RMb2dDbGljaz10cnVl&th=1).
 
 #### A cheap chinese ST-LINK V2 programmer
 
-<img src="/docs/img/ST-LINK V2.jpg">
+<img src="/doc/img/ST-LINK V2.jpg">
 
 Like [this one](https://www.amazon.de/-/en/dp/B07QBLNDPM/ref=sr_1_fkmr1_1?dchild=1&keywords=azdelivery+st-link&qid=1585972853&s=industrial&sr=8-1-fkmr1).
 
 #### A USB to FTDI adapter for testing the USART interface
 
-<img src="/docs/img/FTDI.jpg">
+<img src="/doc/img/FTDI.jpg">
 
 This one seems to work at 921600 baud. You can get it [here](https://www.amazon.de/dp/B01N9RZK6I/ref=sspa_dk_detail_2?psc=1&pd_rd_i=B01N9RZK6I&pd_rd_w=EiSKu&pf_rd_p=d3e24f85-c2f2-4959-bef4-3acc5e4e81dc&pd_rd_wg=LoeX3&pf_rd_r=ZZ9HJ0736BW5XP9AV9Y1&pd_rd_r=310718f1-2cd9-4810-8e25-4d5afcdf4522&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUExVElTVFM0UU1ENTlQJmVuY3J5cHRlZElkPUEwNzY0MTU4MkdRRlZPU0tOWkRURCZlbmNyeXB0ZWRBZElkPUEwNzEyNDIxVkZZREQ5TjVDWkpYJndpZGdldE5hbWU9c3BfZGV0YWlsJmFjdGlvbj1jbGlja1JlZGlyZWN0JmRvTm90TG9nQ2xpY2s9dHJ1ZQ==).
 
@@ -167,17 +167,17 @@ make
 
 ##### Jumper wires at the ST-LINK V2
 
-<img src="/docs/img/STLINK_CONN.jpg">
+<img src="/doc/img/STLINK_CONN.jpg">
 
 **Do not use the 5V pin!**
 
 ##### Jumper wires at the SWD connector of the Blue Pill
 
-<img src="/docs/img/SWD_CONN.jpg">
+<img src="/doc/img/SWD_CONN.jpg">
 
 ##### I made an ad-hoc cable
 
-<img src="/docs/img/ADHOC_CABLE.jpg">
+<img src="/doc/img/ADHOC_CABLE.jpg">
 
 Note: The ST-LINK V2 *does not appear as a serial device* (there is no `/dev/tty*` or `/dev/cu*` file for it).
 You can verify the connection with:
@@ -212,17 +212,17 @@ make flash
 
 ##### USB to FTDI adapter SWD connector pinout
 
-<img src="/docs/img/FTDI-PINS.png">
+<img src="/doc/img/FTDI-PINS.png">
 
 ##### Jumper wires at the USB to FTDI adapter
 
-<img src="/docs/img/FTDI_SERIAL.jpg">
+<img src="/doc/img/FTDI_SERIAL.jpg">
 
 Note the jumper on 3.3V.
 
 ##### Jumper wires at the Blue Pill
 
-<img src="/docs/img/BP_SERIAL.jpg">
+<img src="/doc/img/BP_SERIAL.jpg">
 
 The positive supply is connected to the 3.3 pin. This is OK because the jumper on the FTDI is on 3.3V. If that was not the case, the red wire should be connected to the 5V pin.
 
@@ -230,7 +230,7 @@ If the Blue Pill was to be used in production, the serial interface should go th
 
 ##### Simultaneous connection
 
-<img src="/docs/img/STLINK+FTDI.jpg">
+<img src="/doc/img/STLINK+FTDI.jpg">
 
 Note that the VCC pin of the FTDI is not connected to the Blue Pill as the ST-LINK is powering it.
 
@@ -359,7 +359,7 @@ If you connect a [logic analyzer](https://www.saleae.com) or an oscilloscope to 
 
 #### Blue Pill pinout
 
-<img src="/docs/img/STM32F103-USBCNC-Pinout.png">
+<img src="/doc/img/STM32F103-USBCNC-Pinout.png">
 
 #### Minimum connections to control a basic CNC like the 3040 with a stepper driver board like the CNC shield
 
@@ -396,19 +396,19 @@ We are probing the X_STEP_BIT pin with a logic analyzer after the command `G1 X1
 
 The feed rate is 10mm/s so we should have 80,000 steps in about 10" (actually a bit more than 10" considering the acceleration and deceleration phase).
 
-<img src="/docs/img/PROBE1.png">
+<img src="/doc/img/PROBE1.png">
 
 We see that we have 80,000 pulses in about 10.31" which is correct.
 
 The pulse width is set for 4μs which is a conservative value considering that the DRV8825 used as a stepper driver chip has a minimum pulse width of 1.9μs.
 
-<img src="/docs/img/PROBE2.png">
+<img src="/doc/img/PROBE2.png">
 
 The pulse widths observed are from 3.98μs to 4.2μs.
 
 If we zoom in on the beginning of the pulse train, we see the acceleration:
 
-<img src="/docs/img/PROBE3.png">
+<img src="/doc/img/PROBE3.png">
 
 ***
 Compile for more than 3 axis

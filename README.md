@@ -235,8 +235,8 @@ To compile the source code for USART connection, comment out the line `-DUSEUSB`
 
 | USB<->FTDI | Blue Pill |
 | :--------: | :-------: |
-|    RX      |    B6     |
-|    TX      |    B7     |
+|    RX      |    A9     |
+|    TX      |    A10    |
 |    GND     |    GND    |
 |    VCC     |    3.3    |
 

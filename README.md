@@ -192,9 +192,44 @@ make flash
 ```
 
 ***
-## Serial connection to the PC or controlling device
+## Serial connection to a PC or other controlling device
+
+### Connection with the USB port of the Blue Pill
+
+#### Check the USB serial device file:
+
+The USB connection will appear as a `/dev/` file device.
+
+##### Mac
+```
+ls /dev/cu*
+```
+The device should appear as `/dev/cu.usbmodemxxxxxxxx`.
+
+##### Linux
+```
+ls /dev/tty*
+```
+The device should appear as `/dev/ttyUSBx`.
+
+#### Send GRBL commands serially
+
+Connect to it with miniterm at a baud rate of 115200
+
+```
+miniterm.py -e /dev/<my_device_file> 115200
+```
+
+will return something like this (with your own serial device file that you entered in the previous command).
+```
+--- Miniterm on /dev/cu.usbserial-A50285BI  921600,8,N,1 ---
+--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H ---
+```
+Note that you must type Ctrl+] to exit miniterm.
 
 ### USART serial connection with a USB to FTDI adapter
+
+To compile the source code for USART connection, comment out the line `-DUSEUSB` just under `CONFIG_DEFS = ...` at the beginning of the Makefile (put a `#` in front of that line).
 
 ##### Connection table
 
@@ -226,53 +261,21 @@ Note the jumper on 3.3V.
 
 The positive supply is connected to the 3.3 pin. This is OK because the jumper on the FTDI is on 3.3V. If that was not the case, the red wire should be connected to the 5V pin.
 
-If the Blue Pill was to be used in production, the serial interface should go through the USB port. I consider the Blue Pill only as a prototyping device.
-
 ##### Simultaneous connection
 
 <img src="/doc/img/STLINK+FTDI.jpg">
 
 Note that the VCC pin of the FTDI is not connected to the Blue Pill as the ST-LINK is powering it.
 
-#### Check the FTDI device file:
-
-##### Mac
-```
-ls /dev/cu*
-```
-The device should appear as `/dev/cu.usbserial-xxxxxxxx`.
-
-##### Linux
-```
-ls /dev/tty*
-```
-The device should appear as `/dev/ttyUSBx`.
+The USB to FTDI adapter will appear as `/dev/cu.usbserial-xxxxxxxx` on a Mac, on Linux as `/dev/ttyUSBx`.
 
 #### Send GRBL commands serially
 
 ```
 miniterm.py -e /dev/<my_device_file> 921600
 ```
-will return something like this (with your own serial device file that you entered in the previous command).
-```
---- Miniterm on /dev/cu.usbserial-A50285BI  921600,8,N,1 ---
---- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H ---
-```
-Note that you must type Ctrl+] to exit miniterm.
 
 Note: if you get garbage or no reply from the blue pill, verify the connection between the blue pill and the USB to FTDI adapter. It is also possible that the baud rate must be reduced. Try a more conservative standard baud rate like 115200. In `inc/config.h`, comment out the line `#define BAUD_RATE 921600` and un-comment `#define BAUD_RATE 115200`. Compile and flash again. Then connect with `miniterm.py -e /dev/<my_device_file> 115200`.  
-
-### Connection with the USB port of the Blue Pill
-
-To compile the source code for USB connection, un-comment the line `# -DUSEUSB` just under `CONFIG_DEFS = ...` at the beginning of the Makefile.
-
-The USB connection will appear as a `/dev/` file device
-
-Like the USART interface, connect to it with miniterm at a baud rate of 115200
-
-```
-miniterm.py -e /dev/<my_device_file> 115200
-```
 
 ***
 ## Test the firmware
@@ -400,7 +403,7 @@ The feed rate is 10mm/s so we should have 80,000 steps in about 10" (actually a 
 
 We see that we have 80,000 pulses in about 10.31" which is correct.
 
-The pulse width is set for 4μs, a conservative value considering that the DRV8825 used as a stepper driver has a minimum pulse width of 1.9μs.
+The pulse width is set to 4μs, a conservative value considering that the DRV8825 used as a stepper driver has a minimum pulse width of 1.9μs.
 
 <img src="/doc/img/PROBE2.png">
 

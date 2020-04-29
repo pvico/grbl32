@@ -2,7 +2,7 @@
 
 ## Credits
 
-[trobomechs/6-AXIS-USBCNC-GRBL](https://github.com/robomechs/6-AXIS-USBCNC-GRBL), based on [usbcnc/grbl](https://github.com/usbcnc/grbl) for the STM32 code.
+[robomechs/6-AXIS-USBCNC-GRBL](https://github.com/robomechs/6-AXIS-USBCNC-GRBL), based on [usbcnc/grbl](https://github.com/usbcnc/grbl) for the STM32 code.
 
 [gnea/grbl](https://github.com/gnea/grbl) for the core GRBL code.
 

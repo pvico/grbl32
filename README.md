@@ -26,7 +26,7 @@ A few other 32-bit GRBL repositories can be found on Github but most of these us
 
 I wanted to be able to edit the code with a text editor like Atom or MS Visual Studio Code and to build and flash the firmware from the command line.
 
-This repository is mostly an adaptation of the grbl32 repository from tomsrobotics ([trobomechs/6-AXIS-USBCNC-GRBL](https://github.com/robomechs/6-AXIS-USBCNC-GRBL)).
+This repository is mostly an adaptation of the grbl32 repository from [trobomechs/6-AXIS-USBCNC-GRBL](https://github.com/robomechs/6-AXIS-USBCNC-GRBL).
 
 My intention is to use this as part of a larger project which will have a CNC controller board of my own design including the STM32 MCU, the stepper drivers, opto-coupled inputs for the limit switches, PWM spindle speed control and a buck converter providing 3.3V from the 24V stepper motor power supply. I will have the PCB fully assembled from [JLCPCB](https://jlcpcb.com).
 
@@ -360,7 +360,7 @@ If you connect a [logic analyzer](https://www.saleae.com) or an oscilloscope to 
 ***
 ## Connection to the CNC machine
 
-#### Blue Pill pinout
+#### Blue Pill pinout (only valid for the 3 axis version)
 
 <img src="/doc/img/BLUE_PILL_PINS.png">
 
@@ -447,6 +447,8 @@ In `config.h`, read the instructions in the comments and undefine one of the lin
 In `defaults.h`, modify as required the parameters for `ABC_AXIS_EXAMPLE` at the end of the file.
 
 For more than 4 axis, only the USB version can be compiled as the B axis step and direction bits use the A9 and A10 pins normally used for USART. Alternatively, the USART can be re-mapped to pins A11 and A12 in the `USART1_Configuration` function in `src/main.c`.
+
+The pin mapping picture above is for the 3 axis version. If you compile with #define ABC_AXIS, you must check all pin assignments in cpu_map.h after #ifdef ABC_AXIS_EXAMPLE (line 404).
 
 ***
 ## Additional documentation

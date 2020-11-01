@@ -40,7 +40,7 @@ BUILD_DIR = build
 # C sources
 C_SOURCES = \
 $(wildcard Libraries/STM32F10x_StdPeriph_Driver/src/*.c) \
-$(wildcard src/*.c) \
+$(wildcard Src/*.c) \
 $(wildcard stm_usb_fs_lib/src/*.c) \
 $(wildcard usb/*.c) \
 $(wildcard util/*.c)
